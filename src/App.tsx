@@ -174,6 +174,8 @@ function toDbJob(j: Partial<Job>): Record<string, unknown> {
   if ('candidates'             in j) row.candidates               = j.candidates              ?? 0
   if ('internalId'             in j) row.internal_id              = j.internalId              || ''
   if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber         || null
+  if ('ownerName'              in j) row.owner_name               = j.ownerName               || ''
+  if ('ownerId'                in j) row.owner_id                 = j.ownerId                 || ''
   return row
 }
 
@@ -362,6 +364,8 @@ function App() {
       description:              j.description             || '',
       internal_id:              j.internalId              || '',
       client_req_number:        j.clientReqNumber?.trim() || null,
+      owner_name:               j.ownerName               || '',
+      owner_id:                 j.ownerId                 || '',
       candidates:               0,
       days_open:                0,
       date_added:               j.dateAdded,

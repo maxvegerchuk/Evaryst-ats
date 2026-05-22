@@ -13,8 +13,8 @@ export interface Job {
   salaryType:             SalaryType
   location:               string
   address?:               string
-  ownerName?:             string
-  ownerId?:               string
+  ownerName:              string
+  ownerId:                string
   status:                 JobStatus
   assignedRecruiterId:    string
   assignedRecruiterEmail: string
