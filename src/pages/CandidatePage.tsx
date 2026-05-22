@@ -4,7 +4,7 @@ import {
   ChevronLeft, ChevronDown, ChevronRight, X,
   Link2, Star, FileText, Edit, Trash2,
   CircleDot, MoreHorizontal,
-  Phone, Mail, Settings, Search, Plus, Trash, Download, Archive,
+  Phone, Mail, Search, Plus, Trash, Download, Archive,
 } from 'lucide-react'
 import { JOB_DESC_INTERNAL } from './JobPage'
 import type { Candidate } from '../types/candidate'
@@ -1022,7 +1022,6 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             {tab.label}
           </button>
         ))}
-        <Settings size={16} className="text-[#94A3B8] ml-auto cursor-pointer hover:text-[#64748B]" />
       </div>
 
       {/* ── MAIN BODY ── */}

@@ -19,8 +19,8 @@ export const DEMO_USER: User = {
 export const DEMO_MANAGER: User = {
   id: 'demo-manager',
   email: 'manager@evaryst.com',
-  name: 'Sarah Mitchell',
+  name: 'Thane Hayhurst',
   role: 'talent_acquisition_manager',
   company: 'Evaryst Demo',
-  initials: 'SM',
+  initials: 'TH',
 }

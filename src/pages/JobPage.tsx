@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   ChevronLeft, ChevronRight, MoreHorizontal,
-  Mail, Settings, Download, X,
+  Mail, Download, X,
   FilePlus, FileText, Send, Users, UserPlus, Pencil,
 } from 'lucide-react'
 import type { Job, JobType, JobStatus, SalaryType } from '../types/job'
@@ -602,35 +602,10 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         <div>
           <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
             <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-3" style={{ letterSpacing: '0.05em' }}>Details</p>
-            {([
-              ['Job ID',       job?.internalId?.trim() || '—'],
-              ['Days on site', job?.daysOnSite || '—'],
-              ['Travel %',     job?.travelPct ? `${job.travelPct}%` : '—'],
-            ] as [string, string][]).map(([label, val]) => (
-              <div key={label} className="flex items-baseline gap-2 mb-2">
-                <span className="text-[10px] text-[#94A3B8] min-w-[72px] flex-shrink-0">{label}</span>
-                <span className="text-[12px] text-[#1E293B]">{val}</span>
-              </div>
-            ))}
-            {WORK_TYPE_OPTIONS.length > 0 && (
-              <div className="mt-3 pt-3" style={{ borderTop: '0.5px solid #F1F5F9' }}>
-                <p className="text-[10px] text-[#94A3B8] mb-2">Work type</p>
-                <div className="flex flex-col gap-1.5">
-                  {WORK_TYPE_OPTIONS.map(wt => {
-                    const active = job?.workTypes?.includes(wt) ?? false
-                    return (
-                      <div key={wt} className="flex items-center gap-2">
-                        <div className={`w-3.5 h-3.5 rounded flex items-center justify-center flex-shrink-0 ${active ? 'bg-[#2563EB]' : 'bg-white'}`}
-                          style={{ border: active ? 'none' : '1.5px solid #CBD5E1' }}>
-                          {active && <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                        </div>
-                        <span className={`text-[12px] ${active ? 'text-[#1E293B] font-medium' : 'text-[#94A3B8]'}`}>{wt}</span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+            <div className="flex items-baseline gap-2">
+              <span className="text-[10px] text-[#94A3B8] min-w-[72px] flex-shrink-0">Job ID</span>
+              <span className="text-[12px] text-[#1E293B]">{job?.internalId?.trim() || '—'}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -846,7 +821,6 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             {tab.label}
           </button>
         ))}
-        <Settings size={16} className="text-[#94A3B8] ml-auto cursor-pointer hover:text-[#64748B]" />
       </div>
 
       {/* TAB CONTENT */}

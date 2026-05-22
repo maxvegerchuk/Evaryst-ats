@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
-import type { Job, JobType, JobStatus, SalaryType } from '../../types/job'
+import type { Job, JobStatus, SalaryType } from '../../types/job'
 import type { Company } from '../../types/company'
 import type { User } from '../../types/auth'
 import { CityAutocomplete } from './CityAutocomplete'
@@ -46,13 +46,13 @@ function PillGroup<T extends string>({
 }
 
 const DEFAULT_ID = 'JOB-' + Date.now().toString().slice(-6)
-const JOB_TYPES: JobType[]      = ['Full Time', 'Part Time', 'Contract', 'Contract to Hire']
 const JOB_STATUSES: JobStatus[] = ['Open', 'On Hold', 'Closed']
+const WORK_TYPE_OPTIONS = ['Full-Time', 'Part-Time', 'Contract', 'Contract to Hire', 'Fulltime Employee']
 
 export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, defaultCompanyId, currentUser }: AddJobModalProps) {
   const [title,       setTitle]       = useState('')
   const [companyId,   setCompanyId]   = useState(defaultCompanyId ?? '')
-  const [jobType,     setJobType]     = useState<JobType>('Full Time')
+  const [workTypes,   setWorkTypes]   = useState<string[]>([])
   const [salaryMin,   setSalaryMin]   = useState('')
   const [salaryMax,   setSalaryMax]   = useState('')
   const [salaryType,  setSalaryType]  = useState<SalaryType>('year')
@@ -83,7 +83,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
   }
 
   function reset() {
-    setTitle(''); setCompanyId(defaultCompanyId ?? ''); setJobType('Full Time')
+    setTitle(''); setCompanyId(defaultCompanyId ?? ''); setWorkTypes([])
     setSalaryMin(''); setSalaryMax(''); setSalaryType('year')
     setJobCity(''); setJobState(''); setRecruiterId(''); setStatus('Open')
     setDescription(''); setClientReq('')
@@ -100,7 +100,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
       title:                 title.trim(),
       companyId,
       companyName:           selectedCompany?.name ?? '',
-      jobType,
+      jobType:               'Full Time',
       salaryMin:             salaryMin.trim(),
       salaryMax:             salaryMax.trim(),
       salaryType,
@@ -115,7 +115,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
       otherContact2:         '',
       daysOnSite:            '',
       travelPct:             '',
-      workTypes:             [],
+      workTypes,
       status,
       assignedRecruiterId:    recruiterId,
       assignedRecruiterEmail: selectedRecruiter?.email ?? '',
@@ -183,7 +183,16 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
 
           <div>
             <label className={LBL}>Job type</label>
-            <PillGroup options={JOB_TYPES} value={jobType} onChange={setJobType} />
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+              {WORK_TYPE_OPTIONS.map(wt => (
+                <label key={wt} className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={workTypes.includes(wt)}
+                    onChange={() => setWorkTypes(prev => prev.includes(wt) ? prev.filter(x => x !== wt) : [...prev, wt])}
+                    className="w-3.5 h-3.5 accent-[#2563EB]" />
+                  <span className="text-[12px] text-[#1E293B]">{wt}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           <div>

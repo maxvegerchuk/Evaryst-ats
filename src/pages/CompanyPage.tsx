@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   ChevronLeft, ChevronRight, MoreHorizontal,
-  Mail, Phone, Globe, Settings, Plus, Briefcase,
+  Mail, Phone, Globe, Plus, Briefcase,
   Download, X, FilePlus, FileText, Send, Users, Pencil,
 } from 'lucide-react'
 import { formatPhone } from '../utils/formatPhone'
@@ -528,7 +528,6 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
             {tab === 'jobs' ? `Jobs (${companyJobs.length})` : tab === 'clients' ? `Clients (${companyClients.length})` : 'Documents'}
           </button>
         ))}
-        <Settings size={16} className="text-[#94A3B8] ml-auto cursor-pointer hover:text-[#64748B]" />
       </div>
 
       {/* TAB CONTENT */}
