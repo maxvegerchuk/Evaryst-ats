@@ -441,6 +441,7 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
         onSave={j => { onAddJob(j); setShowAddJob(false) }}
         companies={companies}
         recruiters={recruiters}
+        currentUser={currentUser}
       />
 
       {/* Action dropdown */}

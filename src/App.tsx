@@ -135,6 +135,8 @@ function mapJob(r: any): Job {
     salaryType:             r.salary_type,
     location:               r.location,
     address:                r.address ?? '',
+    ownerName:              r.owner_name ?? '',
+    ownerId:                r.owner_id   ?? '',
     status:                 r.status,
     assignedRecruiterId:    r.assigned_recruiter_id,
     assignedRecruiterEmail: r.assigned_recruiter_email,
@@ -614,6 +616,7 @@ function App() {
                 contacts={contacts}
                 onAddContact={handleAddContact}
                 onDeleteContact={handleDeleteContact}
+                currentUser={currentUser}
               />
             </div>
           )}

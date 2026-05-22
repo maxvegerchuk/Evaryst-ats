@@ -756,7 +756,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <div className="px-6">
             <p className={INFO_LABEL}>Hiring Manager</p>
             <span className="text-[12px] font-medium text-[#1E293B]">
-              {job?.assignedRecruiterName || '—'}
+              {job?.ownerName || '—'}
             </span>
           </div>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import type { Job, JobType, JobStatus, SalaryType } from '../../types/job'
 import type { Company } from '../../types/company'
+import type { User } from '../../types/auth'
 import { CityAutocomplete } from './CityAutocomplete'
 
 interface Recruiter {
@@ -18,6 +19,7 @@ interface AddJobModalProps {
   companies:         Company[]
   recruiters:        Recruiter[]
   defaultCompanyId?: string
+  currentUser?:      User
 }
 
 const LBL = 'block text-[12px] font-medium text-[#475569] mb-1'
@@ -47,7 +49,7 @@ const DEFAULT_ID = 'JOB-' + Date.now().toString().slice(-6)
 const JOB_TYPES: JobType[]      = ['Full Time', 'Part Time', 'Contract', 'Contract to Hire']
 const JOB_STATUSES: JobStatus[] = ['Open', 'On Hold', 'Closed']
 
-export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, defaultCompanyId }: AddJobModalProps) {
+export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, defaultCompanyId, currentUser }: AddJobModalProps) {
   const [title,       setTitle]       = useState('')
   const [companyId,   setCompanyId]   = useState(defaultCompanyId ?? '')
   const [jobType,     setJobType]     = useState<JobType>('Full Time')
@@ -109,6 +111,8 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
       assignedRecruiterName:  selectedRecruiter?.name || selectedRecruiter?.email || '',
       recruiterIds:           recruiterId ? [recruiterId] : [],
       recruiterEmails:        selectedRecruiter?.email ? [selectedRecruiter.email] : [],
+      ownerName:             currentUser?.name  ?? '',
+      ownerId:               currentUser?.id    ?? '',
       description:           description.trim(),
       dateAdded:             new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
       candidates:            0,

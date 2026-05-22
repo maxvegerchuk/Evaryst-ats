@@ -8,6 +8,7 @@ import { formatPhone } from '../utils/formatPhone'
 import type { Company } from '../types/company'
 import type { Job } from '../types/job'
 import type { Contact } from '../types/contact'
+import type { User } from '../types/auth'
 import { AddJobModal } from '../components/ui/AddJobModal'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -39,9 +40,10 @@ interface CompanyPageProps {
   contacts:        Contact[]
   onAddContact:    (c: Contact) => void
   onDeleteContact: (id: string) => void
+  currentUser?:    User
 }
 
-export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, company, jobs, allCompanies, recruiters, onAddJob, contacts, onAddContact, onDeleteContact }: CompanyPageProps) {
+export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, company, jobs, allCompanies, recruiters, onAddJob, contacts, onAddContact, onDeleteContact, currentUser }: CompanyPageProps) {
   const [activeTab,      setActiveTab]      = useState<CompanyTab>('jobs')
   const [statusMenuOpen, setStatusMenuOpen] = useState(false)
   const [showAddJob,     setShowAddJob]     = useState(false)
@@ -484,6 +486,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         companies={allCompanies}
         recruiters={recruiters}
         defaultCompanyId={company?.id}
+        currentUser={currentUser}
       />
 
     </div>
