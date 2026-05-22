@@ -69,7 +69,6 @@ interface JobPageProps {
   onUpdateCandidate?: (id: string, updates: Partial<Candidate>) => void
 }
 
-const JOB_TYPES:    readonly JobType[]   = ['Full Time', 'Part Time', 'Contract', 'Contract to Hire']
 const JOB_STATUSES: readonly JobStatus[] = ['Open', 'On Hold', 'Closed']
 const WORK_TYPE_OPTIONS = ['Full-Time', 'Part-Time', 'Contract', 'Contract to Hire', 'Fulltime Employee']
 
@@ -869,8 +868,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           </div>
           <div>
             <label className={LBL}>Job type</label>
-            <PillGroup options={JOB_TYPES} value={editJobType} onChange={setEditJobType} />
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
               {WORK_TYPE_OPTIONS.map(wt => (
                 <label key={wt} className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={editWorkTypes.includes(wt)}
@@ -931,15 +929,12 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
 
           {/* Hiring Team */}
           <p className={SEC} style={{ marginTop: 8 }}>Hiring Team</p>
-          {([
-            ['Hiring Manager',     editHiringMgr,  setEditHiringMgr],
-            ['Talent Acquisition', editTalentAcq,  setEditTalentAcq],
-          ] as [string, string, (v: string) => void][]).map(([label, val, set]) => (
-            <div key={label}>
-              <label className={LBL}>{label}</label>
-              <input value={val} onChange={e => set(e.target.value)} className={INP} style={INP_ST} />
+          <div>
+            <label className={LBL}>Hiring Manager</label>
+            <div className="text-[12px] text-[#1E293B] rounded-[7px] bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }}>
+              {job?.ownerName || '—'}
             </div>
-          ))}
+          </div>
 
 
         </div>
