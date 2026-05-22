@@ -294,7 +294,7 @@ function App() {
   async function handleAddCandidate(c: Candidate) {
     setCandidates(prev => [c, ...prev])
     const { error } = await supabase.from('candidates').insert(toDbCandidate(c))
-    if (error) console.error('handleAddCandidate:', error)
+    if (error) { console.error('handleAddCandidate:', error); setCandidates(prev => prev.filter(x => x.id !== c.id)) }
   }
 
   async function handleUpdateCandidate(id: string, updates: Partial<Candidate>) {
@@ -323,7 +323,7 @@ function App() {
   async function handleAddCompany(c: Company) {
     setCompanies(prev => [c, ...prev])
     const { error } = await supabase.from('companies').insert(toDbCompany(c))
-    if (error) console.error('handleAddCompany:', error)
+    if (error) { console.error('handleAddCompany:', error); setCompanies(prev => prev.filter(x => x.id !== c.id)) }
   }
 
   async function handleDeleteCompany(id: string) {
@@ -337,7 +337,7 @@ function App() {
   async function handleAddJob(j: Job) {
     setJobs(prev => [j, ...prev])
     const { error } = await supabase.from('jobs').insert(toDbJob(j))
-    if (error) console.error('handleAddJob:', error)
+    if (error) { console.error('handleAddJob:', error); setJobs(prev => prev.filter(x => x.id !== j.id)) }
   }
 
   async function handleUpdateJob(updated: Job) {
@@ -357,7 +357,7 @@ function App() {
   async function handleAddContact(c: Contact) {
     setContacts(prev => [...prev, c])
     const { error } = await supabase.from('contacts').insert(toDbContact(c))
-    if (error) console.error('handleAddContact:', error)
+    if (error) { console.error('handleAddContact:', error); setContacts(prev => prev.filter(x => x.id !== c.id)) }
   }
 
   async function handleDeleteContact(id: string) {

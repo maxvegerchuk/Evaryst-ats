@@ -43,7 +43,7 @@ export function AddCandidateModal({ isOpen, onClose, onSave, currentUser }: AddC
     if (!canSave) return
     const location = [city.trim(), state.trim()].filter(Boolean).join(', ')
     const newCandidate: Candidate = {
-      id:             'cand-' + Date.now(),
+      id:             crypto.randomUUID(),
       name:           name.trim(),
       email:          email.trim(),
       phone:          phone.trim(),

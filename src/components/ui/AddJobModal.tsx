@@ -90,7 +90,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
     const selectedRecruiter = recruiters.find(r => r.id === recruiterId)
     const location = [jobCity.trim(), jobState.trim()].filter(Boolean).join(', ')
     const job: Job = {
-      id:                    'job-' + Date.now(),
+      id:                    crypto.randomUUID(),
       title:                 title.trim(),
       companyId,
       companyName:           selectedCompany?.name ?? '',

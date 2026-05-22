@@ -161,7 +161,7 @@ export function CandidatesPage({
   function handleSaveContact() {
     if (!newContact.name?.trim() || !newContact.email?.trim()) return
     const c: Contact = {
-      id:          'cnt-' + Date.now(),
+      id:          crypto.randomUUID(),
       name:        newContact.name?.trim() ?? '',
       title:       newContact.title?.trim() ?? '',
       company:     newContact.company?.trim() ?? '',

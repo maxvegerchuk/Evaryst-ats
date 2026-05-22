@@ -127,7 +127,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
   function saveClient() {
     if (!newContact.name.trim()) return
     const c: Contact = {
-      id:          'cnt-' + Date.now(),
+      id:          crypto.randomUUID(),
       name:        newContact.name.trim(),
       title:       newContact.title.trim(),
       company:     company?.name ?? '',

@@ -78,7 +78,7 @@ export function AddCompanyModal({ isOpen, onClose, onSave, currentUser }: AddCom
     if (!canSave) return
     const location = [city.trim(), state.trim(), zip.trim()].filter(Boolean).join(', ')
     const company: Company = {
-      id:         'comp-' + Date.now(),
+      id:         crypto.randomUUID(),
       name:       name.trim(),
       industry,
       location:   location || '',
