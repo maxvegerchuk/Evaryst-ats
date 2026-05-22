@@ -23,6 +23,7 @@ import type { Job } from './types/job'
 import type { TeamMember } from './types/team'
 import { AddCandidateModal } from './components/ui/AddCandidateModal'
 import { supabase } from './lib/supabase'
+import { safeStorage } from './utils/storage'
 
 type Page = 'dashboard' | 'people' | 'candidates' | 'jobs' | 'job' | 'companies' | 'company' | 'reports' | 'candidate' | 'search' | 'administration'
 
@@ -220,20 +221,20 @@ function mapTeamMember(r: any): TeamMember {
 
 function App() {
   const [scheduleOpen, setScheduleOpen] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!sessionStorage.getItem('evaryst_user'))
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!safeStorage.getItem('evaryst_user'))
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = sessionStorage.getItem('evaryst_user')
+    const saved = safeStorage.getItem('evaryst_user')
     return saved ? JSON.parse(saved) as User : null
   })
 
   const handleLogin = (user: User) => {
-    sessionStorage.setItem('evaryst_user', JSON.stringify(user))
+    safeStorage.setItem('evaryst_user', JSON.stringify(user))
     setCurrentUser(user)
     setIsAuthenticated(true)
     setCurrentPage('dashboard')
   }
   const handleLogout = () => {
-    sessionStorage.removeItem('evaryst_user')
+    safeStorage.removeItem('evaryst_user')
     setCurrentUser(null)
     setIsAuthenticated(false)
     setCurrentPage('dashboard')
@@ -256,79 +257,37 @@ function App() {
   const [selectedCompanyId,     setSelectedCompanyId]     = useState<string | null>(null)
   const [selectedJobId,         setSelectedJobId]         = useState<string | null>(null)
 
-  // Load all data from Supabase on mount + real-time subscriptions
+  // Load all data from Supabase — polling every 30s (Safari blocks WebSockets)
+  async function loadAllData() {
+    try {
+      const { data: jobData, error: jobError } = await supabase
+        .from('jobs').select('*').order('created_at', { ascending: false })
+      if (jobError) { console.error('Error loading jobs:', jobError) }
+      else if (jobData) {
+        const mapped = jobData.map(mapJob)
+        setJobs(mapped)
+        console.log('Loaded jobs:', mapped.length, mapped.map(j => ({ title: j.title, email: j.assignedRecruiterEmail })))
+      }
+    } catch (err) { console.error('Jobs load failed:', err) }
+
+    const [candRes, compRes, contRes, teamRes] = await Promise.all([
+      supabase.from('candidates').select('*'),
+      supabase.from('companies').select('*'),
+      supabase.from('contacts').select('*'),
+      supabase.from('team_members').select('*'),
+    ])
+    if (candRes.data)  setCandidates(candRes.data.map(mapCandidate))
+    if (compRes.data)  setCompanies(compRes.data.map(mapCompany))
+    if (contRes.data)  setContacts(contRes.data.map(mapContact))
+    if (teamRes.data)  setTeamMembers(teamRes.data.map(mapTeamMember))
+  }
+
   useEffect(() => {
-    async function loadAll() {
-      const [candRes, compRes, jobRes, contRes, teamRes] = await Promise.all([
-        supabase.from('candidates').select('*'),
-        supabase.from('companies').select('*'),
-        supabase.from('jobs').select('*').order('created_at', { ascending: false }),
-        supabase.from('contacts').select('*'),
-        supabase.from('team_members').select('*'),
-      ])
-      if (candRes.data)  setCandidates(candRes.data.map(mapCandidate))
-      if (compRes.data)  setCompanies(compRes.data.map(mapCompany))
-      if (jobRes.data)   setJobs(jobRes.data.map(mapJob))
-      if (contRes.data)  setContacts(contRes.data.map(mapContact))
-      if (teamRes.data)  setTeamMembers(teamRes.data.map(mapTeamMember))
-    }
-    void loadAll()
-
-    // Real-time subscriptions so recruiter sees manager changes immediately
-    const jobsSub = supabase
-      .channel('jobs-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, payload => {
-        if (payload.eventType === 'INSERT') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setJobs(prev => [mapJob(payload.new as any), ...prev])
-        } else if (payload.eventType === 'UPDATE') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setJobs(prev => prev.map(j => j.id === (payload.new as any).id ? mapJob(payload.new as any) : j))
-        } else if (payload.eventType === 'DELETE') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setJobs(prev => prev.filter(j => j.id !== (payload.old as any).id))
-        }
-      })
-      .subscribe()
-
-    const candidatesSub = supabase
-      .channel('candidates-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, payload => {
-        if (payload.eventType === 'INSERT') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setCandidates(prev => [mapCandidate(payload.new as any), ...prev])
-        } else if (payload.eventType === 'UPDATE') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setCandidates(prev => prev.map(c => c.id === (payload.new as any).id ? mapCandidate(payload.new as any) : c))
-        } else if (payload.eventType === 'DELETE') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setCandidates(prev => prev.filter(c => c.id !== (payload.old as any).id))
-        }
-      })
-      .subscribe()
-
-    const companiesSub = supabase
-      .channel('companies-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'companies' }, payload => {
-        if (payload.eventType === 'INSERT') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setCompanies(prev => [mapCompany(payload.new as any), ...prev])
-        } else if (payload.eventType === 'UPDATE') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setCompanies(prev => prev.map(c => c.id === (payload.new as any).id ? mapCompany(payload.new as any) : c))
-        } else if (payload.eventType === 'DELETE') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setCompanies(prev => prev.filter(c => c.id !== (payload.old as any).id))
-        }
-      })
-      .subscribe()
-
-    return () => {
-      void supabase.removeChannel(jobsSub)
-      void supabase.removeChannel(candidatesSub)
-      void supabase.removeChannel(companiesSub)
-    }
-  }, [])
+    void loadAllData()
+    const interval = setInterval(() => { void loadAllData() }, 30000)
+    return () => clearInterval(interval)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
 
   // ── Candidate handlers ──────────────────────────────────────────────────────
 
@@ -430,13 +389,12 @@ function App() {
     ? jobs
     : jobs.filter(j => {
         const uid   = currentUser?.id    ?? ''
-        const email = currentUser?.email ?? ''
-        return (
-          j.assignedRecruiterEmail === email  ||
-          j.assignedRecruiterId    === uid    ||
-          j.recruiterIds.includes(uid)        ||
-          j.recruiterEmails.includes(email)
-        )
+        const email = (currentUser?.email ?? '').toLowerCase()
+        const emailMatch = j.assignedRecruiterEmail?.toLowerCase() === email
+        const idMatch    = j.assignedRecruiterId === uid
+        const inIds      = j.recruiterIds.includes(uid)
+        const inEmails   = j.recruiterEmails.some(e => e.toLowerCase() === email)
+        return emailMatch || idMatch || inIds || inEmails
       })
 
   const toggle   = () => setScheduleOpen(v => !v)
@@ -536,6 +494,7 @@ function App() {
                 onRestoreCandidate={restoreCandidate}
                 onDeleteCandidate={deleteCandidate}
                 currentUser={currentUser}
+                onRefresh={() => { void loadAllData() }}
               />
             </div>
           )}
@@ -572,6 +531,7 @@ function App() {
                 onDeleteCompany={handleDeleteCompany}
                 currentUser={currentUser}
                 jobs={jobs}
+                onRefresh={() => { void loadAllData() }}
               />
             </div>
           )}
@@ -607,6 +567,7 @@ function App() {
                 recruiters={recruiterMembers}
                 currentUser={currentUser}
                 candidates={candidates}
+                onRefresh={() => { void loadAllData() }}
               />
             </div>
           )}

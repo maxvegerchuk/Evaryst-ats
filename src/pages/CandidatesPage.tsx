@@ -4,7 +4,7 @@ import {
   ExternalLink, BarChart2, Plus, Search, ChevronDown,
   MoreHorizontal, User, Mail, Briefcase, Archive,
   TrendingUp, ChevronLeft, ChevronRight, Users, Star,
-  RotateCcw, Trash2,
+  RotateCcw, Trash2, RefreshCw,
 } from 'lucide-react'
 import type { Candidate, CandidateStage } from '../types/candidate'
 import { getInitials, getAvatarColor } from '../types/candidate'
@@ -58,6 +58,7 @@ interface CandidatesPageProps {
   onRestoreCandidate:             (id: string) => void
   onDeleteCandidate:              (id: string) => void
   currentUser?:                   { id: string; name?: string }
+  onRefresh?:                     () => void
 }
 
 export function CandidatesPage({
@@ -65,6 +66,7 @@ export function CandidatesPage({
   candidates, onAddCandidate, onToggleStar, isManager,
   contacts, onAddContact, onDeleteContact,
   archivedCandidates, onArchiveCandidate, onRestoreCandidate, onDeleteCandidate,
+  onRefresh,
 }: CandidatesPageProps) {
   // ── Candidates state ───────────────────────────────────────────────────────
   const [search,           setSearch]           = useState('')
@@ -243,6 +245,12 @@ export function CandidatesPage({
                   <ExternalLink className="w-3.5 h-3.5" />
                   Export
                 </button>
+                {onRefresh && (
+                  <button type="button" onClick={onRefresh} className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Refresh
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowStats(v => !v)}
