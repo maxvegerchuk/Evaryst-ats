@@ -1,0 +1,700 @@
+import { useState } from 'react'
+import {
+  ChevronLeft, ChevronRight, MoreHorizontal,
+  Mail, Phone, Settings, Download, X,
+  FilePlus, FileText, Send, Users, UserPlus,
+} from 'lucide-react'
+import type { Job } from '../types/job'
+import type { Candidate } from '../types/candidate'
+import { getAvatarColor } from '../types/candidate'
+import { EditJobModal } from '../components/ui/EditJobModal'
+
+interface Recruiter { id: string; email: string; name?: string; role: string; status: string }
+
+// ── Constants ──────────────────────────────────────────────────────────────────
+
+const ICON_BTN   = 'w-[30px] h-[30px] flex items-center justify-center border-subtle rounded-[7px] bg-white hover:bg-[#F8FAFC] transition-colors flex-shrink-0'
+const INFO_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-2'
+
+type JobTab = 'candidates' | 'recruiters' | 'details' | 'documents'
+
+const JOB_TABS: { id: JobTab; label: string }[] = [
+  { id: 'candidates', label: 'Candidates'  },
+  { id: 'recruiters', label: 'Recruiters'  },
+  { id: 'details',    label: 'Job Details' },
+  { id: 'documents',  label: 'Documents'   },
+]
+
+// Shared job description text — referenced by CandidatePage Interview Form
+export const JOB_DESC_POSTING = `We are looking for a skilled .NET Developer to join our growing engineering team at ABC Company. The ideal candidate has 3+ years of C# experience, strong knowledge of ASP.NET Core, and experience with SQL Server and RESTful APIs.
+
+You will work closely with our product team to build and maintain enterprise-level applications. Remote-friendly with occasional on-site requirements in Dallas, TX.`
+
+export const JOB_DESC_INTERNAL = `Role: Senior .NET Developer
+Company: ABC Company
+Location: Dallas, TX (Hybrid — 3 days on site)
+
+Requirements:
+- 5+ years .NET development experience
+- Strong C# and ASP.NET Core knowledge
+- SQL Server and Entity Framework
+- RESTful API design and development
+- Experience with Azure or AWS preferred
+
+Responsibilities:
+- Design and develop enterprise applications
+- Collaborate with product and QA teams
+- Code reviews and mentoring junior developers
+- Participate in architecture discussions
+
+Salary: $150,000 – $175,000 / year
+Start date: ASAP`
+
+// ── Data ───────────────────────────────────────────────────────────────────────
+
+
+const DOCS: { name: string; type: string; date: string }[] = []
+
+const HIRING_TEAM: { role: string; name: string }[] = []
+
+// ── Component ──────────────────────────────────────────────────────────────────
+
+interface JobPageProps {
+  setCurrentPage: (page: string) => void
+  initialTab?:    'candidates' | 'details' | 'documents'
+  isManager?:     boolean
+  job?:           Job | null
+  recruiters?:    Recruiter[]
+  onUpdateJob?:   (job: Job) => void
+  candidates?:    Candidate[]
+}
+
+export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [] }: JobPageProps) {
+  const [activeTab,    setActiveTab]    = useState<JobTab>(initialTab ?? 'candidates')
+  const [showEditJob,  setShowEditJob]  = useState(false)
+
+  // ── Candidates tab ────────────────────────────────────────────────────────────
+
+  const CAND_STATUSES = ['New', 'Phone Screen', 'Interview', 'Submitted', 'Placed'] as const
+  const CAND_RATINGS  = ['Paper A', 'Paper B', 'A', 'B'] as const
+
+  const [candStatuses, setCandStatuses] = useState<Record<string, string>>({})
+  const [candRatings,  setCandRatings]  = useState<Record<string, string>>({})
+
+  const jobCandidates = candidates.filter(c => c.attachedJobIds?.includes(job?.id ?? '') && !c.isArchived)
+
+  const candidatesTab = (
+    <div className="p-4">
+      {jobCandidates.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16">
+          <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
+          <p className="text-[15px] font-medium text-[#1E293B] mb-1">No candidates yet</p>
+          <p className="text-[13px] text-[#94A3B8] mb-4">Attach candidates to this job from their profile page</p>
+          <button
+            type="button"
+            onClick={() => setCurrentPage('people')}
+            className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[13px] font-medium hover:bg-[#1D4ED8] transition-colors"
+          >
+            Go to Candidates
+          </button>
+        </div>
+      ) : (
+      <div className="bg-white rounded-[10px] overflow-hidden" style={{ border: '0.5px solid #E2E8F0' }}>
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+              {['Name', 'Status', 'Rating', 'Added'].map(h => (
+                <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {jobCandidates.map((c, i) => {
+              const { bg, clr } = getAvatarColor(c.id)
+              return (
+                <tr
+                  key={c.id}
+                  onClick={() => setCurrentPage('candidate')}
+                  className="hover:bg-[#F8FAFC] cursor-pointer transition-colors"
+                  style={{ borderBottom: i < jobCandidates.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
+                >
+                  <td style={{ padding: '10px 16px' }}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold" style={{ backgroundColor: bg, color: clr }}>
+                        {getInitials(c.name)}
+                      </div>
+                      <span className="text-[13px] font-medium text-[#1E293B] hover:text-[#2563EB] transition-colors">{c.name}</span>
+                    </div>
+                  </td>
+                  <td style={{ padding: '10px 16px' }}>
+                    <select
+                      value={candStatuses[c.id] ?? c.stage}
+                      onChange={e => setCandStatuses(prev => ({ ...prev, [c.id]: e.target.value }))}
+                      onClick={e => e.stopPropagation()}
+                      className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
+                      style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
+                    >
+                      {CAND_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </td>
+                  <td style={{ padding: '10px 16px' }}>
+                    <select
+                      value={candRatings[c.id] ?? c.rating}
+                      onChange={e => setCandRatings(prev => ({ ...prev, [c.id]: e.target.value }))}
+                      onClick={e => e.stopPropagation()}
+                      className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
+                      style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
+                    >
+                      {CAND_RATINGS.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </td>
+                  <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{c.addedDate}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      )}
+    </div>
+  )
+
+  // ── Recruiters tab ────────────────────────────────────────────────────────────
+
+  const [showRecruiterModal, setShowRecruiterModal] = useState(false)
+  const [modalSelected,      setModalSelected]      = useState<Set<string>>(new Set())
+
+  const assignedIds   = job?.recruiterIds ?? []
+  const assignedList  = recruiters.filter(r => assignedIds.includes(r.id))
+  const availableList = recruiters.filter(r => !assignedIds.includes(r.id))
+
+  function openModal() { setModalSelected(new Set()); setShowRecruiterModal(true) }
+
+  function confirmAddRecruiters() {
+    if (!job || !onUpdateJob || modalSelected.size === 0) return
+    const nextIds    = [...new Set([...assignedIds, ...modalSelected])]
+    const nextEmails = [...new Set([...(job.recruiterEmails ?? []), ...recruiters.filter(r => modalSelected.has(r.id)).map(r => r.email)])]
+    const firstNew   = recruiters.find(r => modalSelected.has(r.id))
+    onUpdateJob({
+      ...job,
+      recruiterIds:           nextIds,
+      recruiterEmails:        nextEmails,
+      assignedRecruiterId:    job.assignedRecruiterId || firstNew?.id    || '',
+      assignedRecruiterEmail: job.assignedRecruiterEmail || firstNew?.email || '',
+      assignedRecruiterName:  job.assignedRecruiterName || firstNew?.email || '',
+    })
+    setShowRecruiterModal(false)
+  }
+
+  function removeRecruiter(id: string) {
+    if (!job || !onUpdateJob) return
+    const removed     = recruiters.find(r => r.id === id)
+    const nextIds     = assignedIds.filter(x => x !== id)
+    const nextEmails  = (job.recruiterEmails ?? []).filter(e => e !== removed?.email)
+    const stillPrimary = nextIds.includes(job.assignedRecruiterId)
+    const first        = recruiters.find(r => nextIds.includes(r.id))
+    onUpdateJob({
+      ...job,
+      recruiterIds:           nextIds,
+      recruiterEmails:        nextEmails,
+      assignedRecruiterId:    stillPrimary ? job.assignedRecruiterId    : (first?.id    ?? ''),
+      assignedRecruiterEmail: stillPrimary ? job.assignedRecruiterEmail : (first?.email ?? ''),
+      assignedRecruiterName:  stillPrimary ? job.assignedRecruiterName  : (first?.email ?? ''),
+    })
+  }
+
+  function getInitials(name: string) {
+    const p = name.trim().split(' ')
+    return (p.length >= 2 ? p[0][0] + p[p.length - 1][0] : p[0].slice(0, 2)).toUpperCase()
+  }
+
+  const recruitersTab = (
+    <div className="p-4">
+      {assignedList.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16">
+          <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
+          <p className="text-[15px] font-medium text-[#1E293B] mb-1">No recruiters assigned</p>
+          <p className="text-[13px] text-[#94A3B8] mb-4">Assign recruiters who will work this job opening</p>
+          {isManager && availableList.length > 0 && (
+            <button type="button" onClick={openModal}
+              className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[13px] font-medium hover:bg-[#1D4ED8] transition-colors">
+              + Add Recruiter
+            </button>
+          )}
+        </div>
+      ) : (
+        <>
+          {isManager && (
+            <div className="flex justify-end mb-3">
+              <button type="button" onClick={openModal}
+                className="flex items-center gap-1.5 bg-[#2563EB] text-white rounded-[7px] px-3 py-1.5 text-[12px] font-medium hover:bg-[#1D4ED8] transition-colors">
+                <UserPlus size={13} /> Add Recruiter
+              </button>
+            </div>
+          )}
+
+          <div className="bg-white rounded-[10px] overflow-hidden" style={{ border: '0.5px solid #E2E8F0' }}>
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+                  {['Recruiter', 'Email', 'Role', ''].map(h => (
+                    <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {assignedList.map((r, i) => (
+                  <tr key={r.id} className="group hover:bg-[#F8FAFC] transition-colors"
+                    style={{ borderBottom: i < assignedList.length - 1 ? '0.5px solid #F1F5F9' : undefined }}>
+                    <td style={{ padding: '10px 16px' }}>
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-[#DBEAFE] flex items-center justify-center text-[10px] font-bold text-[#1D4ED8] flex-shrink-0">
+                          {getInitials(r.name || r.email)}
+                        </div>
+                        <span className="text-[13px] font-medium text-[#1E293B]">{r.name || r.email}</span>
+                        {r.id === job?.assignedRecruiterId && (
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#DBEAFE] text-[#1D4ED8]">Primary</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="text-[12px] text-[#475569]" style={{ padding: '10px 16px' }}>{r.email}</td>
+                    <td style={{ padding: '10px 16px' }}>
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#475569]">Recruiter</span>
+                    </td>
+                    <td style={{ padding: '10px 16px' }}>
+                      {isManager && (
+                        <button type="button" onClick={() => removeRecruiter(r.id)}
+                          className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Remove">
+                          <X className="w-3.5 h-3.5 text-[#64748B]" />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {/* ── Add Recruiters Modal ─────────────────────────────────────────────── */}
+      {showRecruiterModal && (
+        <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center" onClick={() => setShowRecruiterModal(false)}>
+          <div
+            className="bg-white rounded-[10px] shadow-lg w-[440px] max-h-[70vh] flex flex-col"
+            style={{ border: '0.5px solid #E2E8F0' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+              <h2 className="text-[15px] font-semibold text-[#1E293B]">Add recruiters</h2>
+              <button type="button" onClick={() => setShowRecruiterModal(false)}
+                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+                <X className="w-4 h-4 text-[#64748B]" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-5 py-3">
+              {availableList.length === 0 ? (
+                <p className="text-[13px] text-[#94A3B8] py-4 text-center">All team recruiters are already assigned to this job.</p>
+              ) : availableList.map(r => {
+                const checked = modalSelected.has(r.id)
+                return (
+                  <label key={r.id}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-[8px] cursor-pointer transition-colors mb-1 ${checked ? 'bg-[#EFF6FF]' : 'hover:bg-[#F8FAFC]'}`}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => setModalSelected(prev => {
+                        const n = new Set(prev)
+                        n.has(r.id) ? n.delete(r.id) : n.add(r.id)
+                        return n
+                      })}
+                      className="w-4 h-4 accent-[#2563EB] flex-shrink-0"
+                    />
+                    <div className="w-8 h-8 rounded-full bg-[#DBEAFE] flex items-center justify-center text-[11px] font-bold text-[#1D4ED8] flex-shrink-0">
+                      {getInitials(r.name || r.email)}
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-medium text-[#1E293B] leading-none mb-0.5">{r.name || r.email}</p>
+                      {r.name && <p className="text-[12px] text-[#94A3B8]">{r.email}</p>}
+                    </div>
+                  </label>
+                )
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderTop: '0.5px solid #E2E8F0' }}>
+              <span className="text-[12px] text-[#64748B]">
+                {modalSelected.size > 0 ? `${modalSelected.size} selected` : 'Select recruiters to add'}
+              </span>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setShowRecruiterModal(false)}
+                  className="px-4 py-2 text-[12px] font-medium text-[#475569] bg-white rounded-[7px] hover:bg-[#F8FAFC]"
+                  style={{ border: '0.5px solid #E2E8F0' }}>
+                  Cancel
+                </button>
+                <button type="button" onClick={confirmAddRecruiters} disabled={modalSelected.size === 0}
+                  className="px-4 py-2 text-[12px] font-medium text-white bg-[#2563EB] rounded-[7px] hover:bg-[#1D4ED8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
+  // ── Job Details tab ───────────────────────────────────────────────────────────
+
+  const detailsTab = (
+    <div className="p-4">
+      <div className="grid gap-4" style={{ gridTemplateColumns: '60% 1fr' }}>
+
+        {/* LEFT: Job posting + internal description */}
+        <div>
+          {/* Card 1: Job posting */}
+          <div className="bg-white rounded-[10px] p-4 mb-4" style={{ border: '0.5px solid #E2E8F0' }}>
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] text-[#1E293B]">Post to careers page</span>
+              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D]">Active</span>
+            </div>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mt-3 mb-2" style={{ letterSpacing: '0.05em' }}>Job Ad</p>
+            <textarea
+              readOnly
+              defaultValue={JOB_DESC_POSTING}
+              className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none focus:outline-none rounded-[7px] p-3 bg-[#F8FAFC]"
+              style={{ border: '0.5px solid #E2E8F0', minHeight: 180, fontFamily: 'inherit' }}
+            />
+          </div>
+
+          {/* Card 2: Internal job description */}
+          <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-1" style={{ letterSpacing: '0.05em' }}>Job Description</p>
+            <p className="text-[10px] text-[#94A3B8] italic mb-2">Used in candidate Interview Form</p>
+            <textarea
+              readOnly
+              defaultValue={JOB_DESC_INTERNAL}
+              className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none focus:outline-none rounded-[7px] p-3 bg-[#F8FAFC]"
+              style={{ border: '0.5px solid #E2E8F0', minHeight: 200, fontFamily: 'inherit' }}
+            />
+          </div>
+        </div>
+
+        {/* RIGHT: Metadata cards */}
+        <div>
+          {/* Job numbers */}
+          <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Job Numbers</p>
+            {([
+              ['Internal ID',  '0001567'],
+              ['Client Req.',  '0122231'],
+            ] as [string, string][]).map(([label, val]) => (
+              <div key={label} className="flex items-baseline gap-2 mb-1 last:mb-0">
+                <span className="text-[10px] text-[#94A3B8] min-w-[80px]">{label}</span>
+                <span className="text-[12px] text-[#1E293B]">{val}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Location */}
+          <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Location</p>
+            {([
+              ['Address', '123 Main Street' ],
+              ['City',    'Dallas, TX 75000'],
+            ] as [string, string][]).map(([label, val]) => (
+              <div key={label} className="flex items-baseline gap-2 mb-1 last:mb-0">
+                <span className="text-[10px] text-[#94A3B8] min-w-[52px]">{label}</span>
+                <span className="text-[12px] text-[#1E293B]">{val}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Hiring team */}
+          <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Hiring Team</p>
+            {HIRING_TEAM.map((p, i) => (
+              <div key={i} className="flex items-center gap-2 mb-1.5 last:mb-0">
+                <span className="text-[10px] text-[#94A3B8] min-w-[100px] flex-shrink-0">{p.role}</span>
+                {isManager ? (
+                  <input
+                    defaultValue={p.name}
+                    className="text-[12px] text-[#1E293B] flex-1 bg-transparent focus:outline-none border-b border-transparent focus:border-[#CBD5E1] rounded-none"
+                  />
+                ) : (
+                  <span className="text-[12px] text-[#1E293B] flex-1">{p.name}</span>
+                )}
+                <button className="text-[#94A3B8] hover:text-[#2563EB] transition-colors" title="Call">
+                  <Phone size={13} />
+                </button>
+                <button className="text-[#94A3B8] hover:text-[#2563EB] transition-colors" title="Email">
+                  <Mail size={13} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Work type */}
+          <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Work Type</p>
+            <div className="flex items-center gap-1 mb-2">
+              <span className="text-[10px] text-[#94A3B8]">Days on site</span>
+              <span className="text-[12px] text-[#1E293B] ml-1">3</span>
+              <span className="text-[10px] text-[#94A3B8] ml-4">Travel %</span>
+              <span className="text-[12px] text-[#1E293B] ml-1">10%</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#EFF6FF', color: '#2563EB', border: '0.5px solid #BFDBFE' }}>Full-Time</span>
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F3E8FF', color: '#6D28D9', border: '0.5px solid #DDD6FE' }}>Contract</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  // ── Documents tab ─────────────────────────────────────────────────────────────
+
+  const documentsTab = (
+    <div className="p-4">
+      <div className="flex items-center gap-2 mb-4">
+        <button type="button" className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
+          <FilePlus className="w-3.5 h-3.5" aria-hidden="true" />
+          Add From File
+        </button>
+        <button type="button" className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
+          <FileText className="w-3.5 h-3.5" aria-hidden="true" />
+          Add Active Word Doc
+        </button>
+        <button type="button" className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
+          <Send className="w-3.5 h-3.5" aria-hidden="true" />
+          Email Document
+        </button>
+      </div>
+      {DOCS.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <p className="text-[13px] text-[#94A3B8]">No documents yet.</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-[10px] overflow-hidden" style={{ border: '0.5px solid #E2E8F0' }}>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+                <th style={{ width: 32, padding: '8px 16px' }} className="text-left">
+                  <input type="checkbox" className="w-3.5 h-3.5 accent-[#2563EB]" />
+                </th>
+                {['Document name', 'Document type', 'Date'].map(h => (
+                  <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                ))}
+                <th style={{ width: 64, padding: '8px 16px' }} />
+              </tr>
+            </thead>
+            <tbody>
+              {DOCS.map((d, i) => (
+                <tr key={i} className="group hover:bg-[#F8FAFC] transition-colors" style={{ borderBottom: i < DOCS.length - 1 ? '0.5px solid #F1F5F9' : undefined }}>
+                  <td style={{ padding: '10px 16px' }}>
+                    <input type="checkbox" className="w-3.5 h-3.5 accent-[#2563EB]" />
+                  </td>
+                  <td className="text-[12px] text-[#2563EB] hover:underline cursor-pointer" style={{ padding: '10px 16px' }}>{d.name}</td>
+                  <td className="text-[12px] text-[#475569]" style={{ padding: '10px 16px' }}>{d.type}</td>
+                  <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{d.date}</td>
+                  <td style={{ padding: '10px 16px' }}>
+                    <div className="flex items-center gap-1 justify-end">
+                      <button type="button" className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Download">
+                        <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                      </button>
+                      <button type="button" className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Remove">
+                        <X className="w-3.5 h-3.5 text-[#64748B]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+
+  // ── Render ────────────────────────────────────────────────────────────────────
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden bg-[#F8FAFC]">
+
+      {/* ROW 1: Breadcrumbs + Prev/Next */}
+      <div
+        className="h-[34px] bg-white flex items-center px-4 flex-shrink-0"
+        style={{ borderBottom: '0.5px solid #E2E8F0' }}
+      >
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setCurrentPage('jobs')}
+            className="flex items-center gap-0.5 text-[12px] text-[#2563EB] hover:underline"
+          >
+            <ChevronLeft size={13} />
+            Jobs
+          </button>
+          <span className="text-[12px] text-[#94A3B8]">›</span>
+          <span className="text-[12px] text-[#64748B]">{job?.title ?? '—'}</span>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <button className="flex items-center gap-0.5 px-2 py-1 text-[11px] text-[#64748B] rounded-md hover:bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0' }}>
+            <ChevronLeft size={11} /> Prev
+          </button>
+          <span className="text-[11px] text-[#94A3B8]">1 / 12</span>
+          <button className="flex items-center gap-0.5 px-2 py-1 text-[11px] text-[#64748B] rounded-md hover:bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0' }}>
+            Next <ChevronRight size={11} />
+          </button>
+        </div>
+      </div>
+
+      {/* ROW 2: Title + Actions */}
+      <div className="bg-white flex items-center px-4 gap-2 flex-shrink-0" style={{ paddingTop: 8, paddingBottom: 8 }}>
+        <span className="text-[18px] font-medium text-[#1E293B] flex-1">{job?.title ?? '—'}</span>
+        <span
+          className="text-[10px] font-medium px-3 py-1.5 rounded-full"
+          style={{
+            background: job?.status === 'On Hold' ? '#FEF3C7' : job?.status === 'Closed' ? '#F1F5F9' : '#DCFCE7',
+            color:      job?.status === 'On Hold' ? '#92400E' : job?.status === 'Closed' ? '#475569' : '#15803D',
+            border:     `1px solid ${job?.status === 'On Hold' ? '#FDE68A' : job?.status === 'Closed' ? '#E2E8F0' : '#BBF7D0'}`,
+          }}
+        >
+          {job?.status ?? 'Open'}
+        </span>
+        <div className="w-px h-4 bg-[#E2E8F0] mx-1 flex-shrink-0" />
+        <button className="px-3 py-1.5 text-[12px] text-[#1E293B] bg-white rounded-[7px] hover:bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0' }}>
+          <Mail size={13} className="inline mr-1.5 text-[#64748B]" />
+          Email
+        </button>
+        {isManager && job && (
+          <button type="button" onClick={() => setShowEditJob(true)}
+            className="px-3 py-1.5 text-[12px] font-medium text-[#1E293B] bg-white rounded-[7px] hover:bg-[#F8FAFC] transition-colors"
+            style={{ border: '0.5px solid #E2E8F0' }}>
+            Edit
+          </button>
+        )}
+        <button className={ICON_BTN}>
+          <MoreHorizontal size={15} className="text-[#64748B]" />
+        </button>
+      </div>
+
+      {/* INFO BLOCK */}
+      <div className="bg-white flex-shrink-0 px-4 pb-3" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+        <div className="grid grid-cols-4 gap-0">
+
+          {/* Col 1: Job Details */}
+          <div className="pr-6">
+            <p className={INFO_LABEL}>Job Details</p>
+            <div className="flex flex-col gap-[3px]">
+              <div className="flex items-baseline gap-[5px]">
+                <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">Client</span>
+                <button onClick={() => setCurrentPage('company')} className="text-[12px] text-[#2563EB] hover:underline text-left">
+                  {job?.companyName ?? '—'}
+                </button>
+              </div>
+              {([
+                ['Job Type', job?.jobType   ?? '—'],
+                ['Location', job?.location  ?? '—'],
+                ['Req No.',  job?.clientReqNumber || job?.internalId || '—'],
+              ] as [string, string][]).map(([label, value]) => (
+                <div key={label} className="flex items-baseline gap-[5px]">
+                  <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">{label}</span>
+                  <span className="text-[12px] text-[#1E293B]">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Col 2: Compensation */}
+          <div className="px-6">
+            <p className={INFO_LABEL}>Compensation</p>
+            <div className="flex flex-col gap-[3px]">
+              {([
+                ['Salary',   job?.salaryMin && job?.salaryMax ? `$${job.salaryMin} – $${job.salaryMax}` : '—'],
+                ['Pay Type', job?.salaryType === 'hour' ? 'Hourly' : job?.salaryType === 'year' ? 'Annual' : '—'],
+                ['Posted',   job?.dateAdded ?? '—'],
+              ] as [string, string][]).map(([label, value]) => (
+                <div key={label} className="flex items-baseline gap-[5px]">
+                  <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">{label}</span>
+                  <span className="text-[12px] text-[#1E293B]">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Col 3: Hiring Manager */}
+          <div className="px-6">
+            <p className={INFO_LABEL}>Hiring Manager</p>
+            <div className="flex flex-col gap-[5px]">
+              <span className="text-[12px] font-medium text-[#1E293B]">John Smith</span>
+              <div className="flex items-center gap-[7px]">
+                <Phone size={12} className="text-[#2563EB] flex-shrink-0" />
+                <span className="text-[12px] text-[#1E293B]">501-555-1212</span>
+              </div>
+              <div className="flex items-center gap-[7px]">
+                <Mail size={12} className="text-[#2563EB] flex-shrink-0" />
+                <span className="text-[12px] text-[#2563EB] hover:underline cursor-pointer">smith.john@glazers.com</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Col 4: Notes */}
+          <div className="px-6 flex flex-col">
+            <p className={INFO_LABEL}>Notes</p>
+            <textarea
+              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none focus:outline-none placeholder-[#94A3B8] bg-transparent"
+              style={{ fontFamily: 'inherit', border: 'none' }}
+              placeholder="Quick notes about this job..."
+              defaultValue="Client needs someone with 3+ years .NET experience. Prefers local candidates but open to remote."
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* TABS BAR */}
+      <div
+        className="bg-white h-[40px] flex items-center px-4 flex-shrink-0 sticky z-10"
+        style={{ borderBottom: '0.5px solid #E2E8F0' }}
+      >
+        {JOB_TABS.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`h-full px-4 text-[13px] flex items-center transition-colors border-b-2 ${
+              activeTab === tab.id
+                ? 'border-[#2563EB] text-[#2563EB] font-medium'
+                : 'border-transparent text-[#64748B] hover:text-[#1E293B]'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+        <Settings size={16} className="text-[#94A3B8] ml-auto cursor-pointer hover:text-[#64748B]" />
+      </div>
+
+      {/* TAB CONTENT */}
+      <div className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+        {activeTab === 'candidates' && candidatesTab}
+        {activeTab === 'recruiters' && recruitersTab}
+        {activeTab === 'details'    && detailsTab}
+        {activeTab === 'documents'  && documentsTab}
+      </div>
+
+      {job && (
+        <EditJobModal
+          isOpen={showEditJob}
+          onClose={() => setShowEditJob(false)}
+          onSave={updated => { onUpdateJob?.(updated); setShowEditJob(false) }}
+          job={job}
+          recruiters={recruiters}
+        />
+      )}
+
+    </div>
+  )
+}
