@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Agentation } from 'agentation'
 import { Sidebar }        from './components/layout/Sidebar'
 import { Topbar }         from './components/layout/Topbar'
 import { Dashboard }      from './pages/Dashboard'
@@ -261,13 +262,18 @@ function App() {
   }
   const handleLogout = () => {
     safeStorage.removeItem('evaryst_user')
+    safeStorage.removeItem('evaryst_page')
+    safeStorage.removeItem('evaryst_company_id')
+    safeStorage.removeItem('evaryst_job_id')
+    safeStorage.removeItem('evaryst_candidate_ids')
+    safeStorage.removeItem('evaryst_candidate_idx')
     setCurrentUser(null)
     setIsAuthenticated(false)
     setCurrentPage('dashboard')
   }
 
-  const [currentPage,           setCurrentPage]           = useState<Page>('dashboard')
-  const [jobInitialTab,         setJobInitialTab]         = useState<'candidates' | 'details' | 'documents'>('candidates')
+  const [currentPage,           setCurrentPage]           = useState<Page>(() => (safeStorage.getItem('evaryst_page') as Page) || 'dashboard')
+  const [jobInitialTab,         setJobInitialTab]         = useState<'candidates' | 'details' | 'documents'>('details')
   const [eventStatuses,         setEventStatuses]         = useState<Record<string, EventStatus>>({})
   const [scheduleEvents,        setScheduleEvents]        = useState<PanelEvent[]>([])
   const [candidates,            setCandidates]            = useState<Candidate[]>([])
@@ -278,10 +284,33 @@ function App() {
 
   const [searchKeyword,         setSearchKeyword]         = useState('')
   const [addCandidateOpen,      setAddCandidateOpen]      = useState(false)
-  const [selectedCandidateIds,  setSelectedCandidateIds]  = useState<string[]>([])
-  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0)
-  const [selectedCompanyId,     setSelectedCompanyId]     = useState<string | null>(null)
-  const [selectedJobId,         setSelectedJobId]         = useState<string | null>(null)
+  const [selectedCandidateIds,  setSelectedCandidateIds]  = useState<string[]>(() => {
+    const saved = safeStorage.getItem('evaryst_candidate_ids')
+    return saved ? (JSON.parse(saved) as string[]) : []
+  })
+  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(() => {
+    const saved = safeStorage.getItem('evaryst_candidate_idx')
+    return saved ? parseInt(saved, 10) : 0
+  })
+  const [selectedCompanyId,     setSelectedCompanyId]     = useState<string | null>(() => safeStorage.getItem('evaryst_company_id'))
+  const [selectedJobId,         setSelectedJobId]         = useState<string | null>(() => safeStorage.getItem('evaryst_job_id'))
+
+  // Persist navigation state across refreshes
+  useEffect(() => { safeStorage.setItem('evaryst_page', currentPage) }, [currentPage])
+  useEffect(() => {
+    if (selectedCompanyId) safeStorage.setItem('evaryst_company_id', selectedCompanyId)
+    else safeStorage.removeItem('evaryst_company_id')
+  }, [selectedCompanyId])
+  useEffect(() => {
+    if (selectedJobId) safeStorage.setItem('evaryst_job_id', selectedJobId)
+    else safeStorage.removeItem('evaryst_job_id')
+  }, [selectedJobId])
+  useEffect(() => {
+    safeStorage.setItem('evaryst_candidate_ids', JSON.stringify(selectedCandidateIds))
+  }, [selectedCandidateIds])
+  useEffect(() => {
+    safeStorage.setItem('evaryst_candidate_idx', String(currentCandidateIndex))
+  }, [currentCandidateIndex])
 
   // Load all data from Supabase — polling every 30s (Safari blocks WebSockets)
   async function loadAllData() {
@@ -742,6 +771,7 @@ function App() {
         onSave={handleAddCandidate}
         currentUser={currentUser}
       />
+      {import.meta.env.DEV && <Agentation />}
     </div>
   )
 }
