@@ -170,7 +170,7 @@ function toDbJob(j: Partial<Job>): Record<string, unknown> {
   if ('dateAdded'              in j) row.date_added               = j.dateAdded
   if ('candidates'             in j) row.candidates               = j.candidates
   if ('internalId'             in j) row.internal_id              = j.internalId
-  if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber
+  if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber || null
   return row
 }
 
@@ -399,14 +399,14 @@ function App() {
 
   const toggle   = () => setScheduleOpen(v => !v)
   const navigate = (page: string) => {
-    if (page === 'job') setJobInitialTab('candidates')
+    if (page === 'job') setJobInitialTab('details')
     setCurrentPage(page as Page)
   }
   const navigateToJobDetails = () => { setJobInitialTab('details'); setCurrentPage('job') }
   const navigateToCandidate  = (id: string) => { setSelectedCandidateIds([id]); setCurrentCandidateIndex(0); setCurrentPage('candidate') }
   const navigateToMultipleCandidates = (ids: string[]) => { setSelectedCandidateIds(ids); setCurrentCandidateIndex(0); setCurrentPage('candidate') }
   const navigateToCompany    = (id: string) => { setSelectedCompanyId(id); setCurrentPage('company') }
-  const navigateToJob        = (id: string) => { setSelectedJobId(id); setJobInitialTab('candidates'); setCurrentPage('job') }
+  const navigateToJob        = (id: string) => { setSelectedJobId(id); setJobInitialTab('details'); setCurrentPage('job') }
 
   const closeCard = () => {
     const next = selectedCandidateIds.filter((_, i) => i !== currentCandidateIndex)

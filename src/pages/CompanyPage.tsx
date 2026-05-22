@@ -83,7 +83,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                {['Client Req No.', 'Job Title', 'Status', 'Recruiter'].map(h => (
+                {['Job Title', 'Status', 'Hiring Manager', 'Recruiter', 'Client Req No.'].map(h => (
                   <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
               </tr>
@@ -98,15 +98,18 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                     className="group hover:bg-[#F8FAFC] cursor-pointer transition-colors"
                     style={{ borderBottom: i < jobs.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
                   >
-                    <td style={{ padding: '10px 16px' }}>
-                      <span className="text-[12px] text-[#2563EB] hover:underline">{j.clientReqNumber || '—'}</span>
-                    </td>
                     <td className="text-[12px] font-medium text-[#1E293B] hover:text-[#2563EB] transition-colors" style={{ padding: '10px 16px' }}>{j.title}</td>
                     <td style={{ padding: '10px 16px' }}>
                       <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: st.bg, color: st.clr }}>{j.status}</span>
                     </td>
                     <td style={{ padding: '10px 16px' }}>
+                      <span className="text-[12px] text-[#475569]">—</span>
+                    </td>
+                    <td style={{ padding: '10px 16px' }}>
                       <span className="text-[12px] text-[#475569]">{j.assignedRecruiterName || '—'}</span>
+                    </td>
+                    <td style={{ padding: '10px 16px' }}>
+                      <span className="text-[12px] text-[#475569]">{j.clientReqNumber && j.clientReqNumber.trim() !== '' ? j.clientReqNumber : '—'}</span>
                     </td>
                   </tr>
                 )

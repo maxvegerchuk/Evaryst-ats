@@ -1062,8 +1062,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
 
       {/* ── ARCHIVE MODAL ───────────────────────────────────────────────────── */}
       {showArchiveModal && (
-        <div className="fixed inset-0 bg-black/20 z-50 flex items-start justify-center pt-20" onClick={() => setShowArchiveModal(false)}>
-          <div className="bg-white rounded-[10px] shadow-lg p-6 w-[380px]" style={{ border: '0.5px solid #E2E8F0' }} onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/20 z-50 flex items-start justify-center pt-20">
+          <div className="bg-white rounded-[10px] shadow-lg p-6 w-[380px]" style={{ border: '0.5px solid #E2E8F0' }}>
             <h3 className="text-[15px] font-semibold text-[#1E293B] mb-2">Archive candidate?</h3>
             <p className="text-[12px] text-[#64748B] mb-5" style={{ lineHeight: 1.5 }}>
               {candidate?.name ?? 'This candidate'} will be moved to your archive. You can restore them from the People page at any time.
@@ -1087,8 +1087,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
 
       {/* ── PLACEMENT RECORD MODAL ──────────────────────────────────────────── */}
       {showPlacementModal && (
-        <div className="fixed inset-0 bg-black/20 z-50 flex items-start justify-center pt-20" onClick={() => setShowPlacementModal(false)}>
-          <div className="bg-white rounded-[10px] shadow-lg p-6 w-[460px]" style={{ border: '0.5px solid #E2E8F0' }} onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/20 z-50 flex items-start justify-center pt-20">
+          <div className="bg-white rounded-[10px] shadow-lg p-6 w-[460px]" style={{ border: '0.5px solid #E2E8F0' }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[15px] font-semibold text-[#1E293B]">Placement Record</h3>
               <button onClick={() => setShowPlacementModal(false)} className="text-[#94A3B8] hover:text-[#475569]"><X size={16} /></button>

@@ -76,14 +76,13 @@ export function EditJobModal({ isOpen, onClose, onSave, job, recruiters }: EditJ
   }
 
   return (
-    <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="edit-job-heading"
         className="bg-white rounded-[10px] shadow-lg w-[520px] max-h-[85vh] overflow-hidden flex flex-col"
         style={{ border: '0.5px solid #E2E8F0' }}
-        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E8F0' }}>

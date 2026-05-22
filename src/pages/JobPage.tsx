@@ -19,9 +19,9 @@ const INFO_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0
 type JobTab = 'candidates' | 'recruiters' | 'details' | 'documents'
 
 const JOB_TABS: { id: JobTab; label: string }[] = [
+  { id: 'details',    label: 'Job Details' },
   { id: 'candidates', label: 'Candidates'  },
   { id: 'recruiters', label: 'Recruiters'  },
-  { id: 'details',    label: 'Job Details' },
   { id: 'documents',  label: 'Documents'   },
 ]
 
@@ -70,7 +70,7 @@ interface JobPageProps {
 }
 
 export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [] }: JobPageProps) {
-  const [activeTab,    setActiveTab]    = useState<JobTab>(initialTab ?? 'candidates')
+  const [activeTab,    setActiveTab]    = useState<JobTab>(initialTab ?? 'details')
   const [showEditJob,  setShowEditJob]  = useState(false)
 
   // ── Candidates tab ────────────────────────────────────────────────────────────
@@ -390,8 +390,8 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
             <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Job Numbers</p>
             {([
-              ['Internal ID',  '0001567'],
-              ['Client Req.',  '0122231'],
+              ['Internal ID',  job?.internalId && job.internalId.trim() !== '' ? job.internalId : '—'],
+              ['Client Req.',  job?.clientReqNumber && job.clientReqNumber.trim() !== '' ? job.clientReqNumber : '—'],
             ] as [string, string][]).map(([label, val]) => (
               <div key={label} className="flex items-baseline gap-2 mb-1 last:mb-0">
                 <span className="text-[10px] text-[#94A3B8] min-w-[80px]">{label}</span>
@@ -600,7 +600,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
               {([
                 ['Job Type', job?.jobType   ?? '—'],
                 ['Location', job?.location  ?? '—'],
-                ['Req No.',  job?.clientReqNumber || job?.internalId || '—'],
+                ['Client Req.', job?.clientReqNumber && job.clientReqNumber.trim() !== '' ? job.clientReqNumber : '—'],
               ] as [string, string][]).map(([label, value]) => (
                 <div key={label} className="flex items-baseline gap-[5px]">
                   <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">{label}</span>
