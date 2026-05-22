@@ -748,17 +748,9 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           {/* Col 3: Hiring Manager */}
           <div className="px-6">
             <p className={INFO_LABEL}>Hiring Manager</p>
-            <div className="flex flex-col gap-[5px]">
-              <span className="text-[12px] font-medium text-[#1E293B]">John Smith</span>
-              <div className="flex items-center gap-[7px]">
-                <Phone size={12} className="text-[#2563EB] flex-shrink-0" />
-                <span className="text-[12px] text-[#1E293B]">501-555-1212</span>
-              </div>
-              <div className="flex items-center gap-[7px]">
-                <Mail size={12} className="text-[#2563EB] flex-shrink-0" />
-                <span className="text-[12px] text-[#2563EB] hover:underline cursor-pointer">smith.john@glazers.com</span>
-              </div>
-            </div>
+            <span className="text-[12px] font-medium text-[#1E293B]">
+              {job?.assignedRecruiterName || '—'}
+            </span>
           </div>
 
           {/* Col 4: Notes */}
