@@ -111,6 +111,7 @@ function toDbCompany(c: Partial<Company>): Record<string, unknown> {
   if ('city'       in c) row.city        = c.city
   if ('state'      in c) row.state       = c.state
   if ('zip'        in c) row.zip         = c.zip
+  if ('address'    in c) row.address     = c.address
   if ('phone'      in c) row.phone       = c.phone
   if ('website'    in c) row.website     = c.website
   if ('status'     in c) row.status      = c.status
@@ -134,9 +135,19 @@ function mapJob(r: any): Job {
     salaryMax:              r.salary_max,
     salaryType:             r.salary_type,
     location:               r.location,
-    address:                r.address ?? '',
-    ownerName:              r.owner_name ?? '',
-    ownerId:                r.owner_id   ?? '',
+    city:                   r.city              || '',
+    state:                  r.state             || '',
+    zip:                    r.zip               || '',
+    address:                r.address           ?? '',
+    ownerName:              r.owner_name        ?? '',
+    ownerId:                r.owner_id          ?? '',
+    hiringManager:          r.hiring_manager    || '',
+    talentAcquisition:      r.talent_acquisition || '',
+    otherContact1:          r.other_contact_1   || '',
+    otherContact2:          r.other_contact_2   || '',
+    daysOnSite:             r.days_on_site      || '',
+    travelPct:              r.travel_pct        || '',
+    workTypes:              r.work_types        || [],
     status:                 r.status,
     assignedRecruiterId:    r.assigned_recruiter_id,
     assignedRecruiterEmail: r.assigned_recruiter_email,
@@ -176,6 +187,16 @@ function toDbJob(j: Partial<Job>): Record<string, unknown> {
   if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber         || null
   if ('ownerName'              in j) row.owner_name               = j.ownerName               || ''
   if ('ownerId'                in j) row.owner_id                 = j.ownerId                 || ''
+  if ('city'                   in j) row.city                     = j.city                    || ''
+  if ('state'                  in j) row.state                    = j.state                   || ''
+  if ('zip'                    in j) row.zip                      = j.zip                     || ''
+  if ('hiringManager'          in j) row.hiring_manager           = j.hiringManager           || ''
+  if ('talentAcquisition'      in j) row.talent_acquisition       = j.talentAcquisition       || ''
+  if ('otherContact1'          in j) row.other_contact_1          = j.otherContact1           || ''
+  if ('otherContact2'          in j) row.other_contact_2          = j.otherContact2           || ''
+  if ('daysOnSite'             in j) row.days_on_site             = j.daysOnSite              || ''
+  if ('travelPct'              in j) row.travel_pct               = j.travelPct               || ''
+  if ('workTypes'              in j) row.work_types               = j.workTypes               || []
   return row
 }
 
@@ -331,6 +352,12 @@ function App() {
     if (error) { console.error('handleAddCompany error:', JSON.stringify(error, null, 2)); setCompanies(prev => prev.filter(x => x.id !== c.id)) }
   }
 
+  async function handleUpdateCompany(id: string, updates: Partial<Company>) {
+    setCompanies(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c))
+    const { error } = await supabase.from('companies').update(toDbCompany(updates)).eq('id', id)
+    if (error) console.error('handleUpdateCompany:', error)
+  }
+
   async function handleDeleteCompany(id: string) {
     setCompanies(prev => prev.filter(c => c.id !== id))
     const { error } = await supabase.from('companies').delete().eq('id', id)
@@ -366,6 +393,16 @@ function App() {
       client_req_number:        j.clientReqNumber?.trim() || null,
       owner_name:               j.ownerName               || '',
       owner_id:                 j.ownerId                 || '',
+      city:                     j.city                    || '',
+      state:                    j.state                   || '',
+      zip:                      j.zip                     || '',
+      hiring_manager:           j.hiringManager           || '',
+      talent_acquisition:       j.talentAcquisition       || '',
+      other_contact_1:          j.otherContact1           || '',
+      other_contact_2:          j.otherContact2           || '',
+      days_on_site:             j.daysOnSite              || '',
+      travel_pct:               j.travelPct               || '',
+      work_types:               j.workTypes               || [],
       candidates:               0,
       days_open:                0,
       date_added:               j.dateAdded,
@@ -621,6 +658,7 @@ function App() {
                 onAddContact={handleAddContact}
                 onDeleteContact={handleDeleteContact}
                 currentUser={currentUser}
+                onUpdateCompany={handleUpdateCompany}
               />
             </div>
           )}

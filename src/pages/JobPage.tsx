@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ChevronLeft, ChevronRight, MoreHorizontal,
-  Mail, Phone, Settings, Download, X,
-  FilePlus, FileText, Send, Users, UserPlus,
+  Mail, Settings, Download, X,
+  FilePlus, FileText, Send, Users, UserPlus, Pencil,
 } from 'lucide-react'
-import type { Job } from '../types/job'
+import type { Job, JobType, JobStatus, SalaryType } from '../types/job'
 import type { Candidate } from '../types/candidate'
 import { getAvatarColor } from '../types/candidate'
-import { EditJobModal } from '../components/ui/EditJobModal'
+import { EditPanel } from '../components/ui/EditPanel'
+import { CityAutocomplete } from '../components/ui/CityAutocomplete'
 
 interface Recruiter { id: string; email: string; name?: string; role: string; status: string }
 
@@ -55,8 +56,6 @@ Start date: ASAP`
 
 const DOCS: { name: string; type: string; date: string }[] = []
 
-const HIRING_TEAM: { role: string; name: string }[] = []
-
 // ── Component ──────────────────────────────────────────────────────────────────
 
 interface JobPageProps {
@@ -70,10 +69,107 @@ interface JobPageProps {
   onUpdateCandidate?: (id: string, updates: Partial<Candidate>) => void
 }
 
+const JOB_TYPES:    readonly JobType[]   = ['Full Time', 'Part Time', 'Contract', 'Contract to Hire']
+const JOB_STATUSES: readonly JobStatus[] = ['Open', 'On Hold', 'Closed']
+const WORK_TYPE_OPTIONS = ['Full-Time', 'Part-Time', 'Contract', 'Contract to Hire', 'Fulltime Employee']
+
+function PillGroup<T extends string>({ options, value, onChange }: { options: readonly T[]; value: T; onChange: (v: T) => void }) {
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {options.map(o => (
+        <button key={o} type="button" onClick={() => onChange(o)}
+          className={`px-3 py-1.5 text-[11px] rounded-full border transition-colors ${value === o ? 'border-[#2563EB] bg-[#EFF6FF] text-[#2563EB]' : 'border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC]'}`}>
+          {o}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+const LBL = 'block text-[11px] font-medium text-[#475569] mb-1'
+const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]'
+const INP_ST = { border: '0.5px solid #E2E8F0', padding: '7px 10px' } as const
+const SEC = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-3'
+
 export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [], onUpdateCandidate }: JobPageProps) {
-  const [activeTab,    setActiveTab]    = useState<JobTab>(initialTab ?? 'details')
-  const [showEditJob,  setShowEditJob]  = useState(false)
-  const [jobAddress,   setJobAddress]   = useState(job?.address ?? '')
+  const [activeTab,      setActiveTab]      = useState<JobTab>(initialTab ?? 'details')
+  const [showEditPanel,  setShowEditPanel]  = useState(false)
+  const [isSaving,       setIsSaving]       = useState(false)
+
+  // ── Edit panel state ──────────────────────────────────────────────────────────
+  const [editTitle,          setEditTitle]          = useState('')
+  const [editJobType,        setEditJobType]        = useState<JobType>('Full Time')
+  const [editSalaryMin,      setEditSalaryMin]      = useState('')
+  const [editSalaryMax,      setEditSalaryMax]      = useState('')
+  const [editSalaryType,     setEditSalaryType]     = useState<SalaryType>('year')
+  const [editStatus,         setEditStatus]         = useState<JobStatus>('Open')
+  const [editInternalId,     setEditInternalId]     = useState('')
+  const [editClientReq,      setEditClientReq]      = useState('')
+  const [editCity,           setEditCity]           = useState('')
+  const [editState,          setEditState]          = useState('')
+  const [editZip,            setEditZip]            = useState('')
+  const [editHiringMgr,      setEditHiringMgr]      = useState('')
+  const [editTalentAcq,      setEditTalentAcq]      = useState('')
+  const [editOther1,         setEditOther1]         = useState('')
+  const [editOther2,         setEditOther2]         = useState('')
+  const [editDaysOnSite,     setEditDaysOnSite]     = useState('')
+  const [editTravelPct,      setEditTravelPct]      = useState('')
+  const [editWorkTypes,      setEditWorkTypes]      = useState<string[]>([])
+  const [editDescription,    setEditDescription]    = useState('')
+
+  useEffect(() => {
+    if (!showEditPanel || !job) return
+    setEditTitle(job.title)
+    setEditJobType(job.jobType)
+    setEditSalaryMin(job.salaryMin)
+    setEditSalaryMax(job.salaryMax)
+    setEditSalaryType(job.salaryType)
+    setEditStatus(job.status)
+    setEditInternalId(job.internalId)
+    setEditClientReq(job.clientReqNumber || '')
+    setEditCity(job.city || '')
+    setEditState(job.state || '')
+    setEditZip(job.zip || '')
+    setEditHiringMgr(job.hiringManager || '')
+    setEditTalentAcq(job.talentAcquisition || '')
+    setEditOther1(job.otherContact1 || '')
+    setEditOther2(job.otherContact2 || '')
+    setEditDaysOnSite(job.daysOnSite || '')
+    setEditTravelPct(job.travelPct || '')
+    setEditWorkTypes(job.workTypes || [])
+    setEditDescription(job.description || '')
+  }, [showEditPanel, job])
+
+  async function handleSaveJob() {
+    if (!job || !onUpdateJob) return
+    setIsSaving(true)
+    const location = [editCity.trim(), editState.trim()].filter(Boolean).join(', ')
+    await onUpdateJob({
+      ...job,
+      title:            editTitle.trim(),
+      jobType:          editJobType,
+      salaryMin:        editSalaryMin.trim(),
+      salaryMax:        editSalaryMax.trim(),
+      salaryType:       editSalaryType,
+      status:           editStatus,
+      internalId:       editInternalId.trim(),
+      clientReqNumber:  editClientReq.trim(),
+      location:         location || job.location,
+      city:             editCity.trim(),
+      state:            editState.trim(),
+      zip:              editZip.trim(),
+      hiringManager:    editHiringMgr.trim(),
+      talentAcquisition: editTalentAcq.trim(),
+      otherContact1:    editOther1.trim(),
+      otherContact2:    editOther2.trim(),
+      daysOnSite:       editDaysOnSite,
+      travelPct:        editTravelPct,
+      workTypes:        editWorkTypes,
+      description:      editDescription.trim(),
+    })
+    setIsSaving(false)
+    setShowEditPanel(false)
+  }
 
   // ── Candidates tab ────────────────────────────────────────────────────────────
 
@@ -503,79 +599,31 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           </div>
         </div>
 
-        {/* RIGHT: Metadata cards */}
+        {/* RIGHT: Details summary */}
         <div>
-          {/* Job numbers */}
-          <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Job Numbers</p>
+          <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] uppercase text-[#94A3B8] font-medium" style={{ letterSpacing: '0.05em' }}>Details</p>
+              {isManager && (
+                <button type="button" onClick={() => setShowEditPanel(true)} className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#F8FAFC] transition-colors">
+                  <Pencil size={12} className="text-[#94A3B8]" />
+                </button>
+              )}
+            </div>
             {([
-              ['Internal ID',  job?.internalId && job.internalId.trim() !== '' ? job.internalId : '—'],
-              ['Client Req.',  job?.clientReqNumber && job.clientReqNumber.trim() !== '' ? job.clientReqNumber : '—'],
+              ['Location',        job?.location || '—'],
+              ['Internal ID',     job?.internalId && job.internalId.trim() ? job.internalId : '—'],
+              ['Client Req.',     job?.clientReqNumber && job.clientReqNumber.trim() ? job.clientReqNumber : '—'],
+              ['Hiring Manager',  job?.hiringManager || '—'],
+              ['Days on site',    job?.daysOnSite || '—'],
+              ['Travel %',        job?.travelPct ? `${job.travelPct}%` : '—'],
+              ['Work type',       job?.workTypes?.length ? job.workTypes.join(', ') : '—'],
             ] as [string, string][]).map(([label, val]) => (
-              <div key={label} className="flex items-baseline gap-2 mb-1 last:mb-0">
-                <span className="text-[10px] text-[#94A3B8] min-w-[80px]">{label}</span>
+              <div key={label} className="flex items-baseline gap-2 mb-1.5 last:mb-0">
+                <span className="text-[10px] text-[#94A3B8] min-w-[90px] flex-shrink-0">{label}</span>
                 <span className="text-[12px] text-[#1E293B]">{val}</span>
               </div>
             ))}
-          </div>
-
-          {/* Location */}
-          <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Location</p>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-[10px] text-[#94A3B8] min-w-[52px] flex-shrink-0">Address</span>
-              <input
-                type="text"
-                value={jobAddress}
-                onChange={e => setJobAddress(e.target.value)}
-                onBlur={() => { if (job && onUpdateJob) onUpdateJob({ ...job, address: jobAddress }) }}
-                placeholder="Street address"
-                className="text-[12px] text-[#1E293B] bg-transparent focus:outline-none w-full placeholder:text-[#CBD5E1] border-b border-transparent focus:border-[#CBD5E1] transition-colors"
-              />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[10px] text-[#94A3B8] min-w-[52px] flex-shrink-0">City</span>
-              <span className="text-[12px] text-[#1E293B]">{job?.location || '—'}</span>
-            </div>
-          </div>
-
-          {/* Hiring team */}
-          <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Hiring Team</p>
-            {HIRING_TEAM.map((p, i) => (
-              <div key={i} className="flex items-center gap-2 mb-1.5 last:mb-0">
-                <span className="text-[10px] text-[#94A3B8] min-w-[100px] flex-shrink-0">{p.role}</span>
-                {isManager ? (
-                  <input
-                    defaultValue={p.name}
-                    className="text-[12px] text-[#1E293B] flex-1 bg-transparent focus:outline-none border-b border-transparent focus:border-[#CBD5E1] rounded-none"
-                  />
-                ) : (
-                  <span className="text-[12px] text-[#1E293B] flex-1">{p.name}</span>
-                )}
-                <button className="text-[#94A3B8] hover:text-[#2563EB] transition-colors" title="Call">
-                  <Phone size={13} />
-                </button>
-                <button className="text-[#94A3B8] hover:text-[#2563EB] transition-colors" title="Email">
-                  <Mail size={13} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Work type */}
-          <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Work Type</p>
-            <div className="flex items-center gap-1 mb-2">
-              <span className="text-[10px] text-[#94A3B8]">Days on site</span>
-              <span className="text-[12px] text-[#1E293B] ml-1">3</span>
-              <span className="text-[10px] text-[#94A3B8] ml-4">Travel %</span>
-              <span className="text-[12px] text-[#1E293B] ml-1">10%</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#EFF6FF', color: '#2563EB', border: '0.5px solid #BFDBFE' }}>Full-Time</span>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#F3E8FF', color: '#6D28D9', border: '0.5px solid #DDD6FE' }}>Contract</span>
-            </div>
           </div>
         </div>
       </div>
@@ -697,10 +745,10 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           Email
         </button>
         {isManager && job && (
-          <button type="button" onClick={() => setShowEditJob(true)}
-            className="px-3 py-1.5 text-[12px] font-medium text-[#1E293B] bg-white rounded-[7px] hover:bg-[#F8FAFC] transition-colors"
-            style={{ border: '0.5px solid #E2E8F0' }}>
-            Edit
+          <button type="button" onClick={() => setShowEditPanel(true)}
+            className="w-[30px] h-[30px] flex items-center justify-center border-subtle rounded-[7px] bg-white hover:bg-[#F8FAFC] transition-colors"
+            title="Edit job">
+            <Pencil size={13} className="text-[#64748B]" />
           </button>
         )}
         <button className={ICON_BTN}>
@@ -802,15 +850,106 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         {activeTab === 'documents'  && documentsTab}
       </div>
 
-      {job && (
-        <EditJobModal
-          isOpen={showEditJob}
-          onClose={() => setShowEditJob(false)}
-          onSave={updated => { onUpdateJob?.(updated); setShowEditJob(false) }}
-          job={job}
-          recruiters={recruiters}
-        />
-      )}
+      <EditPanel isOpen={showEditPanel} onClose={() => setShowEditPanel(false)} title="Edit job" onSave={handleSaveJob} isSaving={isSaving}>
+        <div className="space-y-4">
+
+          {/* Job Info */}
+          <p className={SEC}>Job Info</p>
+          <div>
+            <label className={LBL}>Job title</label>
+            <input value={editTitle} onChange={e => setEditTitle(e.target.value)} className={INP} style={INP_ST} />
+          </div>
+          <div>
+            <label className={LBL}>Job type</label>
+            <PillGroup options={JOB_TYPES} value={editJobType} onChange={setEditJobType} />
+          </div>
+          <div>
+            <label className={LBL}>Salary range</label>
+            <div className="flex items-center gap-2">
+              <span className="text-[12px] text-[#64748B]">$</span>
+              <input value={editSalaryMin} onChange={e => setEditSalaryMin(e.target.value)} placeholder="50,000" className={INP} style={{ ...INP_ST, width: 100 }} />
+              <span className="text-[12px] text-[#94A3B8]">–</span>
+              <span className="text-[12px] text-[#64748B]">$</span>
+              <input value={editSalaryMax} onChange={e => setEditSalaryMax(e.target.value)} placeholder="75,000" className={INP} style={{ ...INP_ST, width: 100 }} />
+              <div className="flex gap-1 ml-1">
+                {(['year', 'hour'] as SalaryType[]).map(t => (
+                  <button key={t} type="button" onClick={() => setEditSalaryType(t)}
+                    className={`px-2 py-1.5 text-[11px] rounded-full border transition-colors ${editSalaryType === t ? 'border-[#2563EB] bg-[#EFF6FF] text-[#2563EB]' : 'border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC]'}`}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div>
+            <label className={LBL}>Status</label>
+            <PillGroup options={JOB_STATUSES} value={editStatus} onChange={setEditStatus} />
+          </div>
+          <div>
+            <label className={LBL}>Job description</label>
+            <textarea value={editDescription} onChange={e => setEditDescription(e.target.value)} rows={4}
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px', minHeight: 80 }} />
+          </div>
+
+          {/* Job Numbers */}
+          <p className={SEC} style={{ marginTop: 8 }}>Job Numbers</p>
+          <div>
+            <label className={LBL}>Internal Job ID</label>
+            <input value={editInternalId} onChange={e => setEditInternalId(e.target.value)} className={INP} style={INP_ST} />
+          </div>
+          <div>
+            <label className={LBL}>Client Req. Number</label>
+            <input value={editClientReq} onChange={e => setEditClientReq(e.target.value)} placeholder="—" className={INP} style={INP_ST} />
+          </div>
+
+          {/* Location */}
+          <p className={SEC} style={{ marginTop: 8 }}>Location</p>
+          <CityAutocomplete cityValue={editCity} stateValue={editState} onCityChange={setEditCity} onStateChange={setEditState} cityPlaceholder="City" />
+          <div>
+            <label className={LBL}>ZIP</label>
+            <input value={editZip} onChange={e => setEditZip(e.target.value)} placeholder="75000" className={INP} style={{ ...INP_ST, width: 96 }} />
+          </div>
+
+          {/* Hiring Team */}
+          <p className={SEC} style={{ marginTop: 8 }}>Hiring Team</p>
+          {([
+            ['Hiring Manager',     editHiringMgr,  setEditHiringMgr],
+            ['Talent Acquisition', editTalentAcq,  setEditTalentAcq],
+            ['Other (1)',          editOther1,      setEditOther1],
+            ['Other (2)',          editOther2,      setEditOther2],
+          ] as [string, string, (v: string) => void][]).map(([label, val, set]) => (
+            <div key={label}>
+              <label className={LBL}>{label}</label>
+              <input value={val} onChange={e => set(e.target.value)} className={INP} style={INP_ST} />
+            </div>
+          ))}
+
+          {/* Work Type */}
+          <p className={SEC} style={{ marginTop: 8 }}>Work Type</p>
+          <div className="flex gap-4">
+            <div>
+              <label className={LBL}>Days on site</label>
+              <input type="number" value={editDaysOnSite} onChange={e => setEditDaysOnSite(e.target.value)} className={INP} style={{ ...INP_ST, width: 80 }} />
+            </div>
+            <div>
+              <label className={LBL}>Travel %</label>
+              <input type="number" value={editTravelPct} onChange={e => setEditTravelPct(e.target.value)} className={INP} style={{ ...INP_ST, width: 80 }} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+            {WORK_TYPE_OPTIONS.map(wt => (
+              <label key={wt} className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={editWorkTypes.includes(wt)}
+                  onChange={() => setEditWorkTypes(prev => prev.includes(wt) ? prev.filter(x => x !== wt) : [...prev, wt])}
+                  className="w-3.5 h-3.5 accent-[#2563EB]" />
+                <span className="text-[12px] text-[#1E293B]">{wt}</span>
+              </label>
+            ))}
+          </div>
+
+        </div>
+      </EditPanel>
 
     </div>
   )

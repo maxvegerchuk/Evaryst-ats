@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import { JOB_DESC_INTERNAL } from './JobPage'
 import type { Candidate } from '../types/candidate'
+import { EditPanel } from '../components/ui/EditPanel'
+import { CityAutocomplete } from '../components/ui/CityAutocomplete'
 
 // ── Types & constants ──────────────────────────────────────────────────────────
 
@@ -96,11 +98,21 @@ interface CandidatePageProps {
 }
 
 export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidate, onToggleStar, selectedCandidateIds, currentCandidateIndex, onCloseCard, onNavigateCard, onArchive, onRestore, openJobs = [], allJobs = [], onUpdateCandidate }: CandidatePageProps) {
-  const [stage,      setStage]      = useState<Stage>((candidate?.stage as Stage) ?? 'New')
-  const [stageOpen,  setStageOpen]  = useState(false)
-  const [activeType, setActiveType] = useState<FollowUpType>('Call')
-  const [isEditing,  setIsEditing]  = useState(false)
-  const [activeTab,  setActiveTab]  = useState<MainTab>('interview')
+  const [stage,         setStage]         = useState<Stage>((candidate?.stage as Stage) ?? 'New')
+  const [stageOpen,     setStageOpen]     = useState(false)
+  const [activeType,    setActiveType]    = useState<FollowUpType>('Call')
+  const [activeTab,     setActiveTab]     = useState<MainTab>('interview')
+  const [showCandPanel, setShowCandPanel] = useState(false)
+  const [isSavingCand,  setIsSavingCand]  = useState(false)
+  const [editCandName,  setEditCandName]  = useState('')
+  const [editSpecialty, setEditSpecialty] = useState('')
+  const [editClassif,   setEditClassif]   = useState('')
+  const [editCandCity,  setEditCandCity]  = useState('')
+  const [editCandState, setEditCandState] = useState('')
+  const [editPhoneMob,  setEditPhoneMob]  = useState('')
+  const [editCandEmail, setEditCandEmail] = useState('')
+  const [editLinkedin,  setEditLinkedin]  = useState('')
+  const [editSource,    setEditSource]    = useState('')
   const [highlight,  setHighlight]  = useState('')
   const [submittalChecked, setSubmittalChecked] = useState(false)
   const [resumeSections, setResumeSection] = useState<Record<ResumeKey, string>>({
@@ -169,6 +181,45 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [attachOpen])
+
+  useEffect(() => {
+    if (!showCandPanel || !candidate) return
+    setEditCandName(candidate.name ?? '')
+    setEditSpecialty(candidate.specialty ?? '')
+    setEditClassif(personal.classification)
+    const parts = (candidate.location ?? '').split(', ')
+    setEditCandCity(parts[0] ?? '')
+    setEditCandState(parts[1] ?? '')
+    setEditPhoneMob(candidate.phone ?? '')
+    setEditCandEmail(candidate.email ?? '')
+    setEditLinkedin(contacts.linkedin)
+    setEditSource(candidate.source ?? '')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCandPanel, candidate])
+
+  async function handleSaveCandidate() {
+    if (!candidate || !onUpdateCandidate) return
+    setIsSavingCand(true)
+    const loc = [editCandCity.trim(), editCandState.trim()].filter(Boolean).join(', ')
+    await onUpdateCandidate(candidate.id, {
+      name:      editCandName.trim(),
+      specialty: editSpecialty.trim(),
+      location:  loc,
+      phone:     editPhoneMob.trim(),
+      email:     editCandEmail.trim(),
+      source:    editSource.trim(),
+    })
+    setPersonal(p => ({
+      ...p,
+      preferred:      editCandName.trim().split(' ')[0] ?? '',
+      role:           editSpecialty.trim(),
+      location:       loc,
+      classification: editClassif.trim(),
+    }))
+    setContacts(c => ({ ...c, phone: editPhoneMob.trim(), email: editCandEmail.trim(), linkedin: editLinkedin.trim() }))
+    setIsSavingCand(false)
+    setShowCandPanel(false)
+  }
 
   const s = STAGE_STYLE[stage]
 
@@ -833,11 +884,11 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           </button>
           <button title="Export resume" className={ICON_BTN}><FileText size={13} className="text-[#64748B]" /></button>
           <button
-            title={isEditing ? 'Save' : 'Edit'}
-            onClick={() => setIsEditing(e => !e)}
-            className={`${ICON_BTN} ${isEditing ? 'bg-[#EFF6FF] border-[#2563EB]' : ''}`}
+            title="Edit"
+            onClick={() => setShowCandPanel(true)}
+            className={ICON_BTN}
           >
-            <Edit size={13} className={isEditing ? 'text-[#2563EB]' : 'text-[#64748B]'} />
+            <Edit size={13} className="text-[#64748B]" />
           </button>
           <button title="Archive" onClick={() => setShowArchiveModal(true)} className={ICON_BTN}><Trash2 size={13} className="text-[#64748B]" /></button>
         </div>
@@ -894,15 +945,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               ] as [string, keyof typeof personal][]).map(([label, key]) => (
                 <div key={key} className="flex items-baseline gap-[5px] mb-[3px]">
                   <span className="text-[10px] text-[#94A3B8] min-w-[64px] flex-shrink-0">{label}</span>
-                  {isEditing ? (
-                    <input
-                      value={personal[key]}
-                      onChange={e => setPersonal(p => ({ ...p, [key]: e.target.value }))}
-                      className="text-[12px] text-[#1E293B] flex-1 min-w-0 bg-transparent focus:outline-none border-b border-[#CBD5E1] focus:border-[#2563EB]"
-                    />
-                  ) : (
-                    <span className="text-[12px] text-[#1E293B]">{personal[key]}</span>
-                  )}
+                  <span className="text-[12px] text-[#1E293B]">{personal[key]}</span>
                 </div>
               ))}
             </div>
@@ -913,30 +956,15 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             <div className="flex flex-col">
               <div className="flex items-center gap-[7px] mb-[5px]">
                 <Phone size={12} className="text-[#2563EB] flex-shrink-0" />
-                {isEditing ? (
-                  <input value={contacts.phone} onChange={e => setContacts(c => ({ ...c, phone: formatPhone(e.target.value) }))}
-                    className="text-[12px] text-[#1E293B] flex-1 min-w-0 bg-transparent focus:outline-none border-b border-[#CBD5E1] focus:border-[#2563EB]" />
-                ) : (
-                  <span className="text-[12px] text-[#1E293B]">{contacts.phone}</span>
-                )}
+                <span className="text-[12px] text-[#1E293B]">{contacts.phone}</span>
               </div>
               <div className="flex items-center gap-[7px] mb-[5px]">
                 <Mail size={12} className="text-[#2563EB] flex-shrink-0" />
-                {isEditing ? (
-                  <input value={contacts.email} onChange={e => setContacts(c => ({ ...c, email: e.target.value }))}
-                    className="text-[12px] text-[#1E293B] flex-1 min-w-0 bg-transparent focus:outline-none border-b border-[#CBD5E1] focus:border-[#2563EB]" />
-                ) : (
-                  <span className="text-[12px] text-[#2563EB] hover:underline cursor-pointer">{contacts.email}</span>
-                )}
+                <span className="text-[12px] text-[#2563EB] hover:underline cursor-pointer">{contacts.email}</span>
               </div>
               <div className="flex items-center gap-[7px]">
                 <LinkedinIcon size={12} className="text-[#2563EB] flex-shrink-0" />
-                {isEditing ? (
-                  <input value={contacts.linkedin} onChange={e => setContacts(c => ({ ...c, linkedin: e.target.value }))}
-                    className="text-[12px] text-[#1E293B] flex-1 min-w-0 bg-transparent focus:outline-none border-b border-[#CBD5E1] focus:border-[#2563EB]" />
-                ) : (
-                  <span className="text-[12px] text-[#2563EB] hover:underline cursor-pointer">{contacts.linkedin}</span>
-                )}
+                <span className="text-[12px] text-[#2563EB] hover:underline cursor-pointer">{contacts.linkedin}</span>
               </div>
             </div>
           </div>
@@ -1084,6 +1112,76 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           </div>
         </div>
       )}
+
+      {/* ── CANDIDATE EDIT PANEL ─────────────────────────────────────────────── */}
+      <EditPanel isOpen={showCandPanel} onClose={() => setShowCandPanel(false)} title="Edit candidate" onSave={handleSaveCandidate} isSaving={isSavingCand}>
+        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Personal Info</p>
+        <div className="flex flex-col gap-3 mb-5">
+          <div>
+            <label className="block text-[11px] font-medium text-[#475569] mb-1">Full name</label>
+            <input value={editCandName} onChange={e => setEditCandName(e.target.value)}
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+          </div>
+          <div>
+            <label className="block text-[11px] font-medium text-[#475569] mb-1">Specialty / Title</label>
+            <input value={editSpecialty} onChange={e => setEditSpecialty(e.target.value)}
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+          </div>
+          <div>
+            <label className="block text-[11px] font-medium text-[#475569] mb-1">Classification</label>
+            <input value={editClassif} onChange={e => setEditClassif(e.target.value)}
+              placeholder="e.g. Senior, Mid-level"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+          </div>
+        </div>
+
+        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Location</p>
+        <div className="mb-5">
+          <CityAutocomplete cityValue={editCandCity} stateValue={editCandState} onCityChange={setEditCandCity} onStateChange={setEditCandState} />
+        </div>
+
+        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Contact</p>
+        <div className="flex flex-col gap-3 mb-5">
+          <div>
+            <label className="block text-[11px] font-medium text-[#475569] mb-1">Phone (mobile)</label>
+            <input value={editPhoneMob} onChange={e => setEditPhoneMob(formatPhone(e.target.value))}
+              placeholder="(555) 000-0000"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+          </div>
+          <div>
+            <label className="block text-[11px] font-medium text-[#475569] mb-1">Email</label>
+            <input type="email" value={editCandEmail} onChange={e => setEditCandEmail(e.target.value)}
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+          </div>
+          <div>
+            <label className="block text-[11px] font-medium text-[#475569] mb-1">LinkedIn URL</label>
+            <input value={editLinkedin} onChange={e => setEditLinkedin(e.target.value)}
+              placeholder="linkedin.com/in/username"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+              style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+          </div>
+        </div>
+
+        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Job Spec</p>
+        <div>
+          <label className="block text-[11px] font-medium text-[#475569] mb-1">Source</label>
+          <select value={editSource} onChange={e => setEditSource(e.target.value)}
+            className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+            style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }}>
+            <option value="">Select source...</option>
+            <option>LinkedIn</option>
+            <option>Indeed</option>
+            <option>Referral</option>
+            <option>Website</option>
+            <option>Cold Outreach</option>
+          </select>
+        </div>
+      </EditPanel>
 
       {/* ── PLACEMENT RECORD MODAL ──────────────────────────────────────────── */}
       {showPlacementModal && (

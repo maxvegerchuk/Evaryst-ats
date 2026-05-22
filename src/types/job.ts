@@ -12,9 +12,19 @@ export interface Job {
   salaryMax:              string
   salaryType:             SalaryType
   location:               string
+  city:                   string
+  state:                  string
+  zip:                    string
   address?:               string
   ownerName:              string
   ownerId:                string
+  hiringManager:          string
+  talentAcquisition:      string
+  otherContact1:          string
+  otherContact2:          string
+  daysOnSite:             string
+  travelPct:              string
+  workTypes:              string[]
   status:                 JobStatus
   assignedRecruiterId:    string
   assignedRecruiterEmail: string

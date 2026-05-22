@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ChevronLeft, ChevronRight, MoreHorizontal,
   Mail, Phone, Globe, Settings, Plus, Briefcase,
-  Download, X, FilePlus, FileText, Send, Users,
+  Download, X, FilePlus, FileText, Send, Users, Pencil,
 } from 'lucide-react'
 import { formatPhone } from '../utils/formatPhone'
 import type { Company } from '../types/company'
@@ -10,11 +10,17 @@ import type { Job } from '../types/job'
 import type { Contact } from '../types/contact'
 import type { User } from '../types/auth'
 import { AddJobModal } from '../components/ui/AddJobModal'
+import { EditPanel } from '../components/ui/EditPanel'
+import { CityAutocomplete } from '../components/ui/CityAutocomplete'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const ICON_BTN   = 'w-[30px] h-[30px] flex items-center justify-center border-subtle rounded-[7px] bg-white hover:bg-[#F8FAFC] transition-colors flex-shrink-0'
 const INFO_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-2'
+const PANEL_LBL  = 'block text-[11px] font-medium text-[#475569] mb-1'
+const PANEL_INP  = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]'
+const PANEL_ST   = { border: '0.5px solid #E2E8F0', padding: '7px 10px' }
+const PANEL_SEC  = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3'
 
 type CompanyTab = 'jobs' | 'clients' | 'documents'
 
@@ -29,27 +35,77 @@ const JOB_STATUS_STYLE: Record<string, { bg: string; clr: string }> = {
 interface Recruiter { id: string; email: string; role: string }
 
 interface CompanyPageProps {
-  setCurrentPage:  (page: string) => void
-  onNavigateToJob: (id: string) => void
-  isManager?:      boolean
-  company:         Company | null
-  jobs:            Job[]
-  allCompanies:    Company[]
-  recruiters:      Recruiter[]
-  onAddJob:        (job: Job) => void
-  contacts:        Contact[]
-  onAddContact:    (c: Contact) => void
-  onDeleteContact: (id: string) => void
-  currentUser?:    User
+  setCurrentPage:   (page: string) => void
+  onNavigateToJob:  (id: string) => void
+  isManager?:       boolean
+  company:          Company | null
+  jobs:             Job[]
+  allCompanies:     Company[]
+  recruiters:       Recruiter[]
+  onAddJob:         (job: Job) => void
+  contacts:         Contact[]
+  onAddContact:     (c: Contact) => void
+  onDeleteContact:  (id: string) => void
+  currentUser?:     User
+  onUpdateCompany?: (id: string, updates: Partial<Company>) => void
 }
 
-export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, company, jobs, allCompanies, recruiters, onAddJob, contacts, onAddContact, onDeleteContact, currentUser }: CompanyPageProps) {
+export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, company, jobs, allCompanies, recruiters, onAddJob, contacts, onAddContact, onDeleteContact, currentUser, onUpdateCompany }: CompanyPageProps) {
   const [activeTab,      setActiveTab]      = useState<CompanyTab>('jobs')
   const [statusMenuOpen, setStatusMenuOpen] = useState(false)
   const [showAddJob,     setShowAddJob]     = useState(false)
   const [docs, setDocs] = useState<{ name: string; type: string; date: string }[]>([])
   const [showAddContact, setShowAddContact] = useState(false)
   const [newContact, setNewContact] = useState({ name: '', title: '', email: '', phone: '' })
+
+  // ── Edit panel state ──────────────────────────────────────────────────────────
+  const [showEditPanel, setShowEditPanel] = useState(false)
+  const [isSaving,      setIsSaving]      = useState(false)
+  const [editName,      setEditName]      = useState('')
+  const [editIndustry,  setEditIndustry]  = useState('')
+  const [editStatus,    setEditStatus]    = useState<Company['status']>('Active')
+  const [editCity,      setEditCity]      = useState('')
+  const [editState,     setEditState]     = useState('')
+  const [editZip,       setEditZip]       = useState('')
+  const [editAddress,   setEditAddress]   = useState('')
+  const [editPhone,     setEditPhone]     = useState('')
+  const [editWebsite,   setEditWebsite]   = useState('')
+  const [editNotes,     setEditNotes]     = useState('')
+
+  useEffect(() => {
+    if (!showEditPanel || !company) return
+    setEditName(company.name ?? '')
+    setEditIndustry(company.industry ?? '')
+    setEditStatus(company.status ?? 'Active')
+    setEditCity(company.city ?? '')
+    setEditState(company.state ?? '')
+    setEditZip(company.zip ?? '')
+    setEditAddress(company.address ?? '')
+    setEditPhone(company.phone ?? '')
+    setEditWebsite(company.website ?? '')
+    setEditNotes(company.notes ?? '')
+  }, [showEditPanel, company])
+
+  async function handleSaveCompany() {
+    if (!company || !onUpdateCompany) return
+    setIsSaving(true)
+    const location = [editCity.trim(), editState.trim()].filter(Boolean).join(', ')
+    await onUpdateCompany(company.id, {
+      name:     editName.trim(),
+      industry: editIndustry.trim(),
+      status:   editStatus,
+      city:     editCity.trim(),
+      state:    editState.trim(),
+      zip:      editZip.trim(),
+      address:  editAddress.trim(),
+      location,
+      phone:    editPhone.trim(),
+      website:  editWebsite.trim(),
+      notes:    editNotes.trim(),
+    })
+    setIsSaving(false)
+    setShowEditPanel(false)
+  }
 
   const companyClients = contacts.filter(c => c.companyId === company?.id)
 
@@ -385,6 +441,11 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
           <Mail size={13} className="inline mr-1.5 text-[#64748B]" />
           Email
         </button>
+        {isManager && (
+          <button type="button" onClick={() => setShowEditPanel(true)} className={ICON_BTN} title="Edit company">
+            <Pencil size={13} className="text-[#64748B]" />
+          </button>
+        )}
         <button className={ICON_BTN}>
           <MoreHorizontal size={15} className="text-[#64748B]" />
         </button>
@@ -488,6 +549,69 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         defaultCompanyId={company?.id}
         currentUser={currentUser}
       />
+
+      <EditPanel isOpen={showEditPanel} onClose={() => setShowEditPanel(false)} title="Edit company" onSave={handleSaveCompany} isSaving={isSaving}>
+        {/* Company Info */}
+        <p className={PANEL_SEC}>Company Info</p>
+        <div className="flex flex-col gap-3 mb-5">
+          <div>
+            <label className={PANEL_LBL}>Company name</label>
+            <input value={editName} onChange={e => setEditName(e.target.value)} className={PANEL_INP} style={PANEL_ST} />
+          </div>
+          <div>
+            <label className={PANEL_LBL}>Industry</label>
+            <input value={editIndustry} onChange={e => setEditIndustry(e.target.value)} placeholder="e.g. Technology, Healthcare" className={PANEL_INP} style={PANEL_ST} />
+          </div>
+          <div>
+            <label className={PANEL_LBL}>Status</label>
+            <div className="flex gap-2">
+              {(['Active', 'Paused', 'Prospect'] as const).map(s => (
+                <button key={s} type="button" onClick={() => setEditStatus(s)}
+                  className={`px-3 py-1.5 text-[12px] rounded-full border transition-colors ${
+                    editStatus === s
+                      ? 'border-[#2563EB] bg-[#EFF6FF] text-[#2563EB]'
+                      : 'border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC]'
+                  }`}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Location */}
+        <p className={PANEL_SEC}>Location</p>
+        <div className="flex flex-col gap-3 mb-5">
+          <CityAutocomplete cityValue={editCity} stateValue={editState} onCityChange={setEditCity} onStateChange={setEditState} />
+          <div>
+            <label className={PANEL_LBL}>ZIP</label>
+            <input value={editZip} onChange={e => setEditZip(e.target.value)} placeholder="75001" className={PANEL_INP} style={PANEL_ST} />
+          </div>
+          <div>
+            <label className={PANEL_LBL}>Address</label>
+            <input value={editAddress} onChange={e => setEditAddress(e.target.value)} placeholder="123 Main St" className={PANEL_INP} style={PANEL_ST} />
+          </div>
+        </div>
+
+        {/* Contact */}
+        <p className={PANEL_SEC}>Contact</p>
+        <div className="flex flex-col gap-3 mb-5">
+          <div>
+            <label className={PANEL_LBL}>Phone</label>
+            <input value={editPhone} onChange={e => setEditPhone(formatPhone(e.target.value))} placeholder="(555) 000-0000" className={PANEL_INP} style={PANEL_ST} />
+          </div>
+          <div>
+            <label className={PANEL_LBL}>Website</label>
+            <input value={editWebsite} onChange={e => setEditWebsite(e.target.value)} placeholder="https://company.com" className={PANEL_INP} style={PANEL_ST} />
+          </div>
+        </div>
+
+        {/* Notes */}
+        <p className={PANEL_SEC}>Notes</p>
+        <textarea value={editNotes} onChange={e => setEditNotes(e.target.value)} placeholder="Quick notes about this company..." rows={4}
+          className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none"
+          style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
+      </EditPanel>
 
     </div>
   )
