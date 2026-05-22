@@ -214,13 +214,6 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                 <button type="button" onClick={() => setView('register')} className="text-[12px] text-[#2563EB] font-medium hover:underline">Sign up free</button>
               </p>
 
-              <div className="mt-6 bg-[#F8FAFC] border-subtle rounded-[8px] p-3">
-                <p className="text-[11px] font-medium text-[#475569] mb-1.5">Demo credentials</p>
-                <p className="text-[10px] font-medium text-[#94A3B8] uppercase tracking-wide mb-0.5">Recruiter</p>
-                <p className="text-[11px] text-[#64748B]">recruiter@evaryst.com / recruiter123</p>
-                <p className="text-[10px] font-medium text-[#94A3B8] uppercase tracking-wide mt-2 mb-0.5">Manager</p>
-                <p className="text-[11px] text-[#64748B]">manager@evaryst.com / manager123</p>
-              </div>
             </>
           ) : (
             <>

@@ -11,7 +11,7 @@ import { JobPage }        from './pages/JobPage'
 import { ReportsPage }          from './pages/ReportsPage'
 import { SearchPage }           from './pages/SearchPage'
 import { AdministrationPage }   from './pages/AdministrationPage'
-import { SchedulePanel, EVENTS } from './components/layout/SchedulePanel'
+import { SchedulePanel } from './components/layout/SchedulePanel'
 import type { EventStatus, PanelEvent } from './components/layout/SchedulePanel'
 import { AuthPage } from './pages/AuthPage'
 import type { User } from './types/auth'
@@ -25,46 +25,12 @@ import { AddCandidateModal } from './components/ui/AddCandidateModal'
 
 type Page = 'dashboard' | 'people' | 'candidates' | 'jobs' | 'job' | 'companies' | 'company' | 'reports' | 'candidate' | 'search' | 'administration'
 
-const DATA_VERSION = 'v2'
-
-// Wipe all app data when version changes (e.g. seeded demo data was removed)
-if (localStorage.getItem('evaryst_data_version') !== DATA_VERSION) {
-  ['evaryst_candidates','evaryst_contacts','evaryst_companies','evaryst_jobs',
-   'evaryst_schedule','evaryst_team_members'].forEach(k => localStorage.removeItem(k))
-  localStorage.setItem('evaryst_data_version', DATA_VERSION)
+// Clear stale data on version bump — runs before useState initializers read localStorage
+if (localStorage.getItem('evaryst_version') !== '1.0.0') {
+  ;['evaryst_candidates','evaryst_contacts','evaryst_companies','evaryst_jobs',
+    'evaryst_schedule','evaryst_team_members'].forEach(k => localStorage.removeItem(k))
+  localStorage.setItem('evaryst_version', '1.0.0')
 }
-
-// One-time reset of companies and jobs
-if (localStorage.getItem('evaryst_companies_jobs_reset') !== 'v1') {
-  localStorage.removeItem('evaryst_companies')
-  localStorage.removeItem('evaryst_jobs')
-  localStorage.setItem('evaryst_companies_jobs_reset', 'v1')
-}
-
-// Remove stale thane@evaryst.com team member entry
-;(function removeStaleMembers() {
-  try {
-    const raw = localStorage.getItem('evaryst_team_members')
-    if (!raw) return
-    const list = JSON.parse(raw) as { email: string }[]
-    const cleaned = list.filter(m => m.email !== 'thane@evaryst.com')
-    if (cleaned.length !== list.length) {
-      localStorage.setItem('evaryst_team_members', JSON.stringify(cleaned))
-    }
-  } catch { /* ignore */ }
-})()
-
-// Seed demo recruiter — deduplicate by email to avoid ID mismatches
-;(function seedDemoRecruiter() {
-  try {
-    const raw = localStorage.getItem('evaryst_team_members')
-    let list: TeamMember[] = raw ? JSON.parse(raw) : []
-    // Remove any stale entry with same email but different id, then ensure canonical entry exists
-    list = list.filter(m => m.email !== DEMO_USER.email)
-    list.unshift({ id: DEMO_USER.id, email: DEMO_USER.email, name: DEMO_USER.name, role: 'recruiter', status: 'active', invitedAt: 'Demo' })
-    localStorage.setItem('evaryst_team_members', JSON.stringify(list))
-  } catch { /* ignore */ }
-})()
 
 function ls<T>(key: string, fallback: T): T {
   try {
@@ -97,7 +63,7 @@ function App() {
   const [currentPage,           setCurrentPage]           = useState<Page>('dashboard')
   const [jobInitialTab,         setJobInitialTab]         = useState<'candidates' | 'details' | 'documents'>('candidates')
   const [eventStatuses,         setEventStatuses]         = useState<Record<string, EventStatus>>({})
-  const [scheduleEvents,        setScheduleEvents]        = useState<PanelEvent[]>(() => ls('evaryst_schedule', EVENTS))
+  const [scheduleEvents,        setScheduleEvents]        = useState<PanelEvent[]>(() => ls('evaryst_schedule', []))
 
   const [candidates, setCandidates] = useState<Candidate[]>(() => {
     try {
