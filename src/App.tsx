@@ -126,8 +126,8 @@ function mapJob(r: any): Job {
   return {
     id:                     r.id,
     title:                  r.title,
-    companyId:              r.company_id,
-    companyName:            r.company_name,
+    companyId:              r.company_id   || '',
+    companyName:            r.company_name || '',
     jobType:                r.job_type,
     salaryMin:              r.salary_min,
     salaryMax:              r.salary_max,
@@ -334,6 +334,11 @@ function App() {
   // ── Job handlers ────────────────────────────────────────────────────────────
 
   async function handleAddJob(j: Job) {
+    if (!j.companyId) {
+      alert('Please select a company')
+      return
+    }
+    console.log('Creating job for company:', { id: j.companyId, name: j.companyName })
     setJobs(prev => [j, ...prev])
 
     const jobInsert = {
@@ -456,7 +461,12 @@ function App() {
   const navigateToJobDetails = () => { setJobInitialTab('details'); setCurrentPage('job') }
   const navigateToCandidate  = (id: string) => { setSelectedCandidateIds([id]); setCurrentCandidateIndex(0); setCurrentPage('candidate') }
   const navigateToMultipleCandidates = (ids: string[]) => { setSelectedCandidateIds(ids); setCurrentCandidateIndex(0); setCurrentPage('candidate') }
-  const navigateToCompany    = (id: string) => { setSelectedCompanyId(id); setCurrentPage('company') }
+  const navigateToCompany    = (id: string) => {
+    setSelectedCompanyId(id)
+    setCurrentPage('company')
+    console.log('navigateToCompany id:', id)
+    console.log('all jobs:', jobs.map(j => ({ title: j.title, companyId: j.companyId, companyName: j.companyName })))
+  }
   const navigateToJob        = (id: string) => { setSelectedJobId(id); setJobInitialTab('details'); setCurrentPage('job') }
 
   const closeCard = () => {
@@ -593,7 +603,7 @@ function App() {
                 setCurrentPage={navigate}
                 isManager={isManager}
                 company={selectedCompany}
-                jobs={jobs.filter(j => j.companyId === selectedCompanyId)}
+                jobs={jobs}
                 allCompanies={companies}
                 recruiters={recruiterMembers}
                 onAddJob={handleAddJob}

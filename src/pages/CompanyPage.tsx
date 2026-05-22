@@ -55,9 +55,27 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
 
   // ── Jobs tab ─────────────────────────────────────────────────────────────────
 
+  console.log('CompanyPage — company:', company)
+  console.log('CompanyPage — all jobs passed:', jobs.map(j => ({ title: j.title, companyId: j.companyId, companyName: j.companyName })))
+
+  const companyJobs = jobs.filter(j => {
+    const idMatch   = !!j.companyId && j.companyId === company?.id
+    const nameMatch = !!j.companyName && j.companyName.toLowerCase() === company?.name?.toLowerCase()
+    console.log('Job filter:', {
+      jobTitle:          j.title,
+      jobCompanyId:      j.companyId,
+      jobCompanyName:    j.companyName,
+      currentCompanyId:  company?.id,
+      currentCompanyName: company?.name,
+      idMatch,
+      nameMatch,
+    })
+    return idMatch || nameMatch
+  })
+
   const jobsTab = (
     <div className="p-4">
-      {jobs.length === 0 ? (
+      {companyJobs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
           <Briefcase className="w-12 h-12 text-[#E2E8F0] mb-3" />
           <p className="text-[15px] font-medium text-[#1E293B] mb-1">No jobs yet</p>
@@ -89,14 +107,14 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
               </tr>
             </thead>
             <tbody>
-              {jobs.map((j, i) => {
+              {companyJobs.map((j, i) => {
                 const st = JOB_STATUS_STYLE[j.status] ?? { bg: '#F1F5F9', clr: '#475569' }
                 return (
                   <tr
                     key={j.id}
                     onClick={() => onNavigateToJob(j.id)}
                     className="group hover:bg-[#F8FAFC] cursor-pointer transition-colors"
-                    style={{ borderBottom: i < jobs.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
+                    style={{ borderBottom: i < companyJobs.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
                   >
                     <td className="text-[12px] font-medium text-[#1E293B] hover:text-[#2563EB] transition-colors" style={{ padding: '10px 16px' }}>{j.title}</td>
                     <td style={{ padding: '10px 16px' }}>
