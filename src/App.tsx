@@ -137,8 +137,8 @@ function mapJob(r: any): Job {
     assignedRecruiterId:    r.assigned_recruiter_id,
     assignedRecruiterEmail: r.assigned_recruiter_email,
     assignedRecruiterName:  r.assigned_recruiter_name,
-    recruiterIds:           r.recruiter_ids ?? [],
-    recruiterEmails:        r.recruiter_emails ?? [],
+    recruiterIds:           r.assigned_recruiter_id    ? [r.assigned_recruiter_id]    : [],
+    recruiterEmails:        r.assigned_recruiter_email ? [r.assigned_recruiter_email] : [],
     description:            r.description,
     dateAdded:              r.date_added,
     candidates:             r.candidates ?? 0,
@@ -153,23 +153,22 @@ function toDbJob(j: Partial<Job>): Record<string, unknown> {
   const row: Record<string, any> = {}
   if ('id'                     in j) row.id                       = j.id
   if ('title'                  in j) row.title                    = j.title
-  if ('companyId'              in j) row.company_id               = j.companyId               || null
-  if ('companyName'            in j) row.company_name             = j.companyName             || null
-  if ('jobType'                in j) row.job_type                 = j.jobType
-  if ('salaryMin'              in j) row.salary_min               = j.salaryMin               || null
-  if ('salaryMax'              in j) row.salary_max               = j.salaryMax               || null
-  if ('salaryType'             in j) row.salary_type              = j.salaryType
-  if ('location'               in j) row.location                 = j.location                || null
-  if ('status'                 in j) row.status                   = j.status
-  if ('assignedRecruiterId'    in j) row.assigned_recruiter_id    = j.assignedRecruiterId    || null
-  if ('assignedRecruiterEmail' in j) row.assigned_recruiter_email = j.assignedRecruiterEmail || null
-  if ('assignedRecruiterName'  in j) row.assigned_recruiter_name  = j.assignedRecruiterName  || null
-  if ('recruiterIds'           in j) row.recruiter_ids            = j.recruiterIds
-  if ('recruiterEmails'        in j) row.recruiter_emails         = j.recruiterEmails
-  if ('description'            in j) row.description              = j.description             || null
-  if ('dateAdded'              in j) row.date_added               = j.dateAdded               || null
-  if ('candidates'             in j) row.candidates               = j.candidates
-  if ('internalId'             in j) row.internal_id              = j.internalId              || null
+  if ('companyId'              in j) row.company_id               = j.companyId               || ''
+  if ('companyName'            in j) row.company_name             = j.companyName             || ''
+  if ('jobType'                in j) row.job_type                 = j.jobType                 || 'Full Time'
+  if ('salaryMin'              in j) row.salary_min               = j.salaryMin               || ''
+  if ('salaryMax'              in j) row.salary_max               = j.salaryMax               || ''
+  if ('salaryType'             in j) row.salary_type              = j.salaryType              || 'year'
+  if ('location'               in j) row.location                 = j.location                || ''
+  if ('status'                 in j) row.status                   = j.status                  || 'Open'
+  if ('assignedRecruiterId'    in j) row.assigned_recruiter_id    = j.assignedRecruiterId    || ''
+  if ('assignedRecruiterEmail' in j) row.assigned_recruiter_email = j.assignedRecruiterEmail || ''
+  if ('assignedRecruiterName'  in j) row.assigned_recruiter_name  = j.assignedRecruiterName  || ''
+  // recruiter_ids / recruiter_emails — колонок нет в Supabase, пропускаем
+  if ('description'            in j) row.description              = j.description             || ''
+  if ('dateAdded'              in j) row.date_added               = j.dateAdded               || ''
+  if ('candidates'             in j) row.candidates               = j.candidates              ?? 0
+  if ('internalId'             in j) row.internal_id              = j.internalId              || ''
   if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber         || null
   return row
 }
@@ -336,18 +335,11 @@ function App() {
 
   async function handleAddJob(j: Job) {
     setJobs(prev => [j, ...prev])
-    const dbRow = toDbJob(j)
-    console.log('INSERT jobs row:', JSON.stringify(dbRow, null, 2))
+    const dbRow = { ...toDbJob(j), days_open: 0 }
     const { error } = await supabase.from('jobs').insert(dbRow)
     if (error) {
-      console.error('INSERT jobs FAILED')
-      console.error('  code:', error.code)
-      console.error('  message:', error.message)
-      console.error('  details:', error.details)
-      console.error('  hint:', error.hint)
+      console.error('handleAddJob:', error.code, error.message, error.details)
       setJobs(prev => prev.filter(x => x.id !== j.id))
-    } else {
-      console.log('INSERT jobs OK')
     }
     void loadAllData()
   }
