@@ -26,10 +26,10 @@ import { AddCandidateModal } from './components/ui/AddCandidateModal'
 type Page = 'dashboard' | 'people' | 'candidates' | 'jobs' | 'job' | 'companies' | 'company' | 'reports' | 'candidate' | 'search' | 'administration'
 
 // Clear stale data on version bump — runs before useState initializers read localStorage
-if (localStorage.getItem('evaryst_version') !== '1.0.0') {
+if (localStorage.getItem('evaryst_version') !== '1.0.1') {
   ;['evaryst_candidates','evaryst_contacts','evaryst_companies','evaryst_jobs',
-    'evaryst_schedule','evaryst_team_members'].forEach(k => localStorage.removeItem(k))
-  localStorage.setItem('evaryst_version', '1.0.0')
+    'evaryst_schedule','evaryst_team_members','evaryst_tasks','evaryst_calls','evaryst_meetings'].forEach(k => localStorage.removeItem(k))
+  localStorage.setItem('evaryst_version', '1.0.1')
 }
 
 // Ensure demo recruiter exists in team — runs synchronously so useState reads it immediately

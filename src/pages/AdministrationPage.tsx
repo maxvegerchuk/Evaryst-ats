@@ -14,6 +14,11 @@ interface AdministrationPageProps {
   currentUser: User
 }
 
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
+}
+
 const INP = 'text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-full placeholder-[#94A3B8]'
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' } as const
 const LBL = 'block text-[11px] text-[#475569] mb-1'
@@ -206,7 +211,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                         {m.status === 'active' ? 'Active' : 'Pending'}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-[12px] text-[#475569]">{m.invitedAt}</td>
+                    <td className="px-4 py-2.5 text-[12px] text-[#475569]">{formatDate(m.invitedAt)}</td>
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-3">
                         {m.status === 'pending' && (
