@@ -60,16 +60,17 @@ const HIRING_TEAM: { role: string; name: string }[] = []
 // ── Component ──────────────────────────────────────────────────────────────────
 
 interface JobPageProps {
-  setCurrentPage: (page: string) => void
-  initialTab?:    'candidates' | 'details' | 'documents'
-  isManager?:     boolean
-  job?:           Job | null
-  recruiters?:    Recruiter[]
-  onUpdateJob?:   (job: Job) => void
-  candidates?:    Candidate[]
+  setCurrentPage:    (page: string) => void
+  initialTab?:       'candidates' | 'details' | 'documents'
+  isManager?:        boolean
+  job?:              Job | null
+  recruiters?:       Recruiter[]
+  onUpdateJob?:      (job: Job) => void
+  candidates?:       Candidate[]
+  onUpdateCandidate?: (id: string, updates: Partial<Candidate>) => void
 }
 
-export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [] }: JobPageProps) {
+export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [], onUpdateCandidate }: JobPageProps) {
   const [activeTab,    setActiveTab]    = useState<JobTab>(initialTab ?? 'details')
   const [showEditJob,  setShowEditJob]  = useState(false)
 
@@ -78,10 +79,34 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
   const CAND_STATUSES = ['New', 'Phone Screen', 'Interview', 'Submitted', 'Placed'] as const
   const CAND_RATINGS  = ['Paper A', 'Paper B', 'A', 'B'] as const
 
-  const [candStatuses, setCandStatuses] = useState<Record<string, string>>({})
-  const [candRatings,  setCandRatings]  = useState<Record<string, string>>({})
+  const [candStatuses,         setCandStatuses]         = useState<Record<string, string>>({})
+  const [candRatings,          setCandRatings]          = useState<Record<string, string>>({})
+  const [showAddCandModal,     setShowAddCandModal]     = useState(false)
+  const [candModalSelected,    setCandModalSelected]    = useState<Set<string>>(new Set())
+  const [candSearch,           setCandSearch]           = useState('')
 
-  const jobCandidates = candidates.filter(c => c.attachedJobIds?.includes(job?.id ?? '') && !c.isArchived)
+  const jobCandidates      = candidates.filter(c => c.attachedJobIds?.includes(job?.id ?? '') && !c.isArchived)
+  const availableCandidates = candidates.filter(c => !c.attachedJobIds?.includes(job?.id ?? '') && !c.isArchived)
+
+  const filteredAvailable = candSearch.trim()
+    ? availableCandidates.filter(c =>
+        c.name.toLowerCase().includes(candSearch.toLowerCase()) ||
+        c.specialty?.toLowerCase().includes(candSearch.toLowerCase())
+      )
+    : availableCandidates
+
+  function openCandModal() { setCandModalSelected(new Set()); setCandSearch(''); setShowAddCandModal(true) }
+
+  function confirmAddCandidates() {
+    if (!job || candModalSelected.size === 0) return
+    candModalSelected.forEach(id => {
+      const c = candidates.find(x => x.id === id)
+      if (!c) return
+      const nextIds = [...new Set([...(c.attachedJobIds ?? []), job.id])]
+      onUpdateCandidate?.(id, { attachedJobIds: nextIds })
+    })
+    setShowAddCandModal(false)
+  }
 
   const candidatesTab = (
     <div className="p-4">
@@ -89,72 +114,165 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         <div className="flex flex-col items-center justify-center py-16">
           <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
           <p className="text-[15px] font-medium text-[#1E293B] mb-1">No candidates yet</p>
-          <p className="text-[13px] text-[#94A3B8] mb-4">Attach candidates to this job from their profile page</p>
+          <p className="text-[13px] text-[#94A3B8] mb-4">Add candidates to this job opening</p>
           <button
             type="button"
-            onClick={() => setCurrentPage('people')}
+            onClick={openCandModal}
             className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[13px] font-medium hover:bg-[#1D4ED8] transition-colors"
           >
-            Go to Candidates
+            + Add Candidates
           </button>
         </div>
       ) : (
-      <div className="bg-white rounded-[10px] overflow-hidden" style={{ border: '0.5px solid #E2E8F0' }}>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-              {['Name', 'Status', 'Rating', 'Added'].map(h => (
-                <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {jobCandidates.map((c, i) => {
-              const { bg, clr } = getAvatarColor(c.id)
-              return (
-                <tr
-                  key={c.id}
-                  onClick={() => setCurrentPage('candidate')}
-                  className="hover:bg-[#F8FAFC] cursor-pointer transition-colors"
-                  style={{ borderBottom: i < jobCandidates.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
-                >
-                  <td style={{ padding: '10px 16px' }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold" style={{ backgroundColor: bg, color: clr }}>
-                        {getInitials(c.name)}
+      <>
+        <div className="flex justify-end mb-3">
+          <button type="button" onClick={openCandModal}
+            className="flex items-center gap-1.5 bg-[#2563EB] text-white rounded-[7px] px-3 py-1.5 text-[12px] font-medium hover:bg-[#1D4ED8] transition-colors">
+            <UserPlus size={13} /> Add Candidates
+          </button>
+        </div>
+        <div className="bg-white rounded-[10px] overflow-hidden" style={{ border: '0.5px solid #E2E8F0' }}>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+                {['Name', 'Status', 'Rating', 'Added'].map(h => (
+                  <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {jobCandidates.map((c, i) => {
+                const { bg, clr } = getAvatarColor(c.id)
+                return (
+                  <tr
+                    key={c.id}
+                    onClick={() => setCurrentPage('candidate')}
+                    className="hover:bg-[#F8FAFC] cursor-pointer transition-colors"
+                    style={{ borderBottom: i < jobCandidates.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
+                  >
+                    <td style={{ padding: '10px 16px' }}>
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold" style={{ backgroundColor: bg, color: clr }}>
+                          {getInitials(c.name)}
+                        </div>
+                        <span className="text-[13px] font-medium text-[#1E293B] hover:text-[#2563EB] transition-colors">{c.name}</span>
                       </div>
-                      <span className="text-[13px] font-medium text-[#1E293B] hover:text-[#2563EB] transition-colors">{c.name}</span>
+                    </td>
+                    <td style={{ padding: '10px 16px' }}>
+                      <select
+                        value={candStatuses[c.id] ?? c.stage}
+                        onChange={e => setCandStatuses(prev => ({ ...prev, [c.id]: e.target.value }))}
+                        onClick={e => e.stopPropagation()}
+                        className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
+                        style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
+                      >
+                        {CAND_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </td>
+                    <td style={{ padding: '10px 16px' }}>
+                      <select
+                        value={candRatings[c.id] ?? c.rating}
+                        onChange={e => setCandRatings(prev => ({ ...prev, [c.id]: e.target.value }))}
+                        onClick={e => e.stopPropagation()}
+                        className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
+                        style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
+                      >
+                        {CAND_RATINGS.map(r => <option key={r} value={r}>{r}</option>)}
+                      </select>
+                    </td>
+                    <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{c.addedDate}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </>
+      )}
+
+      {/* ── Add Candidates Modal ─────────────────────────────────────────────── */}
+      {showAddCandModal && (
+        <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center">
+          <div
+            className="bg-white rounded-[10px] shadow-lg w-[460px] max-h-[75vh] flex flex-col"
+            style={{ border: '0.5px solid #E2E8F0' }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+              <h2 className="text-[15px] font-semibold text-[#1E293B]">Add candidates</h2>
+              <button type="button" onClick={() => setShowAddCandModal(false)}
+                className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+                <X className="w-4 h-4 text-[#64748B]" />
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="px-5 pt-3 pb-2 flex-shrink-0">
+              <input
+                type="text"
+                value={candSearch}
+                onChange={e => setCandSearch(e.target.value)}
+                placeholder="Search by name or specialty..."
+                className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+                style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }}
+                autoFocus
+              />
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-5 py-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E2E8F0 transparent' }}>
+              {filteredAvailable.length === 0 ? (
+                <p className="text-[13px] text-[#94A3B8] py-4 text-center">
+                  {availableCandidates.length === 0 ? 'All candidates are already added to this job.' : 'No candidates match your search.'}
+                </p>
+              ) : filteredAvailable.map(c => {
+                const checked = candModalSelected.has(c.id)
+                const { bg, clr } = getAvatarColor(c.id)
+                return (
+                  <label key={c.id}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-[8px] cursor-pointer transition-colors mb-1 ${checked ? 'bg-[#EFF6FF]' : 'hover:bg-[#F8FAFC]'}`}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => setCandModalSelected(prev => {
+                        const n = new Set(prev)
+                        n.has(c.id) ? n.delete(c.id) : n.add(c.id)
+                        return n
+                      })}
+                      className="w-4 h-4 accent-[#2563EB] flex-shrink-0"
+                    />
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ backgroundColor: bg, color: clr }}>
+                      {getInitials(c.name)}
                     </div>
-                  </td>
-                  <td style={{ padding: '10px 16px' }}>
-                    <select
-                      value={candStatuses[c.id] ?? c.stage}
-                      onChange={e => setCandStatuses(prev => ({ ...prev, [c.id]: e.target.value }))}
-                      onClick={e => e.stopPropagation()}
-                      className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
-                      style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
-                    >
-                      {CAND_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </td>
-                  <td style={{ padding: '10px 16px' }}>
-                    <select
-                      value={candRatings[c.id] ?? c.rating}
-                      onChange={e => setCandRatings(prev => ({ ...prev, [c.id]: e.target.value }))}
-                      onClick={e => e.stopPropagation()}
-                      className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
-                      style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
-                    >
-                      {CAND_RATINGS.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
-                  </td>
-                  <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{c.addedDate}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+                    <div>
+                      <p className="text-[13px] font-medium text-[#1E293B] leading-none mb-0.5">{c.name}</p>
+                      {c.specialty && <p className="text-[12px] text-[#94A3B8]">{c.specialty}</p>}
+                    </div>
+                    <span className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#475569] flex-shrink-0">{c.stage}</span>
+                  </label>
+                )
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderTop: '0.5px solid #E2E8F0' }}>
+              <span className="text-[12px] text-[#64748B]">
+                {candModalSelected.size > 0 ? `${candModalSelected.size} selected` : 'Select candidates to add'}
+              </span>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setShowAddCandModal(false)}
+                  className="px-4 py-2 text-[12px] font-medium text-[#475569] bg-white rounded-[7px] hover:bg-[#F8FAFC]"
+                  style={{ border: '0.5px solid #E2E8F0' }}>
+                  Cancel
+                </button>
+                <button type="button" onClick={confirmAddCandidates} disabled={candModalSelected.size === 0}
+                  className="px-4 py-2 text-[12px] font-medium text-white bg-[#2563EB] rounded-[7px] hover:bg-[#1D4ED8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

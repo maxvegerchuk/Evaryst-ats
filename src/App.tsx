@@ -644,6 +644,7 @@ function App() {
                 recruiters={recruiterMembers}
                 onUpdateJob={handleUpdateJob}
                 candidates={candidates}
+                onUpdateCandidate={handleUpdateCandidate}
               />
             </div>
           )}
