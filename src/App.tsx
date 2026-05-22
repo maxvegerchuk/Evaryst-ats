@@ -335,12 +335,59 @@ function App() {
 
   async function handleAddJob(j: Job) {
     setJobs(prev => [j, ...prev])
-    const dbRow = { ...toDbJob(j), days_open: 0 }
-    const { error } = await supabase.from('jobs').insert(dbRow)
-    if (error) {
-      console.error('handleAddJob:', error.code, error.message, error.details)
+
+    const jobInsert = {
+      id:                       j.id,
+      title:                    j.title,
+      company_id:               j.companyId               || '',
+      company_name:             j.companyName             || '',
+      job_type:                 j.jobType                 || 'Full Time',
+      salary_min:               j.salaryMin               || '',
+      salary_max:               j.salaryMax               || '',
+      salary_type:              j.salaryType              || 'year',
+      location:                 j.location                || '',
+      status:                   j.status                  || 'Open',
+      assigned_recruiter_id:    j.assignedRecruiterId    || '',
+      assigned_recruiter_email: j.assignedRecruiterEmail || '',
+      assigned_recruiter_name:  j.assignedRecruiterName  || '',
+      description:              j.description             || '',
+      internal_id:              j.internalId              || '',
+      client_req_number:        j.clientReqNumber?.trim() || null,
+      candidates:               0,
+      days_open:                0,
+      date_added:               j.dateAdded,
+    }
+
+    console.log('=== JOB INSERT DEBUG ===')
+    console.log('Insert object:', JSON.stringify(jobInsert, null, 2))
+    console.log('Object keys:', Object.keys(jobInsert))
+
+    try {
+      const { data, error } = await supabase.from('jobs').insert(jobInsert).select()
+
+      console.log('Supabase response data:', data)
+      console.log('Supabase response error:', error)
+
+      if (error) {
+        console.error('=== SUPABASE ERROR ===')
+        console.error('Message:', error.message)
+        console.error('Details:', error.details)
+        console.error('Hint:', error.hint)
+        console.error('Code:', error.code)
+        console.error('Full error:', JSON.stringify(error, null, 2))
+        alert('Error: ' + error.message + '\nDetails: ' + error.details + '\nHint: ' + error.hint)
+        setJobs(prev => prev.filter(x => x.id !== j.id))
+        return
+      }
+
+      console.log('Job created successfully:', data)
+    } catch (err: unknown) {
+      const e = err as { message?: string }
+      console.error('=== CATCH ERROR ===', err)
+      alert('Caught error: ' + (e?.message ?? String(err)))
       setJobs(prev => prev.filter(x => x.id !== j.id))
     }
+
     void loadAllData()
   }
 
