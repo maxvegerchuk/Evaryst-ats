@@ -610,19 +610,10 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                 </button>
               )}
             </div>
-            {([
-              ['Job ID',    job?.internalId?.trim() || '—'],
-              ['Location',  job?.location || '—'],
-              ['Job type',  job?.jobType || '—'],
-              ['Salary',    job?.salaryMin && job?.salaryMax
-                              ? `$${job.salaryMin} – $${job.salaryMax} / ${job.salaryType === 'hour' ? 'hr' : 'yr'}`
-                              : '—'],
-            ] as [string, string][]).map(([label, val]) => (
-              <div key={label} className="flex items-baseline gap-2 mb-1.5 last:mb-0">
-                <span className="text-[10px] text-[#94A3B8] min-w-[64px] flex-shrink-0">{label}</span>
-                <span className="text-[12px] text-[#1E293B]">{val}</span>
-              </div>
-            ))}
+            <div className="flex items-baseline gap-2">
+              <span className="text-[10px] text-[#94A3B8] min-w-[64px] flex-shrink-0">Job ID</span>
+              <span className="text-[12px] text-[#1E293B]">{job?.internalId?.trim() || '—'}</span>
+            </div>
           </div>
         </div>
       </div>
