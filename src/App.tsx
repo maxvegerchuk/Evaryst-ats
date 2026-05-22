@@ -22,41 +22,201 @@ import type { Company } from './types/company'
 import type { Job } from './types/job'
 import type { TeamMember } from './types/team'
 import { AddCandidateModal } from './components/ui/AddCandidateModal'
+import { supabase } from './lib/supabase'
 
 type Page = 'dashboard' | 'people' | 'candidates' | 'jobs' | 'job' | 'companies' | 'company' | 'reports' | 'candidate' | 'search' | 'administration'
 
-// Clear stale data on version bump — runs before useState initializers read localStorage
-if (localStorage.getItem('evaryst_version') !== '1.0.1') {
-  ;['evaryst_candidates','evaryst_contacts','evaryst_companies','evaryst_jobs',
-    'evaryst_schedule','evaryst_team_members','evaryst_tasks','evaryst_calls','evaryst_meetings'].forEach(k => localStorage.removeItem(k))
-  localStorage.setItem('evaryst_version', '1.0.1')
+// ── Supabase row → TypeScript type mappers ────────────────────────────────────
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapCandidate(r: any): Candidate {
+  return {
+    id:             r.id,
+    name:           r.name,
+    email:          r.email,
+    phone:          r.phone,
+    specialty:      r.specialty,
+    stage:          r.stage,
+    rating:         r.rating,
+    location:       r.location,
+    addedDate:      r.added_date,
+    notes:          r.notes,
+    starred:        r.starred ?? false,
+    ownerId:        r.owner_id,
+    ownerEmail:     r.owner_email,
+    ownerName:      r.owner_name,
+    isArchived:     r.is_archived ?? false,
+    attachedJobIds: r.attached_job_ids ?? [],
+    source:         r.source,
+    resumeFileName: r.resume_file_name,
+  }
 }
 
-// Ensure demo recruiter exists in team — runs synchronously so useState reads it immediately
-;(function seedDemoRecruiter() {
-  try {
-    const raw  = localStorage.getItem('evaryst_team_members')
-    const team: { email: string; [k: string]: unknown }[] = raw ? JSON.parse(raw) : []
-    if (!team.some(m => m.email === DEMO_USER.email)) {
-      team.push({
-        id:        DEMO_USER.id,
-        email:     DEMO_USER.email,
-        name:      DEMO_USER.name,
-        role:      'recruiter',
-        status:    'active',
-        invitedAt: new Date().toISOString(),
-      })
-      localStorage.setItem('evaryst_team_members', JSON.stringify(team))
-    }
-  } catch { /* ignore */ }
-})()
-
-function ls<T>(key: string, fallback: T): T {
-  try {
-    const v = localStorage.getItem(key)
-    return v ? (JSON.parse(v) as T) : fallback
-  } catch { return fallback }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toDbCandidate(c: Partial<Candidate>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const row: Record<string, any> = {}
+  if ('id'             in c) row.id               = c.id
+  if ('name'           in c) row.name             = c.name
+  if ('email'          in c) row.email            = c.email
+  if ('phone'          in c) row.phone            = c.phone
+  if ('specialty'      in c) row.specialty        = c.specialty
+  if ('stage'          in c) row.stage            = c.stage
+  if ('rating'         in c) row.rating           = c.rating
+  if ('location'       in c) row.location         = c.location
+  if ('addedDate'      in c) row.added_date       = c.addedDate
+  if ('notes'          in c) row.notes            = c.notes
+  if ('starred'        in c) row.starred          = c.starred
+  if ('ownerId'        in c) row.owner_id         = c.ownerId
+  if ('ownerEmail'     in c) row.owner_email      = c.ownerEmail
+  if ('ownerName'      in c) row.owner_name       = c.ownerName
+  if ('isArchived'     in c) row.is_archived      = c.isArchived
+  if ('attachedJobIds' in c) row.attached_job_ids = c.attachedJobIds
+  if ('source'         in c) row.source           = c.source
+  if ('resumeFileName' in c) row.resume_file_name = c.resumeFileName
+  return row
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapCompany(r: any): Company {
+  return {
+    id:         r.id,
+    name:       r.name,
+    industry:   r.industry,
+    location:   r.location,
+    city:       r.city,
+    state:      r.state,
+    zip:        r.zip,
+    phone:      r.phone,
+    website:    r.website,
+    status:     r.status,
+    activeJobs: r.active_jobs ?? 0,
+    dateAdded:  r.date_added,
+    notes:      r.notes,
+    ownerId:    r.owner_id,
+    ownerName:  r.owner_name,
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toDbCompany(c: Partial<Company>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const row: Record<string, any> = {}
+  if ('id'         in c) row.id          = c.id
+  if ('name'       in c) row.name        = c.name
+  if ('industry'   in c) row.industry    = c.industry
+  if ('location'   in c) row.location    = c.location
+  if ('city'       in c) row.city        = c.city
+  if ('state'      in c) row.state       = c.state
+  if ('zip'        in c) row.zip         = c.zip
+  if ('phone'      in c) row.phone       = c.phone
+  if ('website'    in c) row.website     = c.website
+  if ('status'     in c) row.status      = c.status
+  if ('activeJobs' in c) row.active_jobs = c.activeJobs
+  if ('dateAdded'  in c) row.date_added  = c.dateAdded
+  if ('notes'      in c) row.notes       = c.notes
+  if ('ownerId'    in c) row.owner_id    = c.ownerId
+  if ('ownerName'  in c) row.owner_name  = c.ownerName
+  return row
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapJob(r: any): Job {
+  return {
+    id:                     r.id,
+    title:                  r.title,
+    companyId:              r.company_id,
+    companyName:            r.company_name,
+    jobType:                r.job_type,
+    salaryMin:              r.salary_min,
+    salaryMax:              r.salary_max,
+    salaryType:             r.salary_type,
+    location:               r.location,
+    status:                 r.status,
+    assignedRecruiterId:    r.assigned_recruiter_id,
+    assignedRecruiterEmail: r.assigned_recruiter_email,
+    assignedRecruiterName:  r.assigned_recruiter_name,
+    recruiterIds:           r.recruiter_ids ?? [],
+    recruiterEmails:        r.recruiter_emails ?? [],
+    description:            r.description,
+    dateAdded:              r.date_added,
+    candidates:             r.candidates ?? 0,
+    internalId:             r.internal_id,
+    clientReqNumber:        r.client_req_number,
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toDbJob(j: Partial<Job>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const row: Record<string, any> = {}
+  if ('id'                     in j) row.id                       = j.id
+  if ('title'                  in j) row.title                    = j.title
+  if ('companyId'              in j) row.company_id               = j.companyId
+  if ('companyName'            in j) row.company_name             = j.companyName
+  if ('jobType'                in j) row.job_type                 = j.jobType
+  if ('salaryMin'              in j) row.salary_min               = j.salaryMin
+  if ('salaryMax'              in j) row.salary_max               = j.salaryMax
+  if ('salaryType'             in j) row.salary_type              = j.salaryType
+  if ('location'               in j) row.location                 = j.location
+  if ('status'                 in j) row.status                   = j.status
+  if ('assignedRecruiterId'    in j) row.assigned_recruiter_id    = j.assignedRecruiterId
+  if ('assignedRecruiterEmail' in j) row.assigned_recruiter_email = j.assignedRecruiterEmail
+  if ('assignedRecruiterName'  in j) row.assigned_recruiter_name  = j.assignedRecruiterName
+  if ('recruiterIds'           in j) row.recruiter_ids            = j.recruiterIds
+  if ('recruiterEmails'        in j) row.recruiter_emails         = j.recruiterEmails
+  if ('description'            in j) row.description              = j.description
+  if ('dateAdded'              in j) row.date_added               = j.dateAdded
+  if ('candidates'             in j) row.candidates               = j.candidates
+  if ('internalId'             in j) row.internal_id              = j.internalId
+  if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber
+  return row
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapContact(r: any): Contact {
+  return {
+    id:          r.id,
+    name:        r.name,
+    title:       r.title,
+    company:     r.company,
+    companyId:   r.company_id,
+    phone:       r.phone,
+    email:       r.email,
+    status:      r.status,
+    lastContact: r.last_contact,
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toDbContact(c: Partial<Contact>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const row: Record<string, any> = {}
+  if ('id'          in c) row.id           = c.id
+  if ('name'        in c) row.name         = c.name
+  if ('title'       in c) row.title        = c.title
+  if ('company'     in c) row.company      = c.company
+  if ('companyId'   in c) row.company_id   = c.companyId
+  if ('phone'       in c) row.phone        = c.phone
+  if ('email'       in c) row.email        = c.email
+  if ('status'      in c) row.status       = c.status
+  if ('lastContact' in c) row.last_contact = c.lastContact
+  return row
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapTeamMember(r: any): TeamMember {
+  return {
+    id:        r.id,
+    email:     r.email,
+    name:      r.name,
+    role:      r.role,
+    status:    r.status,
+    invitedAt: r.invited_at,
+  }
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
 
 function App() {
   const [scheduleOpen, setScheduleOpen] = useState(true)
@@ -82,38 +242,12 @@ function App() {
   const [currentPage,           setCurrentPage]           = useState<Page>('dashboard')
   const [jobInitialTab,         setJobInitialTab]         = useState<'candidates' | 'details' | 'documents'>('candidates')
   const [eventStatuses,         setEventStatuses]         = useState<Record<string, EventStatus>>({})
-  const [scheduleEvents,        setScheduleEvents]        = useState<PanelEvent[]>(() => ls('evaryst_schedule', []))
-
-  const [candidates, setCandidates] = useState<Candidate[]>(() => {
-    try {
-      const saved = localStorage.getItem('evaryst_candidates')
-      const parsed: Candidate[] = saved ? JSON.parse(saved) : []
-      return parsed.map(c => ({ ...c, isArchived: c.isArchived ?? false }))
-    } catch { return [] }
-  })
-
-  const [contacts,   setContacts]   = useState<Contact[]>(()   => ls('evaryst_contacts',  []))
-  const [companies,  setCompanies]  = useState<Company[]>(()   => ls('evaryst_companies', []))
-  const [jobs,       setJobs]       = useState<Job[]>(() => {
-    const loaded   = ls('evaryst_jobs', []) as Job[]
-    // Build id→email map from team members so old jobs (stored only IDs) can be backfilled
-    const members  = ls('evaryst_team_members', []) as { id: string; email: string }[]
-    const idToEmail: Record<string, string> = {}
-    members.forEach(m => { idToEmail[m.id] = m.email })
-    // Also map demo user by canonical id regardless of what's in localStorage
-    idToEmail[DEMO_USER.id] = DEMO_USER.email
-
-    return loaded.map(j => {
-      const recruiterIds    = Array.isArray(j.recruiterIds)    ? j.recruiterIds    : []
-      const storedEmails    = Array.isArray(j.recruiterEmails) ? j.recruiterEmails : []
-      // Backfill any email not already stored by looking up each recruiter id
-      const backfilled      = recruiterIds.map(id => idToEmail[id]).filter(Boolean) as string[]
-      const recruiterEmails = [...new Set([...storedEmails, ...backfilled])]
-      const assignedEmail   = j.assignedRecruiterEmail || idToEmail[j.assignedRecruiterId] || ''
-      return { ...j, recruiterIds, recruiterEmails, assignedRecruiterEmail: assignedEmail }
-    })
-  })
-  const [teamMembers]               = useState<TeamMember[]>(() => ls('evaryst_team_members', []))
+  const [scheduleEvents,        setScheduleEvents]        = useState<PanelEvent[]>([])
+  const [candidates,            setCandidates]            = useState<Candidate[]>([])
+  const [contacts,              setContacts]              = useState<Contact[]>([])
+  const [companies,             setCompanies]             = useState<Company[]>([])
+  const [jobs,                  setJobs]                  = useState<Job[]>([])
+  const [teamMembers,           setTeamMembers]           = useState<TeamMember[]>([])
 
   const [searchKeyword,         setSearchKeyword]         = useState('')
   const [addCandidateOpen,      setAddCandidateOpen]      = useState(false)
@@ -122,17 +256,107 @@ function App() {
   const [selectedCompanyId,     setSelectedCompanyId]     = useState<string | null>(null)
   const [selectedJobId,         setSelectedJobId]         = useState<string | null>(null)
 
-  useEffect(() => { localStorage.setItem('evaryst_candidates', JSON.stringify(candidates)) }, [candidates])
-  useEffect(() => { localStorage.setItem('evaryst_contacts',   JSON.stringify(contacts))   }, [contacts])
-  useEffect(() => { localStorage.setItem('evaryst_companies',  JSON.stringify(companies))  }, [companies])
-  useEffect(() => { localStorage.setItem('evaryst_jobs',       JSON.stringify(jobs))       }, [jobs])
-  useEffect(() => { localStorage.setItem('evaryst_schedule',   JSON.stringify(scheduleEvents)) }, [scheduleEvents])
+  // Load all data from Supabase on mount
+  useEffect(() => {
+    async function loadAll() {
+      const [candRes, compRes, jobRes, contRes, teamRes] = await Promise.all([
+        supabase.from('candidates').select('*'),
+        supabase.from('companies').select('*'),
+        supabase.from('jobs').select('*'),
+        supabase.from('contacts').select('*'),
+        supabase.from('team_members').select('*'),
+      ])
+      if (candRes.data)  setCandidates(candRes.data.map(mapCandidate))
+      if (compRes.data)  setCompanies(compRes.data.map(mapCompany))
+      if (jobRes.data)   setJobs(jobRes.data.map(mapJob))
+      if (contRes.data)  setContacts(contRes.data.map(mapContact))
+      if (teamRes.data)  setTeamMembers(teamRes.data.map(mapTeamMember))
+    }
+    void loadAll()
+  }, [])
+
+  // ── Candidate handlers ──────────────────────────────────────────────────────
+
+  async function handleAddCandidate(c: Candidate) {
+    setCandidates(prev => [c, ...prev])
+    const { error } = await supabase.from('candidates').insert(toDbCandidate(c))
+    if (error) console.error('handleAddCandidate:', error)
+  }
+
+  async function handleUpdateCandidate(id: string, updates: Partial<Candidate>) {
+    setCandidates(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c))
+    const { error } = await supabase.from('candidates').update(toDbCandidate(updates)).eq('id', id)
+    if (error) console.error('handleUpdateCandidate:', error)
+  }
+
+  async function handleDeleteCandidate(id: string) {
+    setCandidates(prev => prev.filter(c => c.id !== id))
+    const { error } = await supabase.from('candidates').delete().eq('id', id)
+    if (error) console.error('handleDeleteCandidate:', error)
+  }
+
+  function toggleCandidateStar(id: string) {
+    const c = candidates.find(x => x.id === id)
+    if (c) void handleUpdateCandidate(id, { starred: !c.starred })
+  }
+
+  function archiveCandidate(id: string)  { void handleUpdateCandidate(id, { isArchived: true  }) }
+  function restoreCandidate(id: string)  { void handleUpdateCandidate(id, { isArchived: false }) }
+  function deleteCandidate(id: string)   { void handleDeleteCandidate(id) }
+
+  // ── Company handlers ────────────────────────────────────────────────────────
+
+  async function handleAddCompany(c: Company) {
+    setCompanies(prev => [c, ...prev])
+    const { error } = await supabase.from('companies').insert(toDbCompany(c))
+    if (error) console.error('handleAddCompany:', error)
+  }
+
+  async function handleDeleteCompany(id: string) {
+    setCompanies(prev => prev.filter(c => c.id !== id))
+    const { error } = await supabase.from('companies').delete().eq('id', id)
+    if (error) console.error('handleDeleteCompany:', error)
+  }
+
+  // ── Job handlers ────────────────────────────────────────────────────────────
+
+  async function handleAddJob(j: Job) {
+    setJobs(prev => [j, ...prev])
+    const { error } = await supabase.from('jobs').insert(toDbJob(j))
+    if (error) console.error('handleAddJob:', error)
+  }
+
+  async function handleUpdateJob(updated: Job) {
+    setJobs(prev => prev.map(j => j.id === updated.id ? updated : j))
+    const { error } = await supabase.from('jobs').update(toDbJob(updated)).eq('id', updated.id)
+    if (error) console.error('handleUpdateJob:', error)
+  }
+
+  async function handleDeleteJob(id: string) {
+    setJobs(prev => prev.filter(j => j.id !== id))
+    const { error } = await supabase.from('jobs').delete().eq('id', id)
+    if (error) console.error('handleDeleteJob:', error)
+  }
+
+  // ── Contact handlers ────────────────────────────────────────────────────────
+
+  async function handleAddContact(c: Contact) {
+    setContacts(prev => [...prev, c])
+    const { error } = await supabase.from('contacts').insert(toDbContact(c))
+    if (error) console.error('handleAddContact:', error)
+  }
+
+  async function handleDeleteContact(id: string) {
+    setContacts(prev => prev.filter(c => c.id !== id))
+    const { error } = await supabase.from('contacts').delete().eq('id', id)
+    if (error) console.error('handleDeleteContact:', error)
+  }
+
+  // ── Schedule (no Supabase table — session-only) ─────────────────────────────
 
   function addScheduleEvent(ev: PanelEvent) { setScheduleEvents(prev => [...prev, ev]) }
-  function toggleCandidateStar(id: string)  { setCandidates(prev => prev.map(c => c.id === id ? { ...c, starred: !c.starred } : c)) }
-  function archiveCandidate(id: string)     { setCandidates(prev => prev.map(c => c.id === id ? { ...c, isArchived: true  } : c)) }
-  function restoreCandidate(id: string)     { setCandidates(prev => prev.map(c => c.id === id ? { ...c, isArchived: false } : c)) }
-  function deleteCandidate(id: string)      { setCandidates(prev => prev.filter(c => c.id !== id)) }
+
+  // ── Derived state ───────────────────────────────────────────────────────────
 
   const isManager = currentUser?.role === 'talent_acquisition_manager'
   const isNewUser = currentUser !== null && currentUser.id !== DEMO_USER.id
@@ -250,7 +474,8 @@ function App() {
                 onToggleStar={toggleCandidateStar}
                 isManager={isManager}
                 contacts={contacts}
-                setContacts={setContacts}
+                onAddContact={handleAddContact}
+                onDeleteContact={handleDeleteContact}
                 archivedCandidates={archivedCandidates}
                 onArchiveCandidate={archiveCandidate}
                 onRestoreCandidate={restoreCandidate}
@@ -276,7 +501,7 @@ function App() {
                 onRestore={restoreCandidate}
                 openJobs={visibleJobs.filter(j => j.status === 'Open')}
                 allJobs={visibleJobs}
-                setCandidates={setCandidates}
+                onUpdateCandidate={handleUpdateCandidate}
               />
             </div>
           )}
@@ -288,8 +513,8 @@ function App() {
                 onNavigateToCompany={navigateToCompany}
                 isManager={isManager}
                 companies={companies}
-                onAddCompany={c => setCompanies(prev => [c, ...prev])}
-                onDeleteCompany={id => setCompanies(prev => prev.filter(c => c.id !== id))}
+                onAddCompany={handleAddCompany}
+                onDeleteCompany={handleDeleteCompany}
                 currentUser={currentUser}
                 jobs={jobs}
               />
@@ -305,11 +530,11 @@ function App() {
                 jobs={jobs.filter(j => j.companyId === selectedCompanyId)}
                 allCompanies={companies}
                 recruiters={recruiterMembers}
-                onAddJob={j => setJobs(prev => [j, ...prev])}
+                onAddJob={handleAddJob}
                 onNavigateToJob={navigateToJob}
                 contacts={contacts}
-                onAddContact={c => setContacts(prev => [...prev, c])}
-                onDeleteContact={id => setContacts(prev => prev.filter(c => c.id !== id))}
+                onAddContact={handleAddContact}
+                onDeleteContact={handleDeleteContact}
               />
             </div>
           )}
@@ -322,8 +547,8 @@ function App() {
                 isManager={isManager}
                 jobs={visibleJobs}
                 companies={companies}
-                onAddJob={j => setJobs(prev => [j, ...prev])}
-                onDeleteJob={id => setJobs(prev => prev.filter(j => j.id !== id))}
+                onAddJob={handleAddJob}
+                onDeleteJob={handleDeleteJob}
                 recruiters={recruiterMembers}
                 currentUser={currentUser}
                 candidates={candidates}
@@ -339,7 +564,7 @@ function App() {
                 isManager={isManager}
                 job={selectedJob}
                 recruiters={recruiterMembers}
-                onUpdateJob={updated => setJobs(prev => prev.map(j => j.id === updated.id ? updated : j))}
+                onUpdateJob={handleUpdateJob}
                 candidates={candidates}
               />
             </div>
@@ -388,7 +613,7 @@ function App() {
       <AddCandidateModal
         isOpen={addCandidateOpen}
         onClose={() => setAddCandidateOpen(false)}
-        onSave={c => setCandidates(prev => [...prev, c])}
+        onSave={handleAddCandidate}
         currentUser={currentUser}
       />
     </div>

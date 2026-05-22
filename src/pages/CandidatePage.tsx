@@ -91,10 +91,10 @@ interface CandidatePageProps {
   onRestore:              (id: string) => void
   openJobs?:              AttachableJob[]
   allJobs?:               AttachableJob[]
-  setCandidates?:         (updater: (prev: Candidate[]) => Candidate[]) => void
+  onUpdateCandidate?:     (id: string, updates: Partial<Candidate>) => void
 }
 
-export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidate, onToggleStar, selectedCandidateIds, currentCandidateIndex, onCloseCard, onNavigateCard, onArchive, onRestore, openJobs = [], allJobs = [], setCandidates }: CandidatePageProps) {
+export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidate, onToggleStar, selectedCandidateIds, currentCandidateIndex, onCloseCard, onNavigateCard, onArchive, onRestore, openJobs = [], allJobs = [], onUpdateCandidate }: CandidatePageProps) {
   const [stage,      setStage]      = useState<Stage>((candidate?.stage as Stage) ?? 'New')
   const [stageOpen,  setStageOpen]  = useState(false)
   const [activeType, setActiveType] = useState<FollowUpType>('Call')
@@ -804,15 +804,10 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                       key={j.id}
                       type="button"
                       onClick={() => {
-                        if (!candidate || !setCandidates) return
-                        setCandidates(prev => prev.map(c => {
-                          if (c.id !== candidate.id) return c
-                          const ids = c.attachedJobIds ?? []
-                          const next = isAttached
-                            ? ids.filter(id => id !== j.id)
-                            : [...ids, j.id]
-                          return { ...c, attachedJobIds: next }
-                        }))
+                        if (!candidate || !onUpdateCandidate) return
+                        const ids  = candidate.attachedJobIds ?? []
+                        const next = isAttached ? ids.filter(id => id !== j.id) : [...ids, j.id]
+                        onUpdateCandidate(candidate.id, { attachedJobIds: next })
                         setAttachOpen(false)
                       }}
                       className="flex w-full px-3 py-2 text-[12px] text-[#1E293B] hover:bg-[#F8FAFC] text-left gap-2 items-center"

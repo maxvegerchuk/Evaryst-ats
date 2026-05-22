@@ -51,7 +51,8 @@ interface CandidatesPageProps {
   onToggleStar:                   (id: string) => void
   isManager?:                     boolean
   contacts:                       Contact[]
-  setContacts:                    (contacts: Contact[]) => void
+  onAddContact:                   (c: Contact) => void
+  onDeleteContact:                (id: string) => void
   archivedCandidates:             Candidate[]
   onArchiveCandidate:             (id: string) => void
   onRestoreCandidate:             (id: string) => void
@@ -62,7 +63,7 @@ interface CandidatesPageProps {
 export function CandidatesPage({
   onNavigateToCandidate, onNavigateToMultipleCandidates,
   candidates, onAddCandidate, onToggleStar, isManager,
-  contacts, setContacts,
+  contacts, onAddContact, onDeleteContact,
   archivedCandidates, onArchiveCandidate, onRestoreCandidate, onDeleteCandidate,
 }: CandidatesPageProps) {
   // ── Candidates state ───────────────────────────────────────────────────────
@@ -167,7 +168,7 @@ export function CandidatesPage({
       status:      newContact.status ?? 'Lead',
       lastContact: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
     }
-    setContacts([...contacts, c])
+    onAddContact(c)
     setNewContact({ status: 'Lead' })
     setShowAddContact(false)
   }
@@ -772,7 +773,7 @@ export function CandidatesPage({
                       <td className="px-4 py-2.5 text-[12px] text-[#64748B]">{c.lastContact}</td>
                       <td className="px-4 py-2.5 text-right">
                         <button type="button"
-                          onClick={() => setContacts(contacts.filter(x => x.id !== c.id))}
+                          onClick={() => onDeleteContact(c.id)}
                           className="p-1 rounded hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity text-[#94A3B8] hover:text-[#DC2626]"
                           aria-label="Remove contact">
                           <Archive className="w-3.5 h-3.5" />
