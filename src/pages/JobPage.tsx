@@ -257,7 +257,11 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                     <td style={{ padding: '10px 16px' }}>
                       <select
                         value={candStatuses[c.id] ?? c.stage}
-                        onChange={e => setCandStatuses(prev => ({ ...prev, [c.id]: e.target.value }))}
+                        onChange={e => {
+                          const val = e.target.value
+                          setCandStatuses(prev => ({ ...prev, [c.id]: val }))
+                          onUpdateCandidate?.(c.id, { stage: val as Candidate['stage'] })
+                        }}
                         onClick={e => e.stopPropagation()}
                         className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
                         style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
@@ -268,7 +272,11 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                     <td style={{ padding: '10px 16px' }}>
                       <select
                         value={candRatings[c.id] ?? c.rating}
-                        onChange={e => setCandRatings(prev => ({ ...prev, [c.id]: e.target.value }))}
+                        onChange={e => {
+                          const val = e.target.value
+                          setCandRatings(prev => ({ ...prev, [c.id]: val }))
+                          onUpdateCandidate?.(c.id, { rating: val })
+                        }}
                         onClick={e => e.stopPropagation()}
                         className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
                         style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
