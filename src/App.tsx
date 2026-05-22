@@ -47,10 +47,15 @@ function mapCandidate(r: any): Candidate {
     ownerId:        r.owner_id,
     ownerEmail:     r.owner_email,
     ownerName:      r.owner_name,
-    isArchived:     r.is_archived ?? false,
-    attachedJobIds: r.attached_job_ids ?? [],
-    source:         r.source,
-    resumeFileName: r.resume_file_name,
+    isArchived:            r.is_archived ?? false,
+    attachedJobIds:        r.attached_job_ids ?? [],
+    source:                r.source,
+    resumeFileName:        r.resume_file_name,
+    followUpDate:          r.followup_date  ?? '',
+    followUpTime:          r.followup_time  ?? '',
+    followUpType:          r.followup_type  ?? 'Call',
+    qualificationAnswers:  r.qualification_answers ?? {},
+    resumeData:            r.resume_data ?? { summary: '', experience: '', education: '', skills: '' },
   }
 }
 
@@ -73,9 +78,14 @@ function toDbCandidate(c: Partial<Candidate>): Record<string, unknown> {
   if ('ownerEmail'     in c) row.owner_email      = c.ownerEmail
   if ('ownerName'      in c) row.owner_name       = c.ownerName
   if ('isArchived'     in c) row.is_archived      = c.isArchived
-  if ('attachedJobIds' in c) row.attached_job_ids = c.attachedJobIds
-  if ('source'         in c) row.source           = c.source
-  if ('resumeFileName' in c) row.resume_file_name = c.resumeFileName
+  if ('attachedJobIds'        in c) row.attached_job_ids       = c.attachedJobIds
+  if ('source'                in c) row.source                 = c.source
+  if ('resumeFileName'        in c) row.resume_file_name       = c.resumeFileName
+  if ('followUpDate'          in c) row.followup_date          = c.followUpDate
+  if ('followUpTime'          in c) row.followup_time          = c.followUpTime
+  if ('followUpType'          in c) row.followup_type          = c.followUpType
+  if ('qualificationAnswers'  in c) row.qualification_answers  = c.qualificationAnswers
+  if ('resumeData'            in c) row.resume_data            = c.resumeData
   return row
 }
 

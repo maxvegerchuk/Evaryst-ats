@@ -17,8 +17,18 @@ export interface Candidate {
   ownerEmail?:     string
   ownerName?:      string
   isArchived?:     boolean
-  attachedJobIds?: string[]
-  source?:         string
+  attachedJobIds?:        string[]
+  source?:               string
+  followUpDate?:         string
+  followUpTime?:         string
+  followUpType?:         string
+  qualificationAnswers?: Record<string, boolean | string>
+  resumeData?: {
+    summary:    string
+    experience: string
+    education:  string
+    skills:     string
+  }
 }
 
 // ── Avatar helpers ─────────────────────────────────────────────────────────────

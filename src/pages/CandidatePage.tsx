@@ -116,20 +116,33 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
   const [highlight,  setHighlight]  = useState('')
   const [submittalChecked, setSubmittalChecked] = useState(false)
   const [resumeSections, setResumeSection] = useState<Record<ResumeKey, string>>({
-    summary:    'Highly motivated and results-driven professional with over 5 years of experience in Marketing. Proven track record of increasing sales and optimizing processes.',
-    experience: 'Marketing Specialist | ABC Marketing Agency | Jan 2018 – Present\nLed successful marketing campaigns resulting in 20% revenue increase. Managed cross-functional teams.',
-    education:  'University of Cityville | B.S. Business Administration | 2017',
-    skills:     'Marketing strategy, Data analysis, Project management, CRM systems, Excel, PowerPoint',
+    summary:    candidate?.resumeData?.summary    || 'Highly motivated and results-driven professional with over 5 years of experience in Marketing. Proven track record of increasing sales and optimizing processes.',
+    experience: candidate?.resumeData?.experience || 'Marketing Specialist | ABC Marketing Agency | Jan 2018 – Present\nLed successful marketing campaigns resulting in 20% revenue increase. Managed cross-functional teams.',
+    education:  candidate?.resumeData?.education  || 'University of Cityville | B.S. Business Administration | 2017',
+    skills:     candidate?.resumeData?.skills     || 'Marketing strategy, Data analysis, Project management, CRM systems, Excel, PowerPoint',
   })
   const [editingSection, setEditingSection] = useState<string | null>(null)
   const [notes, setNotes] = useState<NoteItem[]>([])
   const [addingNote, setAddingNote] = useState(false)
   const [newNoteText, setNewNoteText] = useState('')
-  const [salaryPeriod,  setSalaryPeriod]  = useState<'yr' | 'hr'>('yr')
+  const [salaryPeriod,  setSalaryPeriod]  = useState<'yr' | 'hr'>((candidate?.qualificationAnswers?.salaryType as 'yr' | 'hr') ?? 'yr')
   const [interviewJob,  setInterviewJob]  = useState('net-developer')
   const stageRef  = useRef<HTMLDivElement>(null)
   const attachRef = useRef<HTMLDivElement>(null)
   const [attachOpen, setAttachOpen] = useState(false)
+
+  // ── Auto-save state ───────────────────────────────────────────────────────────
+  const [notesValue,   setNotesValue]   = useState(candidate?.notes ?? '')
+  const [notesSaved,   setNotesSaved]   = useState(false)
+  const notesTimeoutRef  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  const [followUpDate, setFollowUpDate] = useState(candidate?.followUpDate ?? '')
+  const [followUpTime, setFollowUpTime] = useState(candidate?.followUpTime ?? '')
+  const [scheduled,    setScheduled]    = useState(false)
+
+  const [qualAnswers,  setQualAnswers]  = useState<Record<string, boolean | string>>(candidate?.qualificationAnswers ?? {})
+  const qualTimeoutRef   = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const [editingNoteId,   setEditingNoteId]   = useState<number | null>(null)
   const [editingNoteText, setEditingNoteText] = useState('')
@@ -221,6 +234,56 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
     setShowCandPanel(false)
   }
 
+  // ── Auto-save handlers ────────────────────────────────────────────────────────
+
+  function handleStageChange(newStage: Stage) {
+    setStageOpen(false)
+    if (newStage === 'Placed') { setShowPlacementModal(true); return }
+    setStage(newStage)
+    if (candidate) onUpdateCandidate?.(candidate.id, { stage: newStage })
+  }
+
+  function handleNotesChange(value: string) {
+    setNotesValue(value)
+    clearTimeout(notesTimeoutRef.current)
+    notesTimeoutRef.current = setTimeout(() => {
+      if (!candidate) return
+      onUpdateCandidate?.(candidate.id, { notes: value })
+      setNotesSaved(true)
+      setTimeout(() => setNotesSaved(false), 2000)
+    }, 1000)
+  }
+
+  function handleScheduleFollowUp() {
+    if (!candidate) return
+    onUpdateCandidate?.(candidate.id, { followUpDate, followUpTime, followUpType: activeType })
+    setScheduled(true)
+    setTimeout(() => setScheduled(false), 2000)
+  }
+
+  function handleQualChange(key: string, value: boolean | string) {
+    const next = { ...qualAnswers, [key]: value }
+    setQualAnswers(next)
+    clearTimeout(qualTimeoutRef.current)
+    qualTimeoutRef.current = setTimeout(() => {
+      if (!candidate) return
+      onUpdateCandidate?.(candidate.id, { qualificationAnswers: next })
+    }, 500)
+  }
+
+  function handleResumeChange(key: ResumeKey, value: string) {
+    const next = { ...resumeSections, [key]: value }
+    setResumeSection(next)
+    clearTimeout(resumeTimeoutRef.current)
+    resumeTimeoutRef.current = setTimeout(() => {
+      if (!candidate) return
+      onUpdateCandidate?.(candidate.id, { resumeData: next })
+    }, 1500)
+  }
+
+  function getQ(key: string): boolean { return (qualAnswers[key] as boolean) ?? false }
+  function getQStr(key: string, fallback = ''): string { return (qualAnswers[key] as string) ?? fallback }
+
   const s = STAGE_STYLE[stage]
 
   const JOB_OPTIONS = [
@@ -246,23 +309,25 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
         <div className="p-4 grid grid-cols-4 gap-x-6 gap-y-2.5">
           {/* Col 1 */}
           <div className="flex flex-col gap-2.5">
-            {['Available to talk', 'Open to new opportunities'].map(q => (
-              <label key={q} className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" />
-                <span className="text-[12px] text-[#1E293B] leading-tight">{q}</span>
+            {(['availableToTalk', 'openToOpportunities'] as const).map((key, i) => (
+              <label key={key} className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" checked={getQ(key)} onChange={e => handleQualChange(key, e.target.checked)} />
+                <span className="text-[12px] text-[#1E293B] leading-tight">{['Available to talk', 'Open to new opportunities'][i]}</span>
               </label>
             ))}
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" />
+                <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" checked={getQ('salaryChecked')} onChange={e => handleQualChange('salaryChecked', e.target.checked)} />
                 <span className="text-[12px] text-[#1E293B] leading-tight">Salary</span>
               </label>
               <div className="flex items-center gap-1">
                 <input type="text" placeholder="100,000"
+                  value={getQStr('salaryValue')}
+                  onChange={e => handleQualChange('salaryValue', e.target.value)}
                   className="text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white w-[120px]"
                   style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
                 {(['yr', 'hr'] as const).map(p => (
-                  <button key={p} onClick={() => setSalaryPeriod(p)}
+                  <button key={p} onClick={() => { setSalaryPeriod(p); handleQualChange('salaryType', p) }}
                     className={`flex items-center justify-center text-[12px] rounded-[7px] transition-colors flex-shrink-0 ${salaryPeriod === p ? 'bg-[#EFF6FF] text-[#2563EB] font-medium' : 'text-[#64748B] bg-white'}`}
                     style={{ border: `0.5px solid ${salaryPeriod === p ? '#2563EB' : '#E2E8F0'}`, width: 30, height: 30 }}>
                     {p}
@@ -273,18 +338,18 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           </div>
           {/* Col 2 */}
           <div className="flex flex-col gap-2.5">
-            {["Candidate's target role", 'Technical skills verified'].map(q => (
-              <label key={q} className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" />
-                <span className="text-[12px] text-[#1E293B] leading-tight">{q}</span>
+            {(['targetRole', 'technicalSkills'] as const).map((key, i) => (
+              <label key={key} className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" checked={getQ(key)} onChange={e => handleQualChange(key, e.target.checked)} />
+                <span className="text-[12px] text-[#1E293B] leading-tight">{["Candidate's target role", 'Technical skills verified'][i]}</span>
               </label>
             ))}
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" />
+                <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" checked={getQ('workAuth')} onChange={e => handleQualChange('workAuth', e.target.checked)} />
                 <span className="text-[12px] text-[#1E293B] leading-tight">Work authorization</span>
               </label>
-              <select className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
+              <select value={getQStr('workAuthType', 'US Citizen')} onChange={e => handleQualChange('workAuthType', e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
                 <option>US Citizen</option><option>Green Card</option><option>H1B</option><option>OPT</option>
               </select>
             </div>
@@ -292,29 +357,29 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           {/* Col 3 */}
           <div className="flex flex-col gap-2.5">
             <label className="flex items-start gap-2 cursor-pointer">
-              <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" />
+              <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" checked={getQ('commSkills')} onChange={e => handleQualChange('commSkills', e.target.checked)} />
               <span className="text-[12px] text-[#1E293B] leading-tight">Communication skills assessed</span>
             </label>
             <label className="flex items-start gap-2 cursor-pointer">
-              <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" />
+              <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" checked={getQ('companyInterest')} onChange={e => handleQualChange('companyInterest', e.target.checked)} />
               <span className="text-[12px] text-[#1E293B] leading-tight">Company interest confirmed</span>
             </label>
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" />
+                <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" checked={getQ('empPref')} onChange={e => handleQualChange('empPref', e.target.checked)} />
                 <span className="text-[12px] text-[#1E293B] leading-tight">Employment preference</span>
               </label>
-              <select className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
+              <select value={getQStr('empPrefType', 'Contractor')} onChange={e => handleQualChange('empPrefType', e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
                 <option>Contractor</option><option>Full-Time</option><option>Part-Time</option><option>Contract to Hire</option>
               </select>
             </div>
           </div>
           {/* Col 4 */}
           <div className="flex flex-col gap-2.5">
-            {['Security clearance required', 'Candidate questions addressed', 'Location confirmed'].map(q => (
-              <label key={q} className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" />
-                <span className="text-[12px] text-[#1E293B] leading-tight">{q}</span>
+            {(['securityClearance', 'candidateQuestionsAddressed', 'locationConfirmed'] as const).map((key, i) => (
+              <label key={key} className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" className="mt-0.5 accent-[#2563EB] flex-shrink-0" checked={getQ(key)} onChange={e => handleQualChange(key, e.target.checked)} />
+                <span className="text-[12px] text-[#1E293B] leading-tight">{['Security clearance required', 'Candidate questions addressed', 'Location confirmed'][i]}</span>
               </label>
             ))}
           </div>
@@ -346,7 +411,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                   <textarea
                     autoFocus
                     value={resumeSections[key]}
-                    onChange={e => setResumeSection(s => ({ ...s, [key]: e.target.value }))}
+                    onChange={e => handleResumeChange(key, e.target.value)}
                     onBlur={() => setEditingSection(null)}
                     className="w-full text-[13px] text-[#1E293B] leading-[1.6] resize-none focus:outline-none rounded-[7px] p-2"
                     style={{ border: '0.5px solid #E2E8F0', minHeight: 80, fontFamily: 'inherit' }}
@@ -908,7 +973,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               {STAGES.map(st => (
                 <button
                   key={st}
-                  onClick={() => { setStageOpen(false); if (st === 'Placed') setShowPlacementModal(true); else setStage(st) }}
+                  onClick={() => handleStageChange(st)}
                   className={`flex items-center gap-2 w-full px-3 py-1.5 text-[12px] hover:bg-[#F8FAFC] text-left ${stage === st ? 'font-medium' : ''} ${STAGE_STYLE[st].text}`}
                 >
                   <CircleDot size={11} className={STAGE_STYLE[st].dot} />
@@ -975,15 +1040,17 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none focus:outline-none placeholder-[#94A3B8] bg-transparent"
               style={{ fontFamily: 'inherit', border: 'none' }}
               placeholder="Quick notes..."
-              defaultValue={candidate?.notes ?? ''}
+              value={notesValue}
+              onChange={e => handleNotesChange(e.target.value)}
             />
+            {notesSaved && <span className="text-[10px] text-[#16A34A] mt-0.5">Saved ✓</span>}
           </div>
           {/* Col 4 — Follow Up */}
           <div className="pl-6 flex flex-col">
             <p className={INFO_LABEL}>Follow Up</p>
             <div className="flex gap-[5px] mb-[5px]">
-              <input type="date" defaultValue="2024-11-30" className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
-              <input type="time" defaultValue="12:30"      className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+              <input type="date" value={followUpDate} onChange={e => setFollowUpDate(e.target.value)} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+              <input type="time" value={followUpTime} onChange={e => setFollowUpTime(e.target.value)} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
             </div>
             <div className="flex gap-[3px] mb-1.5">
               {FOLLOW_UP_TYPES.map(t => (
@@ -997,8 +1064,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 </button>
               ))}
             </div>
-            <button className="w-full bg-[#2563EB] text-white text-[12px] font-medium rounded-[7px] hover:bg-[#1D4ED8] transition-colors" style={{ padding: '6px 10px' }}>
-              Schedule Follow Up
+            <button onClick={handleScheduleFollowUp} className="w-full bg-[#2563EB] text-white text-[12px] font-medium rounded-[7px] hover:bg-[#1D4ED8] transition-colors" style={{ padding: '6px 10px' }}>
+              {scheduled ? 'Scheduled ✓' : 'Schedule Follow Up'}
             </button>
           </div>
         </div>
