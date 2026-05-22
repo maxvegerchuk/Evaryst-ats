@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { formatPhone } from '../utils/formatPhone'
 import {
   ChevronLeft, ChevronDown, ChevronRight, X,
   Link2, Star, FileText, Edit, Trash2,
@@ -913,7 +914,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <div className="flex items-center gap-[7px] mb-[5px]">
                 <Phone size={12} className="text-[#2563EB] flex-shrink-0" />
                 {isEditing ? (
-                  <input value={contacts.phone} onChange={e => setContacts(c => ({ ...c, phone: e.target.value }))}
+                  <input value={contacts.phone} onChange={e => setContacts(c => ({ ...c, phone: formatPhone(e.target.value) }))}
                     className="text-[12px] text-[#1E293B] flex-1 min-w-0 bg-transparent focus:outline-none border-b border-[#CBD5E1] focus:border-[#2563EB]" />
                 ) : (
                   <span className="text-[12px] text-[#1E293B]">{contacts.phone}</span>

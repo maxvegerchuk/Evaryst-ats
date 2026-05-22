@@ -4,6 +4,7 @@ import {
   Mail, Phone, Globe, Settings, Plus, Briefcase,
   Download, X, FilePlus, FileText, Send, Users,
 } from 'lucide-react'
+import { formatPhone } from '../utils/formatPhone'
 import type { Company } from '../types/company'
 import type { Job } from '../types/job'
 import type { Contact } from '../types/contact'
@@ -213,7 +214,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                 </div>
                 <div>
                   <label className="block text-[11px] font-medium text-[#475569] mb-1">Phone</label>
-                  <input value={newContact.phone} onChange={e => setNewContact(p => ({ ...p, phone: e.target.value }))} placeholder="+1 (555) 000-0000" className={INP} style={INP_ST} />
+                  <input value={newContact.phone} onChange={e => setNewContact(p => ({ ...p, phone: formatPhone(e.target.value) }))} placeholder="(555) 000-0000" className={INP} style={INP_ST} />
                 </div>
               </div>
               <div className="flex gap-2 justify-end">
@@ -320,8 +321,11 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         </div>
       </div>
 
+      {/* Everything below breadcrumbs scrolls together */}
+      <div className="flex-1 overflow-y-auto">
+
       {/* ROW 2: Name + Actions */}
-      <div className="bg-white flex items-center px-4 gap-2 flex-shrink-0" style={{ paddingTop: 8, paddingBottom: 8 }}>
+      <div className="bg-white flex items-center px-4 gap-2" style={{ paddingTop: 8, paddingBottom: 8 }}>
         <span className="text-[18px] font-medium text-[#1E293B] flex-1">{companyName}</span>
         {isManager ? (
           <div className="relative">
@@ -364,7 +368,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
       </div>
 
       {/* INFO BLOCK */}
-      <div className="bg-white flex-shrink-0 px-4 pb-3" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+      <div className="bg-white px-4 pb-3" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
         <div className="grid grid-cols-3 gap-0">
 
           {/* Col 1: Company Info */}
@@ -420,7 +424,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
 
       {/* TABS BAR */}
       <div
-        className="bg-white h-[40px] flex items-center px-4 flex-shrink-0 sticky z-10"
+        className="bg-white h-[40px] flex items-center px-4 flex-shrink-0 sticky top-0 z-10"
         style={{ borderBottom: '0.5px solid #E2E8F0' }}
       >
         {(['jobs', 'clients', 'documents'] as const).map(tab => (
@@ -440,11 +444,13 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
       </div>
 
       {/* TAB CONTENT */}
-      <div className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+      <div className="bg-[#F8FAFC]">
         {activeTab === 'jobs'      && jobsTab}
         {activeTab === 'clients'   && clientsTab}
         {activeTab === 'documents' && documentsTab}
       </div>
+
+      </div>{/* end scrollable body */}
 
       <AddJobModal
         isOpen={showAddJob}

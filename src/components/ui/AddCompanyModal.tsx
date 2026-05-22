@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { X } from 'lucide-react'
 import type { Company, CompanyStatus } from '../../types/company'
 import type { User } from '../../types/auth'
+import { CityAutocomplete } from './CityAutocomplete'
+import { formatPhone } from '../../utils/formatPhone'
 
 interface AddCompanyModalProps {
   isOpen:      boolean
@@ -17,133 +19,11 @@ const INDUSTRIES = [
   'Information Technology', 'Other',
 ]
 
-const US_STATES = [
-  { abbr: 'AL', name: 'Alabama' },       { abbr: 'AK', name: 'Alaska' },
-  { abbr: 'AZ', name: 'Arizona' },       { abbr: 'AR', name: 'Arkansas' },
-  { abbr: 'CA', name: 'California' },    { abbr: 'CO', name: 'Colorado' },
-  { abbr: 'CT', name: 'Connecticut' },   { abbr: 'DE', name: 'Delaware' },
-  { abbr: 'DC', name: 'Washington D.C.' },
-  { abbr: 'FL', name: 'Florida' },       { abbr: 'GA', name: 'Georgia' },
-  { abbr: 'HI', name: 'Hawaii' },        { abbr: 'ID', name: 'Idaho' },
-  { abbr: 'IL', name: 'Illinois' },      { abbr: 'IN', name: 'Indiana' },
-  { abbr: 'IA', name: 'Iowa' },          { abbr: 'KS', name: 'Kansas' },
-  { abbr: 'KY', name: 'Kentucky' },      { abbr: 'LA', name: 'Louisiana' },
-  { abbr: 'ME', name: 'Maine' },         { abbr: 'MD', name: 'Maryland' },
-  { abbr: 'MA', name: 'Massachusetts' }, { abbr: 'MI', name: 'Michigan' },
-  { abbr: 'MN', name: 'Minnesota' },     { abbr: 'MS', name: 'Mississippi' },
-  { abbr: 'MO', name: 'Missouri' },      { abbr: 'MT', name: 'Montana' },
-  { abbr: 'NE', name: 'Nebraska' },      { abbr: 'NV', name: 'Nevada' },
-  { abbr: 'NH', name: 'New Hampshire' }, { abbr: 'NJ', name: 'New Jersey' },
-  { abbr: 'NM', name: 'New Mexico' },    { abbr: 'NY', name: 'New York' },
-  { abbr: 'NC', name: 'North Carolina' },{ abbr: 'ND', name: 'North Dakota' },
-  { abbr: 'OH', name: 'Ohio' },          { abbr: 'OK', name: 'Oklahoma' },
-  { abbr: 'OR', name: 'Oregon' },        { abbr: 'PA', name: 'Pennsylvania' },
-  { abbr: 'RI', name: 'Rhode Island' },  { abbr: 'SC', name: 'South Carolina' },
-  { abbr: 'SD', name: 'South Dakota' },  { abbr: 'TN', name: 'Tennessee' },
-  { abbr: 'TX', name: 'Texas' },         { abbr: 'UT', name: 'Utah' },
-  { abbr: 'VT', name: 'Vermont' },       { abbr: 'VA', name: 'Virginia' },
-  { abbr: 'WA', name: 'Washington' },    { abbr: 'WV', name: 'West Virginia' },
-  { abbr: 'WI', name: 'Wisconsin' },     { abbr: 'WY', name: 'Wyoming' },
-]
-
 const LBL    = 'block text-[12px] font-medium text-[#475569] mb-1'
 const INP    = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] focus:border-[#2563EB] transition-colors'
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' }
 
 // ── State combobox ─────────────────────────────────────────────────────────────
-
-function StateSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const [open,  setOpen]  = useState(false)
-  const [query, setQuery] = useState(value)
-  const wrapRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => { setQuery(value) }, [value])
-
-  useEffect(() => {
-    if (!open) return
-    function handler(e: MouseEvent) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
-        setOpen(false)
-        setQuery(value)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [open, value])
-
-  const q = query.trim().toLowerCase()
-  const matches = q
-    ? US_STATES.filter(s =>
-        s.abbr.toLowerCase().startsWith(q) ||
-        s.name.toLowerCase().startsWith(q) ||
-        s.name.toLowerCase().includes(q)
-      )
-    : US_STATES
-
-  function select(abbr: string) {
-    onChange(abbr)
-    setQuery(abbr)
-    setOpen(false)
-  }
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value
-    setQuery(v)
-    onChange(v)
-    setOpen(true)
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' && matches.length === 1) {
-      select(matches[0].abbr)
-    }
-    if (e.key === 'Escape') {
-      setOpen(false)
-      setQuery(value)
-    }
-  }
-
-  return (
-    <div ref={wrapRef} className="relative" style={{ width: 68 }}>
-      <input
-        value={query}
-        onChange={handleChange}
-        onFocus={() => setOpen(true)}
-        onKeyDown={handleKeyDown}
-        placeholder="TX"
-        className={INP}
-        style={{ ...INP_ST, width: 68 }}
-        autoComplete="off"
-      />
-      {open && (
-        <div
-          className="absolute top-full left-0 mt-1 bg-white rounded-[8px] shadow-lg z-[60] w-[190px] max-h-[220px] overflow-y-auto py-1"
-          style={{ border: '0.5px solid #E2E8F0', scrollbarWidth: 'thin', scrollbarColor: '#E2E8F0 transparent' }}
-        >
-          {matches.length === 0 ? (
-            <p className="px-3 py-2 text-[12px] text-[#94A3B8]">No states found</p>
-          ) : (
-            matches.map(s => (
-              <button
-                key={s.abbr}
-                type="button"
-                onMouseDown={e => { e.preventDefault(); select(s.abbr) }}
-                className={`flex items-center gap-2 w-full px-3 py-[6px] text-left hover:bg-[#F8FAFC] transition-colors ${
-                  value === s.abbr ? 'bg-[#EFF6FF]' : ''
-                }`}
-              >
-                <span className={`text-[12px] font-semibold w-6 flex-shrink-0 ${value === s.abbr ? 'text-[#2563EB]' : 'text-[#1E293B]'}`}>
-                  {s.abbr}
-                </span>
-                <span className="text-[12px] text-[#64748B] truncate">{s.name}</span>
-              </button>
-            ))
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
 
 // ── Pill group ─────────────────────────────────────────────────────────────────
 
@@ -219,14 +99,13 @@ export function AddCompanyModal({ isOpen, onClose, onSave, currentUser }: AddCom
   }
 
   return (
-    <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center" onClick={handleClose}>
+    <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-company-heading"
         className="bg-white rounded-[10px] shadow-lg w-[480px] max-h-[85vh] overflow-hidden flex flex-col"
         style={{ border: '0.5px solid #E2E8F0' }}
-        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
@@ -257,15 +136,20 @@ export function AddCompanyModal({ isOpen, onClose, onSave, currentUser }: AddCom
           <div>
             <label className={LBL}>Location</label>
             <div className="flex gap-2 items-start">
-              <input value={city} onChange={e => setCity(e.target.value)} placeholder="Dallas" className={`${INP} flex-1`} style={INP_ST} />
-              <StateSelect value={state} onChange={setState} />
+              <CityAutocomplete
+                cityValue={city}
+                stateValue={state}
+                onCityChange={setCity}
+                onStateChange={setState}
+                cityPlaceholder="Dallas"
+              />
               <input value={zip} onChange={e => setZip(e.target.value)} placeholder="75022" className={INP} style={{ ...INP_ST, width: 76 }} />
             </div>
           </div>
 
           <div>
             <label className={LBL}>Phone</label>
-            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(555) 123-4567" className={INP} style={INP_ST} />
+            <input type="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))} placeholder="(555) 123-4567" className={INP} style={INP_ST} />
           </div>
 
           <div>

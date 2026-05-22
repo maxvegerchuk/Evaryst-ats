@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { X, Search } from 'lucide-react'
+import { formatPhone } from '../../utils/formatPhone'
 import type { Candidate } from '../../types/candidate'
 import { getInitials, getAvatarColor } from '../../types/candidate'
 
@@ -98,14 +99,12 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
     <div
       className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center"
       style={{ backdropFilter: 'blur(2px)' }}
-      onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-outreach-heading"
         className="bg-white rounded-[12px] shadow-lg w-[420px] p-6 flex flex-col gap-4"
-        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -270,8 +269,8 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
             <label className="text-[13px] font-medium text-[#1E293B]">
               Phone <span className="text-[#94A3B8] font-normal">(optional)</span>
             </label>
-            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
+            <input type="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))}
+              placeholder="(555) 000-0000"
               className="w-full text-[12px] text-[#1E293B] rounded-[7px] outline-none bg-white"
               style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
           </div>

@@ -256,13 +256,13 @@ function App() {
   const [selectedCompanyId,     setSelectedCompanyId]     = useState<string | null>(null)
   const [selectedJobId,         setSelectedJobId]         = useState<string | null>(null)
 
-  // Load all data from Supabase on mount
+  // Load all data from Supabase on mount + real-time subscriptions
   useEffect(() => {
     async function loadAll() {
       const [candRes, compRes, jobRes, contRes, teamRes] = await Promise.all([
         supabase.from('candidates').select('*'),
         supabase.from('companies').select('*'),
-        supabase.from('jobs').select('*'),
+        supabase.from('jobs').select('*').order('created_at', { ascending: false }),
         supabase.from('contacts').select('*'),
         supabase.from('team_members').select('*'),
       ])
@@ -273,6 +273,61 @@ function App() {
       if (teamRes.data)  setTeamMembers(teamRes.data.map(mapTeamMember))
     }
     void loadAll()
+
+    // Real-time subscriptions so recruiter sees manager changes immediately
+    const jobsSub = supabase
+      .channel('jobs-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, payload => {
+        if (payload.eventType === 'INSERT') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setJobs(prev => [mapJob(payload.new as any), ...prev])
+        } else if (payload.eventType === 'UPDATE') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setJobs(prev => prev.map(j => j.id === (payload.new as any).id ? mapJob(payload.new as any) : j))
+        } else if (payload.eventType === 'DELETE') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setJobs(prev => prev.filter(j => j.id !== (payload.old as any).id))
+        }
+      })
+      .subscribe()
+
+    const candidatesSub = supabase
+      .channel('candidates-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, payload => {
+        if (payload.eventType === 'INSERT') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCandidates(prev => [mapCandidate(payload.new as any), ...prev])
+        } else if (payload.eventType === 'UPDATE') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCandidates(prev => prev.map(c => c.id === (payload.new as any).id ? mapCandidate(payload.new as any) : c))
+        } else if (payload.eventType === 'DELETE') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCandidates(prev => prev.filter(c => c.id !== (payload.old as any).id))
+        }
+      })
+      .subscribe()
+
+    const companiesSub = supabase
+      .channel('companies-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'companies' }, payload => {
+        if (payload.eventType === 'INSERT') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCompanies(prev => [mapCompany(payload.new as any), ...prev])
+        } else if (payload.eventType === 'UPDATE') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCompanies(prev => prev.map(c => c.id === (payload.new as any).id ? mapCompany(payload.new as any) : c))
+        } else if (payload.eventType === 'DELETE') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setCompanies(prev => prev.filter(c => c.id !== (payload.old as any).id))
+        }
+      })
+      .subscribe()
+
+    return () => {
+      void supabase.removeChannel(jobsSub)
+      void supabase.removeChannel(candidatesSub)
+      void supabase.removeChannel(companiesSub)
+    }
   }, [])
 
   // ── Candidate handlers ──────────────────────────────────────────────────────
@@ -377,10 +432,10 @@ function App() {
         const uid   = currentUser?.id    ?? ''
         const email = currentUser?.email ?? ''
         return (
-          j.recruiterIds.includes(uid)        ||
-          j.recruiterEmails.includes(email)   ||
+          j.assignedRecruiterEmail === email  ||
           j.assignedRecruiterId    === uid    ||
-          j.assignedRecruiterEmail === email
+          j.recruiterIds.includes(uid)        ||
+          j.recruiterEmails.includes(email)
         )
       })
 

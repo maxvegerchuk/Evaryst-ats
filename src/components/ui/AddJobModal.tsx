@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { X } from 'lucide-react'
 import type { Job, JobType, JobStatus, SalaryType } from '../../types/job'
 import type { Company } from '../../types/company'
+import { CityAutocomplete } from './CityAutocomplete'
 
 interface Recruiter {
   id:     string
@@ -43,7 +44,7 @@ function PillGroup<T extends string>({
 }
 
 const DEFAULT_ID = 'JOB-' + Date.now().toString().slice(-6)
-const JOB_TYPES: JobType[]   = ['Full Time', 'Part Time', 'Contract', 'Contract to Hire']
+const JOB_TYPES: JobType[]      = ['Full Time', 'Part Time', 'Contract', 'Contract to Hire']
 const JOB_STATUSES: JobStatus[] = ['Open', 'On Hold', 'Closed']
 
 export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, defaultCompanyId }: AddJobModalProps) {
@@ -53,7 +54,8 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
   const [salaryMin,   setSalaryMin]   = useState('')
   const [salaryMax,   setSalaryMax]   = useState('')
   const [salaryType,  setSalaryType]  = useState<SalaryType>('year')
-  const [location,    setLocation]    = useState('')
+  const [jobCity,     setJobCity]     = useState('')
+  const [jobState,    setJobState]    = useState('')
   const [recruiterId, setRecruiterId] = useState('')
   const [status,      setStatus]      = useState<JobStatus>('Open')
   const [description, setDescription] = useState('')
@@ -65,10 +67,19 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
   const selectedCompany = companies.find(c => c.id === companyId)
   const canSave = title.trim() && companyId
 
+  function handleCompanySelect(id: string) {
+    setCompanyId(id)
+    const company = companies.find(c => c.id === id)
+    if (company) {
+      setJobCity(company.city || '')
+      setJobState(company.state || '')
+    }
+  }
+
   function reset() {
     setTitle(''); setCompanyId(defaultCompanyId ?? ''); setJobType('Full Time')
     setSalaryMin(''); setSalaryMax(''); setSalaryType('year')
-    setLocation(''); setRecruiterId(''); setStatus('Open')
+    setJobCity(''); setJobState(''); setRecruiterId(''); setStatus('Open')
     setDescription(''); setClientReq('')
   }
 
@@ -77,6 +88,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
   function handleSave() {
     if (!canSave) return
     const selectedRecruiter = recruiters.find(r => r.id === recruiterId)
+    const location = [jobCity.trim(), jobState.trim()].filter(Boolean).join(', ')
     const job: Job = {
       id:                    'job-' + Date.now(),
       title:                 title.trim(),
@@ -86,7 +98,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
       salaryMin:             salaryMin.trim(),
       salaryMax:             salaryMax.trim(),
       salaryType,
-      location:              location.trim(),
+      location,
       status,
       assignedRecruiterId:    recruiterId,
       assignedRecruiterEmail: selectedRecruiter?.email ?? '',
@@ -99,19 +111,22 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
       internalId,
       clientReqNumber:       clientReq.trim(),
     }
+    console.log('Saving job:', {
+      assigned_recruiter_email: job.assignedRecruiterEmail,
+      assigned_recruiter_id:   job.assignedRecruiterId,
+    })
     onSave(job)
     handleClose()
   }
 
   return (
-    <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center" onClick={handleClose}>
+    <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-job-heading"
         className="bg-white rounded-[10px] shadow-lg w-[520px] max-h-[85vh] overflow-hidden flex flex-col"
         style={{ border: '0.5px solid #E2E8F0' }}
-        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
@@ -137,7 +152,7 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
               {companies.length === 0 ? (
                 <p className="text-[12px] text-[#94A3B8] py-2">No companies yet. Add a company first.</p>
               ) : (
-                <select value={companyId} onChange={e => setCompanyId(e.target.value)}
+                <select value={companyId} onChange={e => handleCompanySelect(e.target.value)}
                   className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white cursor-pointer"
                   style={INP_ST}>
                   <option value="">Select company</option>
@@ -177,8 +192,13 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
 
           <div>
             <label className={LBL}>Location</label>
-            <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Dallas, TX"
-              className={INP} style={INP_ST} />
+            <CityAutocomplete
+              cityValue={jobCity}
+              stateValue={jobState}
+              onCityChange={setJobCity}
+              onStateChange={setJobState}
+              cityPlaceholder="Dallas"
+            />
           </div>
 
           <div>
