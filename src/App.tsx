@@ -153,24 +153,24 @@ function toDbJob(j: Partial<Job>): Record<string, unknown> {
   const row: Record<string, any> = {}
   if ('id'                     in j) row.id                       = j.id
   if ('title'                  in j) row.title                    = j.title
-  if ('companyId'              in j) row.company_id               = j.companyId
-  if ('companyName'            in j) row.company_name             = j.companyName
+  if ('companyId'              in j) row.company_id               = j.companyId               || null
+  if ('companyName'            in j) row.company_name             = j.companyName             || null
   if ('jobType'                in j) row.job_type                 = j.jobType
-  if ('salaryMin'              in j) row.salary_min               = j.salaryMin
-  if ('salaryMax'              in j) row.salary_max               = j.salaryMax
+  if ('salaryMin'              in j) row.salary_min               = j.salaryMin               || null
+  if ('salaryMax'              in j) row.salary_max               = j.salaryMax               || null
   if ('salaryType'             in j) row.salary_type              = j.salaryType
-  if ('location'               in j) row.location                 = j.location
+  if ('location'               in j) row.location                 = j.location                || null
   if ('status'                 in j) row.status                   = j.status
-  if ('assignedRecruiterId'    in j) row.assigned_recruiter_id    = j.assignedRecruiterId
-  if ('assignedRecruiterEmail' in j) row.assigned_recruiter_email = j.assignedRecruiterEmail
-  if ('assignedRecruiterName'  in j) row.assigned_recruiter_name  = j.assignedRecruiterName
+  if ('assignedRecruiterId'    in j) row.assigned_recruiter_id    = j.assignedRecruiterId    || null
+  if ('assignedRecruiterEmail' in j) row.assigned_recruiter_email = j.assignedRecruiterEmail || null
+  if ('assignedRecruiterName'  in j) row.assigned_recruiter_name  = j.assignedRecruiterName  || null
   if ('recruiterIds'           in j) row.recruiter_ids            = j.recruiterIds
   if ('recruiterEmails'        in j) row.recruiter_emails         = j.recruiterEmails
-  if ('description'            in j) row.description              = j.description
-  if ('dateAdded'              in j) row.date_added               = j.dateAdded
+  if ('description'            in j) row.description              = j.description             || null
+  if ('dateAdded'              in j) row.date_added               = j.dateAdded               || null
   if ('candidates'             in j) row.candidates               = j.candidates
-  if ('internalId'             in j) row.internal_id              = j.internalId
-  if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber || null
+  if ('internalId'             in j) row.internal_id              = j.internalId              || null
+  if ('clientReqNumber'        in j) row.client_req_number        = j.clientReqNumber         || null
   return row
 }
 
@@ -294,7 +294,7 @@ function App() {
   async function handleAddCandidate(c: Candidate) {
     setCandidates(prev => [c, ...prev])
     const { error } = await supabase.from('candidates').insert(toDbCandidate(c))
-    if (error) { console.error('handleAddCandidate:', error); setCandidates(prev => prev.filter(x => x.id !== c.id)) }
+    if (error) { console.error('handleAddCandidate error:', JSON.stringify(error, null, 2)); setCandidates(prev => prev.filter(x => x.id !== c.id)) }
   }
 
   async function handleUpdateCandidate(id: string, updates: Partial<Candidate>) {
@@ -323,7 +323,7 @@ function App() {
   async function handleAddCompany(c: Company) {
     setCompanies(prev => [c, ...prev])
     const { error } = await supabase.from('companies').insert(toDbCompany(c))
-    if (error) { console.error('handleAddCompany:', error); setCompanies(prev => prev.filter(x => x.id !== c.id)) }
+    if (error) { console.error('handleAddCompany error:', JSON.stringify(error, null, 2)); setCompanies(prev => prev.filter(x => x.id !== c.id)) }
   }
 
   async function handleDeleteCompany(id: string) {
@@ -336,8 +336,20 @@ function App() {
 
   async function handleAddJob(j: Job) {
     setJobs(prev => [j, ...prev])
-    const { error } = await supabase.from('jobs').insert(toDbJob(j))
-    if (error) { console.error('handleAddJob:', error); setJobs(prev => prev.filter(x => x.id !== j.id)) }
+    const dbRow = toDbJob(j)
+    console.log('INSERT jobs row:', JSON.stringify(dbRow, null, 2))
+    const { error } = await supabase.from('jobs').insert(dbRow)
+    if (error) {
+      console.error('INSERT jobs FAILED')
+      console.error('  code:', error.code)
+      console.error('  message:', error.message)
+      console.error('  details:', error.details)
+      console.error('  hint:', error.hint)
+      setJobs(prev => prev.filter(x => x.id !== j.id))
+    } else {
+      console.log('INSERT jobs OK')
+    }
+    void loadAllData()
   }
 
   async function handleUpdateJob(updated: Job) {
