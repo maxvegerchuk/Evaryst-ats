@@ -600,6 +600,7 @@ function App() {
           {currentPage === 'company' && (
             <div className="flex-1 overflow-hidden">
               <CompanyPage
+                key={selectedCompanyId ?? ''}
                 setCurrentPage={navigate}
                 isManager={isManager}
                 company={selectedCompany}

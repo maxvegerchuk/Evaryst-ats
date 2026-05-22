@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import type { Job, JobType, JobStatus, SalaryType } from '../../types/job'
 import type { Company } from '../../types/company'
@@ -61,6 +61,10 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
   const [description, setDescription] = useState('')
   const [clientReq,   setClientReq]   = useState('')
   const [internalId]                  = useState(DEFAULT_ID)
+
+  useEffect(() => {
+    if (defaultCompanyId) setCompanyId(defaultCompanyId)
+  }, [defaultCompanyId])
 
   if (!isOpen) return null
 

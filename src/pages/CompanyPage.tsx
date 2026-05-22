@@ -458,7 +458,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                 : 'border-transparent text-[#64748B] hover:text-[#1E293B]'
             }`}
           >
-            {tab === 'jobs' ? `Jobs (${jobs.length})` : tab === 'clients' ? `Clients (${companyClients.length})` : 'Documents'}
+            {tab === 'jobs' ? `Jobs (${companyJobs.length})` : tab === 'clients' ? `Clients (${companyClients.length})` : 'Documents'}
           </button>
         ))}
         <Settings size={16} className="text-[#94A3B8] ml-auto cursor-pointer hover:text-[#64748B]" />
