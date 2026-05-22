@@ -165,14 +165,14 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
                     <span style={{ fontSize: 11, color: '#1E293B' }}>{row.name}</span>
                   </div>
                   <span
-                    className="rounded-full inline-block"
-                    style={{ fontSize: 9, background: row.stageBg, color: row.stageClr, padding: '2px 7px', whiteSpace: 'nowrap' }}
+                    className="rounded-full"
+                    style={{ fontSize: 9, background: row.stageBg, color: row.stageClr, padding: '2px 4px', whiteSpace: 'nowrap', justifySelf: 'start' }}
                   >
                     {row.stage}
                   </span>
                   <span
-                    className="rounded-full inline-block"
-                    style={{ fontSize: 9, background: row.ratingBg, color: row.ratingClr, padding: '2px 7px', whiteSpace: 'nowrap' }}
+                    className="rounded-full"
+                    style={{ fontSize: 9, background: row.ratingBg, color: row.ratingClr, padding: '2px 4px', whiteSpace: 'nowrap', justifySelf: 'start' }}
                   >
                     {row.rating}
                   </span>
