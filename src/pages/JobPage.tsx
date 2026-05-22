@@ -611,13 +611,10 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
               )}
             </div>
             {([
-              ['Location',        job?.location || '—'],
-              ['Internal ID',     job?.internalId && job.internalId.trim() ? job.internalId : '—'],
-              ['Client Req.',     job?.clientReqNumber && job.clientReqNumber.trim() ? job.clientReqNumber : '—'],
-              ['Hiring Manager',  job?.hiringManager || '—'],
-              ['Days on site',    job?.daysOnSite || '—'],
-              ['Travel %',        job?.travelPct ? `${job.travelPct}%` : '—'],
-              ['Work type',       job?.workTypes?.length ? job.workTypes.join(', ') : '—'],
+              ['Internal ID',  job?.internalId && job.internalId.trim() ? job.internalId : '—'],
+              ['Days on site', job?.daysOnSite || '—'],
+              ['Travel %',     job?.travelPct ? `${job.travelPct}%` : '—'],
+              ['Work type',    job?.workTypes?.length ? job.workTypes.join(', ') : '—'],
             ] as [string, string][]).map(([label, val]) => (
               <div key={label} className="flex items-baseline gap-2 mb-1.5 last:mb-0">
                 <span className="text-[10px] text-[#94A3B8] min-w-[90px] flex-shrink-0">{label}</span>
@@ -916,8 +913,6 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           {([
             ['Hiring Manager',     editHiringMgr,  setEditHiringMgr],
             ['Talent Acquisition', editTalentAcq,  setEditTalentAcq],
-            ['Other (1)',          editOther1,      setEditOther1],
-            ['Other (2)',          editOther2,      setEditOther2],
           ] as [string, string, (v: string) => void][]).map(([label, val, set]) => (
             <div key={label}>
               <label className={LBL}>{label}</label>
