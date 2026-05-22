@@ -32,6 +32,25 @@ if (localStorage.getItem('evaryst_version') !== '1.0.0') {
   localStorage.setItem('evaryst_version', '1.0.0')
 }
 
+// Ensure demo recruiter exists in team — runs synchronously so useState reads it immediately
+;(function seedDemoRecruiter() {
+  try {
+    const raw  = localStorage.getItem('evaryst_team_members')
+    const team: { email: string; [k: string]: unknown }[] = raw ? JSON.parse(raw) : []
+    if (!team.some(m => m.email === DEMO_USER.email)) {
+      team.push({
+        id:        DEMO_USER.id,
+        email:     DEMO_USER.email,
+        name:      DEMO_USER.name,
+        role:      'recruiter',
+        status:    'active',
+        invitedAt: new Date().toISOString(),
+      })
+      localStorage.setItem('evaryst_team_members', JSON.stringify(team))
+    }
+  } catch { /* ignore */ }
+})()
+
 function ls<T>(key: string, fallback: T): T {
   try {
     const v = localStorage.getItem(key)

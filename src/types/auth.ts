@@ -8,19 +8,19 @@ export interface User {
 }
 
 export const DEMO_USER: User = {
-  id: 'demo-1',
+  id: 'tm-recruiter-demo',
   email: 'recruiter@evaryst.com',
-  name: 'Recruiter',
+  name: 'Thane Hayhurst',
   role: 'recruiter',
   company: 'Evaryst Demo',
-  initials: 'R',
+  initials: 'TH',
 }
 
 export const DEMO_MANAGER: User = {
-  id: 'demo-2',
+  id: 'demo-manager',
   email: 'manager@evaryst.com',
-  name: 'Thane Hayhurst',
+  name: 'Sarah Mitchell',
   role: 'talent_acquisition_manager',
   company: 'Evaryst Demo',
-  initials: 'TH',
+  initials: 'SM',
 }
