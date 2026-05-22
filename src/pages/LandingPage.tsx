@@ -139,7 +139,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             <div className="rounded-[8px] overflow-hidden bg-white" style={{ border: '0.5px solid #E2E8F0' }}>
               <div
                 className="grid bg-[#F8FAFC] px-3 py-2"
-                style={{ gridTemplateColumns: '2fr 1.2fr 0.8fr 1fr', borderBottom: '0.5px solid #E2E8F0' }}
+                style={{ gridTemplateColumns: '1.8fr 1.6fr 0.9fr 0.9fr', borderBottom: '0.5px solid #E2E8F0' }}
               >
                 {['NAME', 'STAGE', 'RATING', 'JOB'].map(h => (
                   <span key={h} style={{ fontSize: 10, color: '#94A3B8' }}>{h}</span>
@@ -153,7 +153,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
                 <div
                   key={row.name}
                   className="grid items-center px-3 py-2"
-                  style={{ gridTemplateColumns: '2fr 1.2fr 0.8fr 1fr', borderBottom: i < 2 ? '0.5px solid #F1F5F9' : undefined }}
+                  style={{ gridTemplateColumns: '1.8fr 1.6fr 0.9fr 0.9fr', borderBottom: i < 2 ? '0.5px solid #F1F5F9' : undefined }}
                 >
                   <div className="flex items-center gap-1.5">
                     <div
@@ -166,13 +166,13 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
                   </div>
                   <span
                     className="rounded-full inline-block"
-                    style={{ fontSize: 10, background: row.stageBg, color: row.stageClr, padding: '2px 8px', whiteSpace: 'nowrap' }}
+                    style={{ fontSize: 9, background: row.stageBg, color: row.stageClr, padding: '2px 7px', whiteSpace: 'nowrap' }}
                   >
                     {row.stage}
                   </span>
                   <span
                     className="rounded-full inline-block"
-                    style={{ fontSize: 10, background: row.ratingBg, color: row.ratingClr, padding: '2px 8px' }}
+                    style={{ fontSize: 9, background: row.ratingBg, color: row.ratingClr, padding: '2px 7px', whiteSpace: 'nowrap' }}
                   >
                     {row.rating}
                   </span>
@@ -184,21 +184,6 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         </div>
       </section>
 
-      {/* ── SOCIAL PROOF ────────────────────────────────────────────────────────── */}
-      <div style={{ borderTop: '0.5px solid #E2E8F0', borderBottom: '0.5px solid #E2E8F0', padding: '32px 40px' }}>
-        <p className="text-center mb-4" style={{ fontSize: 12, color: '#94A3B8' }}>Trusted by recruiting teams at</p>
-        <div className="flex justify-center gap-6 flex-wrap">
-          {['TechNova Solutions', 'Glazers Group', 'ABC Company', 'Pepsico', 'Neiman Marcus'].map(name => (
-            <div
-              key={name}
-              className="rounded-[6px] px-4 py-2 font-medium"
-              style={{ background: '#F8FAFC', border: '0.5px solid #E2E8F0', fontSize: 12, color: '#64748B' }}
-            >
-              {name}
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── FEATURES ────────────────────────────────────────────────────────────── */}
       <section id="features" style={{ padding: '60px 40px' }}>
