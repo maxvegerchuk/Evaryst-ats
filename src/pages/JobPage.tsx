@@ -602,18 +602,36 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         {/* RIGHT: Details summary */}
         <div>
           <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] uppercase text-[#94A3B8] font-medium" style={{ letterSpacing: '0.05em' }}>Details</p>
-              {isManager && (
-                <button type="button" onClick={() => setShowEditPanel(true)} className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#F8FAFC] transition-colors">
-                  <Pencil size={12} className="text-[#94A3B8]" />
-                </button>
-              )}
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[10px] text-[#94A3B8] min-w-[64px] flex-shrink-0">Job ID</span>
-              <span className="text-[12px] text-[#1E293B]">{job?.internalId?.trim() || '—'}</span>
-            </div>
+            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-3" style={{ letterSpacing: '0.05em' }}>Details</p>
+            {([
+              ['Job ID',       job?.internalId?.trim() || '—'],
+              ['Days on site', job?.daysOnSite || '—'],
+              ['Travel %',     job?.travelPct ? `${job.travelPct}%` : '—'],
+            ] as [string, string][]).map(([label, val]) => (
+              <div key={label} className="flex items-baseline gap-2 mb-2">
+                <span className="text-[10px] text-[#94A3B8] min-w-[72px] flex-shrink-0">{label}</span>
+                <span className="text-[12px] text-[#1E293B]">{val}</span>
+              </div>
+            ))}
+            {WORK_TYPE_OPTIONS.length > 0 && (
+              <div className="mt-3 pt-3" style={{ borderTop: '0.5px solid #F1F5F9' }}>
+                <p className="text-[10px] text-[#94A3B8] mb-2">Work type</p>
+                <div className="flex flex-col gap-1.5">
+                  {WORK_TYPE_OPTIONS.map(wt => {
+                    const active = job?.workTypes?.includes(wt) ?? false
+                    return (
+                      <div key={wt} className="flex items-center gap-2">
+                        <div className={`w-3.5 h-3.5 rounded flex items-center justify-center flex-shrink-0 ${active ? 'bg-[#2563EB]' : 'bg-white'}`}
+                          style={{ border: active ? 'none' : '1.5px solid #CBD5E1' }}>
+                          {active && <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                        </div>
+                        <span className={`text-[12px] ${active ? 'text-[#1E293B] font-medium' : 'text-[#94A3B8]'}`}>{wt}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -761,7 +779,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                 </button>
               </div>
               {([
-                ['Job Type', job?.jobType   ?? '—'],
+                ['Job type', job?.workTypes?.length ? job.workTypes.join(', ') : (job?.jobType ?? '—')],
                 ['Location', job?.location  ?? '—'],
                 ['Client Req.', job?.clientReqNumber && job.clientReqNumber.trim() !== '' ? job.clientReqNumber : '—'],
               ] as [string, string][]).map(([label, value]) => (
@@ -852,6 +870,16 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <div>
             <label className={LBL}>Job type</label>
             <PillGroup options={JOB_TYPES} value={editJobType} onChange={setEditJobType} />
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2">
+              {WORK_TYPE_OPTIONS.map(wt => (
+                <label key={wt} className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={editWorkTypes.includes(wt)}
+                    onChange={() => setEditWorkTypes(prev => prev.includes(wt) ? prev.filter(x => x !== wt) : [...prev, wt])}
+                    className="w-3.5 h-3.5 accent-[#2563EB]" />
+                  <span className="text-[12px] text-[#1E293B]">{wt}</span>
+                </label>
+              ))}
+            </div>
           </div>
           <div>
             <label className={LBL}>Salary range</label>
@@ -913,28 +941,6 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             </div>
           ))}
 
-          {/* Work Type */}
-          <p className={SEC} style={{ marginTop: 8 }}>Work Type</p>
-          <div className="flex gap-4">
-            <div>
-              <label className={LBL}>Days on site</label>
-              <input type="number" value={editDaysOnSite} onChange={e => setEditDaysOnSite(e.target.value)} className={INP} style={{ ...INP_ST, width: 80 }} />
-            </div>
-            <div>
-              <label className={LBL}>Travel %</label>
-              <input type="number" value={editTravelPct} onChange={e => setEditTravelPct(e.target.value)} className={INP} style={{ ...INP_ST, width: 80 }} />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-            {WORK_TYPE_OPTIONS.map(wt => (
-              <label key={wt} className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={editWorkTypes.includes(wt)}
-                  onChange={() => setEditWorkTypes(prev => prev.includes(wt) ? prev.filter(x => x !== wt) : [...prev, wt])}
-                  className="w-3.5 h-3.5 accent-[#2563EB]" />
-                <span className="text-[12px] text-[#1E293B]">{wt}</span>
-              </label>
-            ))}
-          </div>
 
         </div>
       </EditPanel>
