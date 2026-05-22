@@ -12,6 +12,7 @@ export interface Job {
   salaryMax:              string
   salaryType:             SalaryType
   location:               string
+  address?:               string
   status:                 JobStatus
   assignedRecruiterId:    string
   assignedRecruiterEmail: string

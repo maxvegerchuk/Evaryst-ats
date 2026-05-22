@@ -8,6 +8,7 @@ export interface Company {
   city:       string
   state:      string
   zip:        string
+  address?:   string
   phone:      string
   website:    string
   status:     CompanyStatus

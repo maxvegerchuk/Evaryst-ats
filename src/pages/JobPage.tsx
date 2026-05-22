@@ -73,6 +73,7 @@ interface JobPageProps {
 export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [], onUpdateCandidate }: JobPageProps) {
   const [activeTab,    setActiveTab]    = useState<JobTab>(initialTab ?? 'details')
   const [showEditJob,  setShowEditJob]  = useState(false)
+  const [jobAddress,   setJobAddress]   = useState(job?.address ?? '')
 
   // ── Candidates tab ────────────────────────────────────────────────────────────
 
@@ -521,15 +522,21 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           {/* Location */}
           <div className="bg-white rounded-[10px] p-4 mb-3" style={{ border: '0.5px solid #E2E8F0' }}>
             <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>Location</p>
-            {([
-              ['Address', '123 Main Street' ],
-              ['City',    'Dallas, TX 75000'],
-            ] as [string, string][]).map(([label, val]) => (
-              <div key={label} className="flex items-baseline gap-2 mb-1 last:mb-0">
-                <span className="text-[10px] text-[#94A3B8] min-w-[52px]">{label}</span>
-                <span className="text-[12px] text-[#1E293B]">{val}</span>
-              </div>
-            ))}
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="text-[10px] text-[#94A3B8] min-w-[52px] flex-shrink-0">Address</span>
+              <input
+                type="text"
+                value={jobAddress}
+                onChange={e => setJobAddress(e.target.value)}
+                onBlur={() => { if (job && onUpdateJob) onUpdateJob({ ...job, address: jobAddress }) }}
+                placeholder="Street address"
+                className="text-[12px] text-[#1E293B] bg-transparent focus:outline-none w-full placeholder:text-[#CBD5E1] border-b border-transparent focus:border-[#CBD5E1] transition-colors"
+              />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-[10px] text-[#94A3B8] min-w-[52px] flex-shrink-0">City</span>
+              <span className="text-[12px] text-[#1E293B]">{job?.location || '—'}</span>
+            </div>
           </div>
 
           {/* Hiring team */}

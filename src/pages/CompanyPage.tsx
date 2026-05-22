@@ -405,6 +405,10 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                   <span className="text-[12px] text-[#1E293B]">{value}</span>
                 </div>
               ))}
+              <div className="flex items-baseline gap-[5px]">
+                <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">Address</span>
+                <span className="text-[12px] text-[#1E293B]">{company?.address || '—'}</span>
+              </div>
             </div>
           </div>
 
