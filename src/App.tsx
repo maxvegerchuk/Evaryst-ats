@@ -14,7 +14,8 @@ import { SearchPage }           from './pages/SearchPage'
 import { AdministrationPage }   from './pages/AdministrationPage'
 import { SchedulePanel } from './components/layout/SchedulePanel'
 import type { EventStatus, PanelEvent } from './components/layout/SchedulePanel'
-import { AuthPage } from './pages/AuthPage'
+import { LandingPage } from './pages/LandingPage'
+import { LoginPage }   from './pages/LoginPage'
 import type { User } from './types/auth'
 import { DEMO_USER } from './types/auth'
 import type { Candidate } from './types/candidate'
@@ -258,17 +259,15 @@ function mapTeamMember(r: any): TeamMember {
 
 function App() {
   const [scheduleOpen, setScheduleOpen] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!safeStorage.getItem('evaryst_user'))
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+  const [isAuthenticated] = useState(() => !!safeStorage.getItem('evaryst_user'))
+  const [currentUser] = useState<User | null>(() => {
     const saved = safeStorage.getItem('evaryst_user')
     return saved ? JSON.parse(saved) as User : null
   })
 
   const handleLogin = (user: User) => {
     safeStorage.setItem('evaryst_user', JSON.stringify(user))
-    setCurrentUser(user)
-    setIsAuthenticated(true)
-    setCurrentPage('dashboard')
+    window.location.href = '/app'
   }
   const handleLogout = () => {
     safeStorage.removeItem('evaryst_user')
@@ -277,9 +276,7 @@ function App() {
     safeStorage.removeItem('evaryst_job_id')
     safeStorage.removeItem('evaryst_candidate_ids')
     safeStorage.removeItem('evaryst_candidate_idx')
-    setCurrentUser(null)
-    setIsAuthenticated(false)
-    setCurrentPage('dashboard')
+    window.location.href = '/'
   }
 
   const [currentPage,           setCurrentPage]           = useState<Page>(() => (safeStorage.getItem('evaryst_page') as Page) || 'dashboard')
@@ -576,7 +573,22 @@ function App() {
 
   const recruiterMembers = teamMembers.filter(m => m.role === 'recruiter')
 
-  if (!isAuthenticated || !currentUser) return <AuthPage onLogin={handleLogin} />
+  // ── Path-based routing ──────────────────────────────────────────────────────
+  const path = window.location.pathname
+
+  if (path === '/' || path === '') {
+    return <LandingPage isAuthenticated={isAuthenticated} onGoToApp={() => { window.location.href = '/app' }} />
+  }
+
+  if (path === '/login') {
+    if (isAuthenticated) { window.location.href = '/'; return null }
+    return <LoginPage onLogin={handleLogin} />
+  }
+
+  if (!isAuthenticated || !currentUser) {
+    window.location.href = '/login'
+    return null
+  }
 
   return (
     <div className="flex flex-col h-screen">
