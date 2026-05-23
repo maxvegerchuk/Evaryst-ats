@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Rocket, Users, Phone, BarChart2, Briefcase, Search, Building2, Check } from 'lucide-react'
 import heroRecruiter        from '../assets/hero-recruiter.jpg'
 import pipelineIllustration from '../assets/pipeline-illustration.jpg'
-import sarahAvatar          from '../assets/sarah-avatar.jpg'
 
 interface LandingPageProps {
   isAuthenticated: boolean
@@ -449,36 +448,6 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         </div>
       </section>
 
-
-      {/* ── TESTIMONIAL ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: '#F8FAFC', padding: '72px 40px' }}>
-        <div style={{ maxWidth: 680, margin: '0 auto' }}>
-          <div
-            className="bg-white rounded-[16px] p-8"
-            style={{ border: '0.5px solid #E2E8F0', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
-          >
-            <div style={{ fontSize: 80, color: '#E2E8F0', lineHeight: 1, marginBottom: 8, fontFamily: 'Georgia, serif' }}>"</div>
-            <div className="flex gap-0.5 mb-5">
-              {[1,2,3,4,5].map(i => <span key={i} style={{ fontSize: 16, color: '#F59E0B' }}>★</span>)}
-            </div>
-            <p className="font-medium leading-relaxed" style={{ fontSize: 18, color: '#1E293B' }}>
-              Evaryst completely changed how our team tracks candidates. We went from spreadsheets to a
-              proper pipeline in one day. Our placement rate is up 40%.
-            </p>
-            <div className="flex items-center gap-3 mt-6">
-              <img
-                src={sarahAvatar}
-                alt="Sarah Reynolds"
-                style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid #E2E8F0', flexShrink: 0 }}
-              />
-              <div>
-                <p className="font-medium" style={{ fontSize: 14, color: '#1E293B' }}>Sarah Reynolds</p>
-                <p style={{ fontSize: 12, color: '#64748B' }}>Head of Recruiting, TechNova Solutions</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────────────────── */}
       <section id="pricing" style={{ background: 'white', padding: '72px 40px', scrollMarginTop: 56 }}>
