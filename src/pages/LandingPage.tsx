@@ -182,7 +182,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
               <span className="font-medium" style={{ fontSize: 11, color: '#60A5FA' }}>Built for staffing agencies</span>
             </div>
 
-            <h1 className="leading-tight mb-4" style={{ fontSize: 42, color: 'white', fontFamily: '"Fraunces", serif', fontWeight: 300 }}>
+            <h1 className="leading-tight mb-4" style={{ fontSize: 42, color: 'white', fontFamily: '"Fraunces", serif', fontWeight: 600 }}>
               The ATS that helps you<br />
               <span style={{ color: '#60A5FA', fontFamily: '"Fraunces", serif', fontStyle: 'italic', fontWeight: 400 }}>place candidates faster</span>
             </h1>
@@ -247,7 +247,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           </div>
 
           {/* Right — hero image */}
-          <div style={{ position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '16px', margin: '12px 12px 12px 0' }}>
             {/* Image */}
             <img
               src={heroSection}
@@ -260,8 +260,6 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
                 objectFit: 'cover',
                 objectPosition: 'center top',
                 filter: 'brightness(0.85) saturate(0.9)',
-                borderRadius: '16px',
-                margin: '12px 12px 12px 0',
               }}
             />
             {/* Floating pipeline card */}
