@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Rocket, Users, Phone, BarChart2, Briefcase, Search, Building2, Check } from 'lucide-react'
-import heroRecruiter        from '../assets/hero-recruiter.jpg'
+import heroSection          from '../assets/hero-section.png'
 import pipelineIllustration from '../assets/pipeline-illustration.jpg'
 
 interface LandingPageProps {
@@ -150,10 +150,10 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           pointerEvents: 'none',
         }} />
 
-        {/* Blue glow — right side */}
+        {/* Blue glow */}
         <div style={{
           position: 'absolute',
-          right: -60, top: '50%',
+          left: -60, top: '50%',
           transform: 'translateY(-50%)',
           width: 500, height: 500,
           background: 'radial-gradient(circle, rgba(37,99,235,0.25) 0%, transparent 70%)',
@@ -161,8 +161,15 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         }} />
 
         <div
-          className="relative grid grid-cols-2 gap-12 items-center mx-auto"
-          style={{ maxWidth: 1200, padding: '0 40px' }}
+          className="relative mx-auto"
+          style={{
+            maxWidth: 1200,
+            padding: '0 40px',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '0 48px',
+            alignItems: 'stretch',
+          }}
         >
           {/* Left — copy */}
           <div>
@@ -214,33 +221,83 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             <p className="mt-3" style={{ fontSize: 11, color: '#475569' }}>
               No credit card required · Setup in minutes
             </p>
+
+            {/* Stats row */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              paddingTop: 24,
+              marginTop: 32,
+            }}>
+              {[
+                { number: '3×',   label: 'Faster placements' },
+                { number: '40%',  label: 'Less admin time' },
+                { number: '100%', label: 'Pipeline visibility' },
+              ].map((stat, i) => (
+                <div key={stat.label} style={{ display: 'flex', alignItems: 'stretch' }}>
+                  {i > 0 && <div style={{ width: 1, background: 'rgba(255,255,255,0.12)', margin: '0 24px' }} />}
+                  <div>
+                    <p style={{ fontSize: 20, fontWeight: 600, color: 'white', margin: 0 }}>{stat.number}</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{stat.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Right — recruiter image */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', maxHeight: '480px' }}>
+          {/* Right — full-bleed image */}
+          <div style={{ position: 'relative', overflow: 'hidden' }}>
+            {/* Left fade */}
+            <div style={{
+              position: 'absolute', left: 0, top: 0, bottom: 0, width: '35%',
+              background: 'linear-gradient(to right, #0d1b2e, transparent)',
+              zIndex: 2, pointerEvents: 'none',
+            }} />
+            {/* Right fade */}
+            <div style={{
+              position: 'absolute', right: 0, top: 0, bottom: 0, width: '30%',
+              background: 'linear-gradient(to left, #0d1b2e, transparent)',
+              zIndex: 3, pointerEvents: 'none',
+            }} />
+            {/* Image */}
             <img
-              src={heroRecruiter}
-              alt="Recruiter using Evaryst"
+              src={heroSection}
+              alt="Evaryst ATS dashboard"
               style={{
-                width: 'auto',
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
                 height: '100%',
-                maxHeight: '480px',
-                maxWidth: '100%',
-                borderRadius: '16px',
                 objectFit: 'cover',
-                objectPosition: 'top center',
-                display: 'block',
-                position: 'relative',
-                zIndex: 1,
+                objectPosition: 'center top',
+                filter: 'brightness(0.85) saturate(0.9)',
               }}
             />
+            {/* Floating pipeline card */}
             <div style={{
               position: 'absolute',
-              width: 400, height: 400,
-              background: 'radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%)',
-              borderRadius: '50%',
-              zIndex: 0,
-            }} />
+              bottom: 28, right: 28,
+              zIndex: 10,
+              background: 'rgba(13,27,46,0.85)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 10,
+              padding: '12px 16px',
+              backdropFilter: 'blur(8px)',
+            }}>
+              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', margin: '0 0 8px' }}>Pipeline today</p>
+              {[
+                { color: '#60A5FA', label: 'Screening',  count: 12 },
+                { color: '#A78BFA', label: 'Interviews', count: 8 },
+                { color: '#4ADE80', label: 'Offers',     count: 3 },
+              ].map((row, i) => (
+                <div key={row.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: i < 2 ? 6 : 0 }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: row.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', flex: 1 }}>{row.label}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'white' }}>{row.count}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
