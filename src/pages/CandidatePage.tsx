@@ -147,6 +147,10 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
   const [editingNoteId,   setEditingNoteId]   = useState<number | null>(null)
   const [editingNoteText, setEditingNoteText] = useState('')
 
+  const [selectedWorkTypes, setSelectedWorkTypes] = useState<string[]>(
+    () => candidate?.workType ? candidate.workType.split(',').map(s => s.trim()).filter(Boolean) : []
+  )
+
   const isMultiSelect = selectedCandidateIds.length > 1
   const peekCount = Math.min(2, selectedCandidateIds.length - 1)
 
@@ -639,7 +643,18 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             <div className="flex flex-col gap-2">
               {['Full-Time', 'Contract', 'Part-Time', 'Contract to Hire'].map(w => (
                 <label key={w} className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" defaultChecked={w === 'Full-Time' || w === 'Contract'} className="accent-[#2563EB]" />
+                  <input
+                    type="checkbox"
+                    className="accent-[#2563EB]"
+                    checked={selectedWorkTypes.includes(w)}
+                    onChange={e => {
+                      const next = e.target.checked
+                        ? [...selectedWorkTypes, w]
+                        : selectedWorkTypes.filter(t => t !== w)
+                      setSelectedWorkTypes(next)
+                      onUpdateCandidate?.(candidate!.id, { workType: next.join(', ') })
+                    }}
+                  />
                   <span className="text-[12px] text-[#1E293B]">{w}</span>
                 </label>
               ))}

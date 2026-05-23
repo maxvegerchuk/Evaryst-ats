@@ -425,13 +425,17 @@ export function CandidatesPage({
                       </td>
                       <td className="px-4 py-2.5">
                         {c.workType ? (
-                          <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md ${
-                            c.workType === 'Remote'   ? 'bg-[#DBEAFE] text-[#1D4ED8]' :
-                            c.workType === 'On-site'  ? 'bg-[#F1F5F9] text-[#475569]' :
-                            c.workType === 'Hybrid'   ? 'bg-[#F3E8FF] text-[#6D28D9]' :
-                            c.workType === 'Contract' ? 'bg-[#FFEDD5] text-[#9A3412]' :
-                            'bg-[#F1F5F9] text-[#475569]'
-                          }`}>{c.workType}</span>
+                          <div className="flex flex-wrap gap-1">
+                            {c.workType.split(',').map(s => s.trim()).filter(Boolean).map(t => (
+                              <span key={t} className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md ${
+                                t === 'Full-Time'        ? 'bg-[#DBEAFE] text-[#1D4ED8]' :
+                                t === 'Contract'         ? 'bg-[#FFEDD5] text-[#9A3412]' :
+                                t === 'Part-Time'        ? 'bg-[#F1F5F9] text-[#475569]' :
+                                t === 'Contract to Hire' ? 'bg-[#F3E8FF] text-[#6D28D9]' :
+                                'bg-[#F1F5F9] text-[#475569]'
+                              }`}>{t}</span>
+                            ))}
+                          </div>
                         ) : (
                           <span className="text-[13px] text-[#94A3B8]">—</span>
                         )}
