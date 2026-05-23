@@ -55,6 +55,7 @@ function mapCandidate(r: any): Candidate {
     followUpDate:          r.followup_date  ?? '',
     followUpTime:          r.followup_time  ?? '',
     followUpType:          r.followup_type  ?? 'Call',
+    workType:              r.work_type ?? '',
     qualificationAnswers:  r.qualification_answers ?? {},
     resumeData:            r.resume_data ?? { summary: '', experience: '', education: '', skills: '' },
   }
@@ -85,6 +86,7 @@ function toDbCandidate(c: Partial<Candidate>): Record<string, unknown> {
   if ('followUpDate'          in c) row.followup_date          = c.followUpDate
   if ('followUpTime'          in c) row.followup_time          = c.followUpTime
   if ('followUpType'          in c) row.followup_type          = c.followUpType
+  if ('workType'              in c) row.work_type              = c.workType
   if ('qualificationAnswers'  in c) row.qualification_answers  = c.qualificationAnswers
   if ('resumeData'            in c) row.resume_data            = c.resumeData
   return row
@@ -651,7 +653,6 @@ function App() {
                 onRestoreCandidate={restoreCandidate}
                 onDeleteCandidate={deleteCandidate}
                 currentUser={currentUser}
-                onRefresh={() => { void loadAllData() }}
               />
             </div>
           )}

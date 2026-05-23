@@ -22,6 +22,7 @@ export interface Candidate {
   followUpDate?:         string
   followUpTime?:         string
   followUpType?:         string
+  workType?:             string
   qualificationAnswers?: Record<string, boolean | string>
   resumeData?: {
     summary:    string
