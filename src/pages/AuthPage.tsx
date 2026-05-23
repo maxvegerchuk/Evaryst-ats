@@ -36,9 +36,18 @@ export function AuthPage({ onLogin }: AuthPageProps) {
       {/* ── Left panel ─────────────────────────────────────────── */}
       <div
         className="w-[45%] min-h-screen hidden lg:flex flex-col relative"
-        style={{ backgroundImage: `url(${everestImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        style={{ position: 'relative' }}
       >
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(18, 64, 138, 0.72)', zIndex: 1 }} />
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${everestImg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'brightness(1.5) saturate(0.8)',
+          zIndex: 0,
+        }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(18, 64, 138, 0.55)', zIndex: 1 }} />
 
         <div className="relative flex flex-col h-full" style={{ zIndex: 2 }}>
           <div className="flex items-center gap-2 p-8">
