@@ -47,7 +47,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
           filter: 'brightness(1.5) saturate(0.8)',
           zIndex: 0,
         }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(18, 64, 138, 0.55)', zIndex: 1 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(220, 50, 50, 0.8)', zIndex: 1 }} />
 
         <div className="relative flex flex-col h-full" style={{ zIndex: 2 }}>
           <div className="flex items-center gap-2 p-8">
