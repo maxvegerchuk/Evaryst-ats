@@ -38,7 +38,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         className="w-[45%] min-h-screen hidden lg:flex flex-col relative"
         style={{ backgroundImage: `url(${everestImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(37, 99, 235, 0.78)' }} />
+        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(13, 23, 42, 0.72)' }} />
 
         <div className="relative z-10 flex flex-col h-full">
           <div className="flex items-center gap-2 p-8">
