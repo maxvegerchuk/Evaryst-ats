@@ -305,21 +305,6 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         </div>
       </section>
 
-      {/* ── SOCIAL PROOF ────────────────────────────────────────────────────────── */}
-      <div style={{ background: 'white', padding: '40px 40px' }}>
-        <p className="text-center mb-5" style={{ fontSize: 12, color: '#94A3B8' }}>Trusted by recruiting teams at</p>
-        <div className="flex justify-center gap-4 flex-wrap">
-          {['TechNova Solutions', 'Glazers Group', 'ABC Company', 'Pepsico', 'Neiman Marcus'].map(name => (
-            <div
-              key={name}
-              className="font-medium rounded-[8px] px-5 py-2.5"
-              style={{ background: '#F1F5F9', border: '0.5px solid #E2E8F0', fontSize: 12, color: '#475569' }}
-            >
-              {name}
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── FEATURES ─────────────────────────────────────────────────────────────── */}
       <section id="features" style={{ background: 'white', padding: '72px 40px', scrollMarginTop: 56 }}>
@@ -331,7 +316,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           {/* Highlight feature */}
           <div
             className="grid grid-cols-2 gap-10 items-center rounded-[16px] p-8 mb-6"
-            style={{ background: '#F8FAFC', border: '0.5px solid #E2E8F0', borderTop: `2px solid ${highlight.accentColor}` }}
+            style={{ background: '#F8FAFC', border: '0.5px solid #E2E8F0' }}
           >
             <div>
               <div
@@ -375,11 +360,11 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
 
           {/* Remaining feature cards */}
           <div className="grid grid-cols-3 gap-4">
-            {restFeatures.map(({ icon: Icon, accentColor, iconBg, iconClr, title, desc }) => (
+            {restFeatures.map(({ icon: Icon, iconBg, iconClr, title, desc }) => (
               <div
                 key={title}
                 className="rounded-[12px] p-5 bg-white cursor-default"
-                style={{ border: '0.5px solid #E2E8F0', borderTop: `2px solid ${accentColor}`, transition: 'transform 200ms, box-shadow 200ms' }}
+                style={{ border: '0.5px solid #E2E8F0', transition: 'transform 200ms, box-shadow 200ms' }}
                 onMouseEnter={e => hoverCard(e.currentTarget as HTMLDivElement, true)}
                 onMouseLeave={e => hoverCard(e.currentTarget as HTMLDivElement, false)}
               >
@@ -442,38 +427,6 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         </div>
       </section>
 
-      {/* ── TESTIMONIAL ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: '#F8FAFC', padding: '72px 40px' }}>
-        <div style={{ maxWidth: 680, margin: '0 auto' }}>
-          <div
-            className="bg-white rounded-[16px] p-8"
-            style={{ border: '0.5px solid #E2E8F0', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
-          >
-            <div style={{ fontSize: 80, color: '#E2E8F0', lineHeight: 1, marginBottom: 8, fontFamily: 'Georgia, serif' }}>"</div>
-            <div className="flex gap-0.5 mb-5">
-              {[1,2,3,4,5].map(i => (
-                <span key={i} style={{ fontSize: 16, color: '#F59E0B' }}>★</span>
-              ))}
-            </div>
-            <p className="font-medium leading-relaxed" style={{ fontSize: 18, color: '#1E293B' }}>
-              Evaryst completely changed how our team tracks candidates. We went from spreadsheets to a
-              proper pipeline in one day. Our placement rate is up 40%.
-            </p>
-            <div className="flex items-center gap-3 mt-6">
-              <div
-                className="flex items-center justify-center rounded-full font-semibold flex-shrink-0"
-                style={{ width: 44, height: 44, background: '#DBEAFE', color: '#1D4ED8', fontSize: 13 }}
-              >
-                SR
-              </div>
-              <div>
-                <p className="font-medium" style={{ fontSize: 14, color: '#1E293B' }}>Sarah Reynolds</p>
-                <p style={{ fontSize: 12, color: '#64748B' }}>Head of Recruiting, TechNova Solutions</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────────────────── */}
       <section id="pricing" style={{ background: 'white', padding: '72px 40px', scrollMarginTop: 56 }}>
