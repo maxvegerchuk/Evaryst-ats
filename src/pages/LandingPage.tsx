@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Rocket, Users, Phone, BarChart2, Briefcase, Search, Building2, Check } from 'lucide-react'
+import heroRecruiter        from '../assets/hero-recruiter.jpg'
+import pipelineIllustration from '../assets/pipeline-illustration.jpg'
+import sarahAvatar          from '../assets/sarah-avatar.jpg'
 
 interface LandingPageProps {
   isAuthenticated: boolean
@@ -15,13 +18,6 @@ const FEATURES = [
   { icon: Building2, accentColor: '#16A34A', iconBg: '#F0FDF4', iconClr: '#15803D', title: 'Client management',   desc: 'Manage client companies, contacts, and job orders. All client intel in one profile.' },
 ]
 
-const PIPELINE_COLS = [
-  { stage: 'New',          count: 14, color: '#E2E8F0', textClr: '#475569' },
-  { stage: 'Phone Screen', count: 8,  color: '#DBEAFE', textClr: '#1D4ED8' },
-  { stage: 'Interview',    count: 5,  color: '#FEF3C7', textClr: '#92400E' },
-  { stage: 'Submitted',    count: 3,  color: '#FFEDD5', textClr: '#9A3412' },
-  { stage: 'Placed',       count: 12, color: '#DCFCE7', textClr: '#15803D' },
-]
 
 const PREVIEW_ROWS = [
   { initials: 'MW', name: 'Marcus Webb',  stage: 'Phone Screen', stageBg: 'rgba(37,99,235,0.25)',  stageClr: '#93C5FD', rating: 'Paper A', ratingBg: 'rgba(37,99,235,0.2)',   ratingClr: '#93C5FD', job: '.NET Dev'    },
@@ -45,7 +41,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
   const starterPrice = billingPeriod === 'monthly' ? 29 : 23
   const teamPrice    = billingPeriod === 'monthly' ? 59 : 47
 
-  const [highlight, ...restFeatures] = FEATURES
+  const restFeatures = FEATURES.slice(1)
 
   // ── shared style helpers ────────────────────────────────────────────────────
 
@@ -221,90 +217,121 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             </p>
           </div>
 
-          {/* Right — dashboard preview */}
-          <div
-            className="rounded-[14px] p-4"
-            style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '0.5px solid rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(10px)',
-            }}
-          >
-            {/* KPI cards */}
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              {[
-                { label: 'Placements',        value: 12, trend: '+3 vs last month',  trendClr: '#4ADE80' },
-                { label: 'Active candidates', value: 84, trend: '+12 this week',     trendClr: '#4ADE80' },
-                { label: 'Open jobs',         value: 17, trend: 'Across 8 clients',  trendClr: '#94A3B8' },
-                { label: 'Interviews',        value: 31, trend: '+8 vs last month',  trendClr: '#4ADE80' },
-              ].map(kpi => (
-                <div
-                  key={kpi.label}
-                  className="rounded-[8px] p-3"
-                  style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.1)' }}
-                >
-                  <p style={{ fontSize: 10, color: '#94A3B8', marginBottom: 4 }}>{kpi.label}</p>
-                  <p className="font-medium" style={{ fontSize: 18, color: 'white', marginBottom: 2 }}>{kpi.value}</p>
-                  <p style={{ fontSize: 10, color: kpi.trendClr }}>{kpi.trend}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Mini candidate table */}
-            <div
-              className="rounded-[8px] overflow-hidden"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)' }}
-            >
-              <div
-                className="grid px-3 py-2"
-                style={{
-                  gridTemplateColumns: '1.8fr 1.6fr 0.9fr 0.9fr',
-                  background: 'rgba(255,255,255,0.05)',
-                  borderBottom: '0.5px solid rgba(255,255,255,0.08)',
-                }}
-              >
-                {['NAME', 'STAGE', 'RATING', 'JOB'].map(h => (
-                  <span key={h} style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{h}</span>
-                ))}
-              </div>
-              {PREVIEW_ROWS.map((row, i) => (
-                <div
-                  key={row.name}
-                  className="grid items-center px-3 py-2"
-                  style={{
-                    gridTemplateColumns: '1.8fr 1.6fr 0.9fr 0.9fr',
-                    borderBottom: i < 2 ? '0.5px solid rgba(255,255,255,0.06)' : undefined,
-                  }}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <div
-                      className="flex items-center justify-center rounded-full flex-shrink-0"
-                      style={{ width: 20, height: 20, background: 'rgba(37,99,235,0.3)' }}
-                    >
-                      <span style={{ fontSize: 8, fontWeight: 600, color: '#93C5FD' }}>{row.initials}</span>
-                    </div>
-                    <span style={{ fontSize: 11, color: 'white' }}>{row.name}</span>
-                  </div>
-                  <span
-                    className="rounded-full"
-                    style={{ fontSize: 9, background: row.stageBg, color: row.stageClr, padding: '2px 6px', whiteSpace: 'nowrap', justifySelf: 'start' }}
-                  >
-                    {row.stage}
-                  </span>
-                  <span
-                    className="rounded-full"
-                    style={{ fontSize: 9, background: row.ratingBg, color: row.ratingClr, padding: '2px 6px', whiteSpace: 'nowrap', justifySelf: 'start' }}
-                  >
-                    {row.rating}
-                  </span>
-                  <span style={{ fontSize: 11, color: '#94A3B8' }}>{row.job}</span>
-                </div>
-              ))}
-            </div>
+          {/* Right — recruiter image */}
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src={heroRecruiter}
+              alt="Recruiter using Evaryst"
+              style={{
+                width: '100%',
+                maxWidth: 480,
+                height: 'auto',
+                borderRadius: 16,
+                objectFit: 'cover',
+                position: 'relative',
+                zIndex: 1,
+              }}
+            />
+            <div style={{
+              position: 'absolute',
+              width: 400, height: 400,
+              background: 'radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%)',
+              borderRadius: '50%',
+              zIndex: 0,
+            }} />
           </div>
         </div>
       </section>
 
+
+      {/* ── SEE IT IN ACTION ─────────────────────────────────────────────────────── */}
+      <div style={{ background: '#0F172A', padding: '0 40px 80px' }}>
+        <p className="text-center mb-2 font-medium" style={{ fontSize: 22, color: 'white', paddingTop: 0 }}>
+          See your pipeline in action
+        </p>
+        <p className="text-center mb-10" style={{ fontSize: 14, color: '#94A3B8' }}>
+          Real-time overview of your team's recruiting activity
+        </p>
+
+        <div
+          className="rounded-[14px] mx-auto"
+          style={{
+            maxWidth: 800,
+            padding: 20,
+            background: 'rgba(255,255,255,0.05)',
+            border: '0.5px solid rgba(255,255,255,0.12)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          {/* KPI cards */}
+          <div className="grid grid-cols-4 gap-3 mb-4">
+            {[
+              { label: 'Placements',        value: 12, trend: '+3 vs last month',  trendClr: '#4ADE80' },
+              { label: 'Active candidates', value: 84, trend: '+12 this week',     trendClr: '#4ADE80' },
+              { label: 'Open jobs',         value: 17, trend: 'Across 8 clients',  trendClr: '#94A3B8' },
+              { label: 'Interviews',        value: 31, trend: '+8 vs last month',  trendClr: '#4ADE80' },
+            ].map(kpi => (
+              <div
+                key={kpi.label}
+                className="rounded-[8px] p-3"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.1)' }}
+              >
+                <p style={{ fontSize: 10, color: '#94A3B8', marginBottom: 4 }}>{kpi.label}</p>
+                <p className="font-medium" style={{ fontSize: 20, color: 'white', marginBottom: 2 }}>{kpi.value}</p>
+                <p style={{ fontSize: 10, color: kpi.trendClr }}>{kpi.trend}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Candidate table */}
+          <div className="overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 10 }}>
+            <div
+              className="grid px-4 py-2.5"
+              style={{
+                gridTemplateColumns: '2fr 1.4fr 0.8fr 1fr',
+                background: 'rgba(255,255,255,0.06)',
+              }}
+            >
+              {['NAME', 'STAGE', 'RATING', 'JOB'].map(h => (
+                <span key={h} className="font-medium" style={{ fontSize: 10, color: '#64748B' }}>{h}</span>
+              ))}
+            </div>
+            {PREVIEW_ROWS.map((row) => (
+              <div
+                key={row.name}
+                className="grid items-center px-4 py-2.5"
+                style={{
+                  gridTemplateColumns: '2fr 1.4fr 0.8fr 1fr',
+                  borderTop: '0.5px solid rgba(255,255,255,0.06)',
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="flex items-center justify-center rounded-full flex-shrink-0"
+                    style={{ width: 22, height: 22, background: 'rgba(37,99,235,0.3)' }}
+                  >
+                    <span style={{ fontSize: 8, fontWeight: 600, color: '#93C5FD' }}>{row.initials}</span>
+                  </div>
+                  <span style={{ fontSize: 12, color: 'white' }}>{row.name}</span>
+                </div>
+                <span
+                  className="rounded-full"
+                  style={{ fontSize: 9, background: row.stageBg, color: row.stageClr, padding: '2px 7px', whiteSpace: 'nowrap', justifySelf: 'start' }}
+                >
+                  {row.stage}
+                </span>
+                <span
+                  className="rounded-full"
+                  style={{ fontSize: 9, background: row.ratingBg, color: row.ratingClr, padding: '2px 7px', whiteSpace: 'nowrap', justifySelf: 'start' }}
+                >
+                  {row.rating}
+                </span>
+                <span style={{ fontSize: 12, color: '#94A3B8' }}>{row.job}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* ── FEATURES ─────────────────────────────────────────────────────────────── */}
       <section id="features" style={{ background: 'white', padding: '72px 40px', scrollMarginTop: 56 }}>
@@ -315,46 +342,38 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
 
           {/* Highlight feature */}
           <div
-            className="grid grid-cols-2 gap-10 items-center rounded-[16px] p-8 mb-6"
+            className="grid grid-cols-2 gap-12 items-center rounded-[16px] p-8 mb-6"
             style={{ background: '#F8FAFC', border: '0.5px solid #E2E8F0' }}
           >
             <div>
-              <div
-                className="flex items-center justify-center rounded-[10px] mb-4"
-                style={{ width: 44, height: 44, background: highlight.iconBg }}
-              >
-                <highlight.icon size={22} style={{ color: highlight.iconClr }} />
-              </div>
-              <p className="font-semibold mb-3" style={{ fontSize: 18, color: '#1E293B' }}>{highlight.title}</p>
-              <p className="leading-relaxed mb-5" style={{ fontSize: 14, color: '#64748B' }}>{highlight.desc}</p>
+              <p className="font-medium uppercase mb-2" style={{ fontSize: 11, color: '#2563EB', letterSpacing: '0.08em' }}>Core feature</p>
+              <p className="mb-3" style={{ fontSize: 22, fontWeight: 500, color: '#1E293B' }}>
+                Track every candidate from call to placement
+              </p>
+              <p className="leading-relaxed mb-5" style={{ fontSize: 14, color: '#64748B' }}>
+                Evaryst gives you a complete view of your pipeline. Move candidates through stages,
+                log every interaction, and never lose track of a placement opportunity.
+              </p>
               <div className="flex flex-col gap-2">
-                {['Visual Kanban pipeline', 'Full candidate profile', 'Qualification tracking', 'Resume & submittal tools'].map(f => (
+                {[
+                  'New → Phone Screen → Interview → References → Placed',
+                  'Full profile with resume and qualification questions',
+                  'Real-time pipeline health analytics',
+                ].map(f => (
                   <div key={f} className="flex items-center gap-2">
-                    <Check size={14} style={{ color: '#16A34A', flexShrink: 0 }} />
-                    <span style={{ fontSize: 13, color: '#475569' }}>{f}</span>
+                    <Check size={14} style={{ color: '#2563EB', flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: '#475569' }}>{f}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Pipeline illustration */}
-            <div className="rounded-[10px] p-4" style={{ background: 'white', border: '0.5px solid #E2E8F0' }}>
-              <p style={{ fontSize: 10, color: '#94A3B8', marginBottom: 10, letterSpacing: '0.06em' }}>PIPELINE OVERVIEW</p>
-              <div className="flex gap-2">
-                {PIPELINE_COLS.map(col => (
-                  <div key={col.stage} className="flex-1">
-                    <div className="rounded-[6px] px-1 py-1.5 mb-2 text-center" style={{ background: col.color }}>
-                      <p style={{ fontSize: 8, color: col.textClr, fontWeight: 600, marginBottom: 2 }}>{col.stage}</p>
-                      <p style={{ fontSize: 17, fontWeight: 700, color: col.textClr, lineHeight: 1 }}>{col.count}</p>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      {Array.from({ length: Math.min(col.count, 3) }).map((_, i) => (
-                        <div key={i} className="rounded-[4px]" style={{ height: 18, background: col.color, opacity: 0.5 + i * 0.15 }} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="flex items-center justify-center">
+              <img
+                src={pipelineIllustration}
+                alt="Candidate pipeline illustration"
+                style={{ width: '100%', maxWidth: 420, height: 'auto', borderRadius: 12, objectFit: 'contain' }}
+              />
             </div>
           </div>
 
@@ -427,6 +446,36 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         </div>
       </section>
 
+
+      {/* ── TESTIMONIAL ──────────────────────────────────────────────────────────── */}
+      <section style={{ background: '#F8FAFC', padding: '72px 40px' }}>
+        <div style={{ maxWidth: 680, margin: '0 auto' }}>
+          <div
+            className="bg-white rounded-[16px] p-8"
+            style={{ border: '0.5px solid #E2E8F0', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
+          >
+            <div style={{ fontSize: 80, color: '#E2E8F0', lineHeight: 1, marginBottom: 8, fontFamily: 'Georgia, serif' }}>"</div>
+            <div className="flex gap-0.5 mb-5">
+              {[1,2,3,4,5].map(i => <span key={i} style={{ fontSize: 16, color: '#F59E0B' }}>★</span>)}
+            </div>
+            <p className="font-medium leading-relaxed" style={{ fontSize: 18, color: '#1E293B' }}>
+              Evaryst completely changed how our team tracks candidates. We went from spreadsheets to a
+              proper pipeline in one day. Our placement rate is up 40%.
+            </p>
+            <div className="flex items-center gap-3 mt-6">
+              <img
+                src={sarahAvatar}
+                alt="Sarah Reynolds"
+                style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid #E2E8F0', flexShrink: 0 }}
+              />
+              <div>
+                <p className="font-medium" style={{ fontSize: 14, color: '#1E293B' }}>Sarah Reynolds</p>
+                <p style={{ fontSize: 12, color: '#64748B' }}>Head of Recruiting, TechNova Solutions</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────────────────── */}
       <section id="pricing" style={{ background: 'white', padding: '72px 40px', scrollMarginTop: 56 }}>
