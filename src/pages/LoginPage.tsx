@@ -36,11 +36,20 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* ── Left panel ─────────────────────────────────────────── */}
       <div
         className="w-[45%] min-h-screen hidden lg:flex flex-col relative"
-        style={{ backgroundImage: `url(${everestImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        style={{ position: 'relative' }}
       >
-        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(13, 23, 42, 0.72)' }} />
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${everestImg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'brightness(1.5) saturate(0.8)',
+          zIndex: 0,
+        }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(18, 64, 138, 0.55)', zIndex: 1 }} />
 
-        <div className="relative z-10 flex flex-col h-full">
+        <div className="relative flex flex-col h-full" style={{ zIndex: 2 }}>
           <div className="flex items-center gap-2 p-8">
             <div className="w-9 h-9 rounded-[9px] bg-white/20 flex items-center justify-center">
               <span className="text-[18px] font-bold text-white">E</span>
