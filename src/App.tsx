@@ -689,7 +689,6 @@ function App() {
                 onDeleteCompany={handleDeleteCompany}
                 currentUser={currentUser}
                 jobs={jobs}
-                onRefresh={() => { void loadAllData() }}
               />
             </div>
           )}
@@ -728,7 +727,6 @@ function App() {
                 recruiters={recruiterMembers}
                 currentUser={currentUser}
                 candidates={candidates}
-                onRefresh={() => { void loadAllData() }}
               />
             </div>
           )}

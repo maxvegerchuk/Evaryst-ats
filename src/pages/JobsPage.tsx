@@ -3,7 +3,7 @@ import { useClickOutside } from '../hooks/useClickOutside'
 import {
   ExternalLink, Search, ChevronDown, Plus,
   MoreHorizontal, User, Mail, X,
-  ChevronLeft, ChevronRight, Briefcase, RefreshCw,
+  ChevronLeft, ChevronRight, Briefcase,
 } from 'lucide-react'
 import type { Job, JobStatus } from '../types/job'
 import { daysOpen } from '../types/job'
@@ -66,10 +66,9 @@ interface JobsPageProps {
   recruiters:      Recruiter[]
   currentUser:     AppUser
   candidates?:     import('../types/candidate').Candidate[]
-  onRefresh?:      () => void
 }
 
-export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob, onDeleteJob, recruiters, candidates = [], onRefresh, currentUser }: JobsPageProps) {
+export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob, onDeleteJob, recruiters, candidates = [], currentUser }: JobsPageProps) {
   const [showAddJob,      setShowAddJob]      = useState(false)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [search,          setSearch]          = useState('')
@@ -154,12 +153,6 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
             <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
             Export
           </button>
-          {onRefresh && (
-            <button type="button" onClick={onRefresh} className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
-              <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-              Refresh
-            </button>
-          )}
           {isManager && (
             <button type="button" onClick={() => setShowAddJob(true)} className="flex items-center gap-1.5 bg-[#2563EB] text-white rounded-[7px] px-3 py-1.5 text-[12px] font-medium hover:bg-[#1D4ED8] transition-colors">
               <Plus className="w-3.5 h-3.5" />

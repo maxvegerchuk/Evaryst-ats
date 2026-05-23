@@ -4,7 +4,7 @@ import {
   ExternalLink, BarChart2, Plus, Search, ChevronDown,
   MoreHorizontal, User, Mail, Briefcase, Archive,
   TrendingUp, ChevronLeft, ChevronRight, Users, Star,
-  RotateCcw, Trash2, RefreshCw,
+  RotateCcw, Trash2,
 } from 'lucide-react'
 import type { Candidate, CandidateStage } from '../types/candidate'
 import { getInitials, getAvatarColor } from '../types/candidate'
@@ -12,7 +12,7 @@ import type { Contact, ContactStatus } from '../types/contact'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-const SORT_OPTIONS = ['Date Added', 'Name (A-Z)', 'Rating', 'Last Contact', 'Status'] as const
+const SORT_OPTIONS = ['Date Added', 'Name (A-Z)', 'Last Contact', 'Status'] as const
 type SortOption = typeof SORT_OPTIONS[number]
 
 const STATUS_OPTIONS = ['All', 'New', 'Phone Screen', 'Interview', 'References', 'Submitted', 'Placed'] as const
@@ -37,7 +37,6 @@ function sortCandidates(list: Candidate[], sort: SortOption): Candidate[] {
   if (sort === 'Name (A-Z)')   s.sort((a, b) => a.name.localeCompare(b.name))
   if (sort === 'Status')       s.sort((a, b) => a.stage.localeCompare(b.stage))
   if (sort === 'Last Contact') s.sort((a, b) => b.addedDate.localeCompare(a.addedDate))
-  if (sort === 'Rating')       s.sort((a, b) => a.rating.localeCompare(b.rating))
   return s
 }
 
@@ -58,7 +57,6 @@ interface CandidatesPageProps {
   onRestoreCandidate:             (id: string) => void
   onDeleteCandidate:              (id: string) => void
   currentUser?:                   { id: string; name?: string }
-  onRefresh?:                     () => void
 }
 
 export function CandidatesPage({
@@ -66,7 +64,6 @@ export function CandidatesPage({
   candidates, onAddCandidate, onToggleStar, isManager,
   contacts, onAddContact, onDeleteContact,
   archivedCandidates, onArchiveCandidate, onRestoreCandidate, onDeleteCandidate,
-  onRefresh,
 }: CandidatesPageProps) {
   // ── Candidates state ───────────────────────────────────────────────────────
   const [search,           setSearch]           = useState('')
@@ -245,12 +242,6 @@ export function CandidatesPage({
                   <ExternalLink className="w-3.5 h-3.5" />
                   Export
                 </button>
-                {onRefresh && (
-                  <button type="button" onClick={onRefresh} className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    Refresh
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => setShowStats(v => !v)}
@@ -384,7 +375,7 @@ export function CandidatesPage({
                   <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
                   <th style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
                   <th style={{ width: 80 }}  className="px-4 py-2.5 text-center text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Jobs</th>
-                  <th style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Rating</th>
+                  <th style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Work Type</th>
                   <th style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
                   <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
                   {isManager && (
@@ -433,8 +424,14 @@ export function CandidatesPage({
                         <span className="text-[13px] text-[#94A3B8]">0</span>
                       </td>
                       <td className="px-4 py-2.5">
-                        {c.rating ? (
-                          <span className="inline-block text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#DBEAFE] text-[#1D4ED8]">{c.rating}</span>
+                        {c.workType ? (
+                          <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md ${
+                            c.workType === 'Remote'   ? 'bg-[#DBEAFE] text-[#1D4ED8]' :
+                            c.workType === 'On-site'  ? 'bg-[#F1F5F9] text-[#475569]' :
+                            c.workType === 'Hybrid'   ? 'bg-[#F3E8FF] text-[#6D28D9]' :
+                            c.workType === 'Contract' ? 'bg-[#FFEDD5] text-[#9A3412]' :
+                            'bg-[#F1F5F9] text-[#475569]'
+                          }`}>{c.workType}</span>
                         ) : (
                           <span className="text-[13px] text-[#94A3B8]">—</span>
                         )}

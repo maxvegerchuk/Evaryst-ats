@@ -3,7 +3,7 @@ import { useClickOutside } from '../hooks/useClickOutside'
 import {
   ExternalLink, BarChart2, Search, ChevronDown,
   MoreHorizontal, Mail, Globe, X, TrendingUp,
-  ChevronLeft, ChevronRight, Building2, Plus, RefreshCw,
+  ChevronLeft, ChevronRight, Building2, Plus,
 } from 'lucide-react'
 import type { Company, CompanyStatus } from '../types/company'
 import type { User } from '../types/auth'
@@ -50,10 +50,9 @@ interface CompaniesPageProps {
   onDeleteCompany:     (id: string) => void
   currentUser:         User
   jobs?:               import('../types/job').Job[]
-  onRefresh?:          () => void
 }
 
-export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAddCompany, onDeleteCompany, currentUser, jobs = [], onRefresh }: CompaniesPageProps) {
+export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAddCompany, onDeleteCompany, currentUser, jobs = [] }: CompaniesPageProps) {
   const [showAddCompany,  setShowAddCompany]  = useState(false)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [search,         setSearch]         = useState('')
@@ -124,12 +123,6 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
             <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
             Export
           </button>
-          {onRefresh && (
-            <button type="button" onClick={onRefresh} className="flex items-center gap-1.5 border-subtle bg-white rounded-[7px] px-3 py-1.5 text-[12px] text-[#475569] hover:bg-[#F8FAFC] transition-colors">
-              <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-              Refresh
-            </button>
-          )}
           {isManager && (
             <button type="button" onClick={() => setShowAddCompany(true)} className="flex items-center gap-1.5 bg-[#2563EB] text-white rounded-[7px] px-3 py-1.5 text-[12px] font-medium hover:bg-[#1D4ED8] transition-colors">
               <Plus className="w-3.5 h-3.5" />
