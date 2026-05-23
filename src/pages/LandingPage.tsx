@@ -218,16 +218,19 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           </div>
 
           {/* Right — recruiter image */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', maxHeight: '480px' }}>
             <img
               src={heroRecruiter}
               alt="Recruiter using Evaryst"
               style={{
-                width: '100%',
-                maxWidth: 480,
-                height: 'auto',
-                borderRadius: 16,
+                width: 'auto',
+                height: '100%',
+                maxHeight: '480px',
+                maxWidth: '100%',
+                borderRadius: '16px',
                 objectFit: 'cover',
+                objectPosition: 'top center',
+                display: 'block',
                 position: 'relative',
                 zIndex: 1,
               }}
