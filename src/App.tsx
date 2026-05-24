@@ -381,6 +381,13 @@ function App() {
       if (updates.stage) {
         void logActivity('stage_changed',  `${existing.name} moved to ${updates.stage}`,           id, 'candidate', uid)
         void logActivity('status_changed', `${existing.name} status changed to ${updates.stage}`,  id, 'candidate', uid)
+      } else if (updates.attachedJobIds) {
+        const oldIds   = existing.attachedJobIds ?? []
+        const addedIds = updates.attachedJobIds.filter(jid => !oldIds.includes(jid))
+        for (const jobId of addedIds) {
+          const jobTitle = jobs.find(j => j.id === jobId)?.title ?? 'a job'
+          void logActivity('candidate_added', `${existing.name} added to ${jobTitle}`, id, 'candidate', uid)
+        }
       } else if ('notes' in updates && updates.notes !== undefined) {
         void logActivity('note_added', `Note added for ${existing.name}`, id, 'candidate', uid)
       }
