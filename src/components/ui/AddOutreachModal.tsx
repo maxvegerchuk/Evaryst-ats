@@ -156,7 +156,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
                 <span className="flex-1 text-[13px] text-[#1E293B]">{selected.name}</span>
                 <button
                   type="button"
-                  onClick={() => { setSelected(null); setSearch('') }}
+                  onClick={() => { setSelected(null); setSearch(''); setPhone('') }}
                   className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-slate-100"
                   aria-label="Clear selection"
                 >
@@ -185,7 +185,13 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
                         <button
                           key={c.id}
                           type="button"
-                          onMouseDown={() => { setSelected(c); setSearch(''); setShowDrop(false) }}
+                          onMouseDown={() => {
+                            setSelected(c)
+                            setSearch('')
+                            setShowDrop(false)
+                            const orig = candidates.find(x => x.id === c.id)
+                            setPhone(orig?.phone || '')
+                          }}
                           className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-slate-50 text-left transition-colors"
                         >
                           <div
