@@ -25,6 +25,7 @@ import type { Job } from './types/job'
 import type { TeamMember } from './types/team'
 import { AddCandidateModal } from './components/ui/AddCandidateModal'
 import { supabase } from './lib/supabase'
+import { logActivity } from './lib/activity'
 import { safeStorage } from './utils/storage'
 
 type Page = 'dashboard' | 'people' | 'candidates' | 'jobs' | 'job' | 'companies' | 'company' | 'reports' | 'candidate' | 'search' | 'administration'
@@ -366,13 +367,23 @@ function App() {
   async function handleAddCandidate(c: Candidate) {
     setCandidates(prev => [c, ...prev])
     const { error } = await supabase.from('candidates').insert(toDbCandidate(c))
-    if (error) { console.error('handleAddCandidate error:', JSON.stringify(error, null, 2)); setCandidates(prev => prev.filter(x => x.id !== c.id)) }
+    if (error) { console.error('handleAddCandidate error:', JSON.stringify(error, null, 2)); setCandidates(prev => prev.filter(x => x.id !== c.id)); return }
+    void logActivity('candidate_added', `New candidate added: ${c.name}`, c.id, 'candidate', currentUser?.id)
   }
 
   async function handleUpdateCandidate(id: string, updates: Partial<Candidate>) {
+    const existing = candidates.find(c => c.id === id)
     setCandidates(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c))
     const { error } = await supabase.from('candidates').update(toDbCandidate(updates)).eq('id', id)
-    if (error) console.error('handleUpdateCandidate:', error)
+    if (error) { console.error('handleUpdateCandidate:', error); return }
+    if (existing) {
+      const uid = currentUser?.id
+      if (updates.stage) {
+        void logActivity('stage_changed', `${existing.name} moved to ${updates.stage}`, id, 'candidate', uid)
+      } else if ('notes' in updates && updates.notes !== undefined) {
+        void logActivity('note_added', `Note added for ${existing.name}`, id, 'candidate', uid)
+      }
+    }
   }
 
   async function handleDeleteCandidate(id: string) {
@@ -395,7 +406,8 @@ function App() {
   async function handleAddCompany(c: Company) {
     setCompanies(prev => [c, ...prev])
     const { error } = await supabase.from('companies').insert(toDbCompany(c))
-    if (error) { console.error('handleAddCompany error:', JSON.stringify(error, null, 2)); setCompanies(prev => prev.filter(x => x.id !== c.id)) }
+    if (error) { console.error('handleAddCompany error:', JSON.stringify(error, null, 2)); setCompanies(prev => prev.filter(x => x.id !== c.id)); return }
+    void logActivity('company_added', `New company added: ${c.name}`, c.id, 'company', currentUser?.id)
   }
 
   async function handleUpdateCompany(id: string, updates: Partial<Company>) {
@@ -477,6 +489,7 @@ function App() {
       }
 
       console.log('Job created successfully:', data)
+      void logActivity('job_created', `New job posted: ${j.title}`, j.id, 'job', currentUser?.id)
     } catch (err: unknown) {
       const e = err as { message?: string }
       console.error('=== CATCH ERROR ===', err)
@@ -515,7 +528,17 @@ function App() {
 
   // ── Schedule (no Supabase table — session-only) ─────────────────────────────
 
-  function addScheduleEvent(ev: PanelEvent) { setScheduleEvents(prev => [...prev, ev]) }
+  function addScheduleEvent(ev: PanelEvent) {
+    setScheduleEvents(prev => [...prev, ev])
+    const isCall = ev.type === 'phone'
+    void logActivity(
+      isCall ? 'call_logged' : 'meeting_scheduled',
+      `${isCall ? 'Call logged' : 'Meeting scheduled'} with ${ev.name}`,
+      ev.id,
+      'schedule',
+      currentUser?.id,
+    )
+  }
 
   // ── Derived state ───────────────────────────────────────────────────────────
 
