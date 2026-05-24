@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Phone, Video, ExternalLink, ChevronLeft, ChevronRight, Plus, Check, RotateCcw, PhoneOff, Calendar } from 'lucide-react'
 import { AddOutreachModal, type SaveData } from '../ui/AddOutreachModal'
-import { ActivityFeed } from '../dashboard/ActivityFeed'
 import type { Candidate } from '../../types/candidate'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -305,7 +304,7 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
           </div>
 
           {/* Timeline */}
-          <div className="border-b border-[#E2E8F0]">
+          <div className="flex-1">
             {dayEvents.length > 0 ? (
               dayEvents.map(ev => (
                 <EventCard
@@ -322,9 +321,6 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
               </div>
             )}
           </div>
-
-          {/* Recent Activity */}
-          <ActivityFeed />
 
         </div>
       </aside>
