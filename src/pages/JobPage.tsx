@@ -300,7 +300,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                       </select>
                     </td>
                     <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{c.addedDate}</td>
-                    <td style={{ padding: '10px 16px', position: 'relative' }} onClick={e => e.stopPropagation()}>
+                    <td className="px-4 py-2.5 text-right" style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
                       <button
                         type="button"
                         onClick={() => setConfirmRemoveId(confirmRemoveId === c.id ? null : c.id)}
