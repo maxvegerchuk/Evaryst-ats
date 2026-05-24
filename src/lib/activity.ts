@@ -27,12 +27,14 @@ export async function logActivity(
   entityType?: string,
   userId?:     string,
 ): Promise<void> {
-  const { error } = await supabase.from('activity_log').insert({
+  console.log('logActivity called:', type, message)
+  const { data, error } = await supabase.from('activity_log').insert({
     type,
     message,
     entity_id:   entityId   ?? null,
     entity_type: entityType ?? null,
     user_id:     userId     ?? null,
-  })
+  }).select()
+  console.log('activity insert result:', data, error)
   if (error) console.error('logActivity error:', error)
 }

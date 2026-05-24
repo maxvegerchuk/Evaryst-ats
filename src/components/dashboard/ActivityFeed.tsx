@@ -48,6 +48,7 @@ export function ActivityFeed() {
         .select('*')
         .order('created_at', { ascending: false })
         .limit(15)
+      console.log('activity_log initial fetch:', data, error)
       if (!error && data) setActivities(data as ActivityRow[])
       setLoading(false)
     }
@@ -59,6 +60,7 @@ export function ActivityFeed() {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'activity_log' },
         (payload) => {
+          console.log('realtime event received:', payload)
           setActivities(prev => [payload.new as ActivityRow, ...prev].slice(0, 15))
         },
       )
