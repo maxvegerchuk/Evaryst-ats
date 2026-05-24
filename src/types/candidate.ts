@@ -23,6 +23,10 @@ export interface Candidate {
   followUpTime?:         string
   followUpType?:         string
   workType?:             string
+  ptoDays?:              string
+  healthInsurance?:      string
+  retirementMatch?:      string
+  annualBonus?:          string
   qualificationAnswers?: Record<string, boolean | string>
   resumeData?: {
     summary:    string

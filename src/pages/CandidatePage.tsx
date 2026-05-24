@@ -141,8 +141,16 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
   const [scheduled,    setScheduled]    = useState(false)
 
   const [qualAnswers,  setQualAnswers]  = useState<Record<string, boolean | string>>(candidate?.qualificationAnswers ?? {})
-  const qualTimeoutRef   = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const qualTimeoutRef    = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const resumeTimeoutRef  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const benefitsTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  const [benefits, setBenefits] = useState({
+    ptoDays:         candidate?.ptoDays         ?? '',
+    healthInsurance: candidate?.healthInsurance ?? '',
+    retirementMatch: candidate?.retirementMatch ?? '',
+    annualBonus:     candidate?.annualBonus     ?? '',
+  })
 
   const [editingNoteId,   setEditingNoteId]   = useState<number | null>(null)
   const [editingNoteText, setEditingNoteText] = useState('')

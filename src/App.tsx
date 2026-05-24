@@ -56,6 +56,10 @@ function mapCandidate(r: any): Candidate {
     followUpTime:          r.followup_time  ?? '',
     followUpType:          r.followup_type  ?? 'Call',
     workType:              r.work_type ?? '',
+    ptoDays:               r.pto_days          ?? '',
+    healthInsurance:       r.health_insurance  ?? '',
+    retirementMatch:       r.retirement_match  ?? '',
+    annualBonus:           r.annual_bonus      ?? '',
     qualificationAnswers:  r.qualification_answers ?? {},
     resumeData:            r.resume_data ?? { summary: '', experience: '', education: '', skills: '' },
   }
@@ -87,6 +91,10 @@ function toDbCandidate(c: Partial<Candidate>): Record<string, unknown> {
   if ('followUpTime'          in c) row.followup_time          = c.followUpTime
   if ('followUpType'          in c) row.followup_type          = c.followUpType
   if ('workType'              in c) row.work_type              = c.workType
+  if ('ptoDays'               in c) row.pto_days               = c.ptoDays
+  if ('healthInsurance'       in c) row.health_insurance       = c.healthInsurance
+  if ('retirementMatch'       in c) row.retirement_match       = c.retirementMatch
+  if ('annualBonus'           in c) row.annual_bonus           = c.annualBonus
   if ('qualificationAnswers'  in c) row.qualification_answers  = c.qualificationAnswers
   if ('resumeData'            in c) row.resume_data            = c.resumeData
   return row
