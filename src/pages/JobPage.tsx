@@ -231,6 +231,11 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         </div>
       ) : (
       <>
+        {/* backdrop — closes popup when clicking outside */}
+        {confirmRemoveId && (
+          <div className="fixed inset-0 z-10" onClick={() => setConfirmRemoveId(null)} />
+        )}
+
         <div className="flex justify-end mb-3">
           <button type="button" onClick={openCandModal}
             className="flex items-center gap-1.5 bg-[#2563EB] text-white rounded-[7px] px-3 py-1.5 text-[12px] font-medium hover:bg-[#1D4ED8] transition-colors">
@@ -241,7 +246,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                {['Name', 'Status', 'Rating', 'Added', 'Actions'].map(h => (
+                {['Name', 'Status', 'Rating', 'Added', ''].map(h => (
                   <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
               </tr>
@@ -295,35 +300,41 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                       </select>
                     </td>
                     <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{c.addedDate}</td>
-                    <td style={{ padding: '10px 16px' }} onClick={e => e.stopPropagation()}>
-                      {confirmRemoveId === c.id ? (
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[11px] text-[#DC2626] whitespace-nowrap">Remove {c.name.split(' ')[0]}?</span>
-                          <button
-                            type="button"
-                            onClick={() => removeCandidateFromJob(c)}
-                            className="px-2 py-0.5 text-[11px] font-medium text-white bg-[#DC2626] rounded-[5px] hover:bg-red-700 transition-colors"
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmRemoveId(null)}
-                            className="px-2 py-0.5 text-[11px] font-medium text-[#475569] bg-white rounded-[5px] hover:bg-[#F8FAFC] transition-colors"
-                            style={{ border: '0.5px solid #E2E8F0' }}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => setConfirmRemoveId(c.id)}
-                          className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#FEF2F2] opacity-0 group-hover:opacity-100 transition-opacity"
-                          aria-label={`Remove ${c.name} from job`}
+                    <td style={{ padding: '10px 16px', position: 'relative' }} onClick={e => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmRemoveId(confirmRemoveId === c.id ? null : c.id)}
+                        className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#FEF2F2] opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label={`Remove ${c.name} from job`}
+                      >
+                        <X className="w-3.5 h-3.5 text-[#94A3B8]" />
+                      </button>
+                      {confirmRemoveId === c.id && (
+                        <div
+                          className="absolute right-0 bottom-full mb-1 bg-white rounded-[8px] shadow-lg z-20 p-3 flex flex-col gap-2.5"
+                          style={{ border: '0.5px solid #E2E8F0', minWidth: 212 }}
                         >
-                          <X className="w-3.5 h-3.5 text-[#94A3B8] hover:text-[#DC2626]" />
-                        </button>
+                          <p className="text-[12px] font-medium text-[#1E293B]">
+                            Remove <span className="text-[#2563EB]">{c.name}</span> from this job?
+                          </p>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setConfirmRemoveId(null)}
+                              className="flex-1 py-1.5 text-[11px] font-medium text-[#475569] bg-white rounded-[6px] hover:bg-[#F8FAFC] transition-colors"
+                              style={{ border: '0.5px solid #E2E8F0' }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeCandidateFromJob(c)}
+                              className="flex-1 py-1.5 text-[11px] font-medium text-white bg-[#DC2626] rounded-[6px] hover:bg-red-700 transition-colors"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </td>
                   </tr>
