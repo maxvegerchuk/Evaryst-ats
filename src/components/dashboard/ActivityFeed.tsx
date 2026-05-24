@@ -40,9 +40,10 @@ function timeAgo(iso: string): string {
 export function ActivityFeed() {
   const [activities, setActivities] = useState<ActivityRow[]>([])
   const [loading,    setLoading]    = useState(true)
+  const channelName = useState(() => `realtime:activity_feed:${Math.random().toString(36).slice(2)}`)[0]
 
   useEffect(() => {
-    async function fetchFeed() {
+    async function fetchActivities() {
       const { data, error } = await supabase
         .from('activity_log')
         .select('*')
@@ -52,22 +53,25 @@ export function ActivityFeed() {
       if (!error && data) setActivities(data as ActivityRow[])
       setLoading(false)
     }
-    void fetchFeed()
+
+    void fetchActivities()
 
     const channel = supabase
-      .channel('activity_feed')
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'activity_log' },
         (payload) => {
           console.log('realtime event received:', payload)
-          setActivities(prev => [payload.new as ActivityRow, ...prev].slice(0, 15))
+          void fetchActivities()
         },
       )
       .subscribe()
 
-    return () => { void supabase.removeChannel(channel) }
-  }, [])
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [channelName])
 
   return (
     <section
