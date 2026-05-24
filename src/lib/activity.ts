@@ -3,6 +3,7 @@ import { supabase } from './supabase'
 export type ActivityType =
   | 'candidate_added'
   | 'stage_changed'
+  | 'status_changed'
   | 'note_added'
   | 'call_logged'
   | 'meeting_scheduled'

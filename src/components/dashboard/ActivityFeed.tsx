@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   UserPlus, ArrowRight, FileText, Phone,
-  Calendar, Briefcase, Building2, Activity,
+  Calendar, Briefcase, Building2, Activity, Clock, Tag,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import type { ActivityRow, ActivityType } from '../../lib/activity'
@@ -15,6 +15,7 @@ const TYPE_CONFIG: Record<ActivityType, {
 }> = {
   candidate_added:    { Icon: UserPlus,   iconBg: 'bg-[#DBEAFE]', iconClr: 'text-[#1D4ED8]' },
   stage_changed:      { Icon: ArrowRight, iconBg: 'bg-[#F3E8FF]', iconClr: 'text-[#6D28D9]' },
+  status_changed:     { Icon: Tag,        iconBg: 'bg-[#F0FDF4]', iconClr: 'text-[#15803D]' },
   note_added:         { Icon: FileText,   iconBg: 'bg-[#F1F5F9]', iconClr: 'text-[#475569]' },
   call_logged:        { Icon: Phone,      iconBg: 'bg-[#DCFCE7]', iconClr: 'text-[#15803D]' },
   meeting_scheduled:  { Icon: Calendar,   iconBg: 'bg-[#FFEDD5]', iconClr: 'text-[#9A3412]' },
@@ -73,7 +74,10 @@ export function ActivityFeed() {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-        <h2 id="activity-heading" className="text-[15px] font-bold text-text-primary">Recent activity</h2>
+        <h2 id="activity-heading" className="flex items-center gap-1.5 text-[15px] font-bold text-text-primary">
+          <Clock className="w-3.5 h-3.5 text-[#94A3B8]" aria-hidden="true" />
+          Recent activity
+        </h2>
       </div>
 
       {/* Body */}

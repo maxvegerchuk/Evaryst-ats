@@ -379,7 +379,8 @@ function App() {
     if (existing) {
       const uid = currentUser?.id
       if (updates.stage) {
-        void logActivity('stage_changed', `${existing.name} moved to ${updates.stage}`, id, 'candidate', uid)
+        void logActivity('stage_changed',  `${existing.name} moved to ${updates.stage}`,           id, 'candidate', uid)
+        void logActivity('status_changed', `${existing.name} status changed to ${updates.stage}`,  id, 'candidate', uid)
       } else if ('notes' in updates && updates.notes !== undefined) {
         void logActivity('note_added', `Note added for ${existing.name}`, id, 'candidate', uid)
       }
