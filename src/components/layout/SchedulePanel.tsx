@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Phone, Video, ExternalLink, ChevronLeft, ChevronRight, Plus, Check, RotateCcw, PhoneOff, Calendar } from 'lucide-react'
+import { AddOutreachModal, type SaveData } from '../ui/AddOutreachModal'
+import type { Candidate } from '../../types/candidate'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -276,16 +278,17 @@ interface SchedulePanelProps {
   onSetStatus:   (id: string, status: EventStatus) => void
   events:        PanelEvent[]
   onAddEvent:    (ev: PanelEvent) => void
+  candidates?:   Candidate[]
 }
 
-export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, events, onAddEvent }: SchedulePanelProps) {
+export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, events, onAddEvent, candidates = [] }: SchedulePanelProps) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const baseWeekStart = getMondayOfWeek(today)
 
   const [selectedDay, setSelectedDay] = useState<Date>(today)
   const [weekOffset,  setWeekOffset]  = useState(0)
-  const [showForm,    setShowForm]    = useState(false)
+  const [showModal,   setShowModal]   = useState(false)
 
   const displayWeekStart = new Date(baseWeekStart)
   displayWeekStart.setDate(baseWeekStart.getDate() + weekOffset * 7)
@@ -294,12 +297,32 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
     .filter(ev => isSameDay(ev.date ? new Date(ev.date) : today, selectedDay))
     .sort((a, b) => a.hour - b.hour)
 
-  function handleAddEvent(ev: PanelEvent) {
-    onAddEvent(ev)
-    setShowForm(false)
+  function handleSave(data: SaveData) {
+    const isCall    = data.context === 'call'
+    const [y, m, d] = data.date.split('-').map(Number)
+    const h         = parseInt(data.time.split(':')[0], 10)
+    const panelEv: PanelEvent = {
+      id:          'evt-' + Date.now(),
+      date:        new Date(y, m - 1, d),
+      time:        fmt12h(data.time),
+      hour:        h,
+      type:        isCall ? 'phone' : 'video',
+      name:        data.person.name,
+      initials:    data.person.initials,
+      avatarBg:    data.person.avatarBg,
+      avatarClr:   data.person.avatarClr,
+      company:     data.person.role,
+      platform:    isCall ? 'By Phone' : 'Google Meet',
+      phone:       data.phone,
+      meetingLink: data.meetingLink,
+      note:        data.notes || undefined,
+    }
+    onAddEvent(panelEv)
+    setShowModal(false)
   }
 
   return (
+    <>
     <div className="relative shrink-0">
       <button
         type="button"
@@ -321,7 +344,7 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
             <h2 className="text-[14px] font-medium text-[#1E293B] whitespace-nowrap">Schedule</h2>
             <button
               type="button"
-              onClick={() => setShowForm(v => !v)}
+              onClick={() => setShowModal(true)}
               className="flex items-center gap-1 text-[12px] font-medium text-[#2563EB] bg-white border-subtle px-[10px] py-1 rounded-[6px] hover:bg-[#F8FAFC] transition-colors whitespace-nowrap"
             >
               <Plus className="w-3 h-3 text-[#2563EB]" />
@@ -370,13 +393,6 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
 
           {/* Timeline */}
           <div className="flex-1">
-            {showForm && (
-              <InlineAddForm
-                selectedDay={selectedDay}
-                onAdd={handleAddEvent}
-                onCancel={() => setShowForm(false)}
-              />
-            )}
             {dayEvents.length > 0 ? (
               dayEvents.map(ev => (
                 <EventCard
@@ -386,16 +402,25 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
                   onSetStatus={s => onSetStatus(ev.id, s)}
                 />
               ))
-            ) : !showForm ? (
+            ) : (
               <div className="flex flex-col items-center justify-center py-8 px-4">
                 <Calendar className="w-9 h-9 text-[#E2E8F0] mb-2" />
                 <p className="text-[12px] text-[#94A3B8]">No events scheduled</p>
               </div>
-            ) : null}
+            )}
           </div>
 
         </div>
       </aside>
     </div>
+
+    {showModal && (
+      <AddOutreachModal
+        onClose={() => setShowModal(false)}
+        onSave={handleSave}
+        candidates={candidates}
+      />
+    )}
+    </>
   )
 }

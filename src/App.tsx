@@ -782,6 +782,7 @@ function App() {
             onSetStatus={setEventStatus}
             events={scheduleEvents}
             onAddEvent={addScheduleEvent}
+            candidates={candidates}
           />
         )}
       </div>
