@@ -283,6 +283,16 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
     }, 500)
   }
 
+  function handleBenefitChange(key: keyof typeof benefits, value: string) {
+    const next = { ...benefits, [key]: value }
+    setBenefits(next)
+    clearTimeout(benefitsTimeoutRef.current)
+    benefitsTimeoutRef.current = setTimeout(() => {
+      if (!candidate) return
+      onUpdateCandidate?.(candidate.id, next)
+    }, 800)
+  }
+
   function handleResumeChange(key: ResumeKey, value: string) {
     const next = { ...resumeSections, [key]: value }
     setResumeSection(next)
@@ -621,14 +631,49 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 <p className={empLabel}>Base Pay</p>
                 <input defaultValue="$85,000" className={empInput} style={empInputSt} />
               </div>
-              <div className="col-span-3 flex flex-col">
-                <p className={empLabel}>Benefits & compensation notes</p>
-                <textarea
-                  defaultValue="14 PTO days, $430/m health, 4% 401k, 10% bonus"
-                  placeholder="e.g. 14 PTO days, $430/m health, 4% 401k..."
-                  className={`${empInput} resize-none`}
-                  style={{ ...empInputSt, minHeight: 60 }}
+              <div className="flex flex-col">
+                <p className={empLabel}>PTO Days</p>
+                <input
+                  value={benefits.ptoDays}
+                  onChange={e => handleBenefitChange('ptoDays', e.target.value)}
+                  placeholder="e.g. 14"
+                  className={empInput}
+                  style={empInputSt}
                 />
+                <p className="text-[11px] text-[#94A3B8] mt-0.5">Days per year</p>
+              </div>
+              <div className="flex flex-col">
+                <p className={empLabel}>Health Insurance</p>
+                <input
+                  value={benefits.healthInsurance}
+                  onChange={e => handleBenefitChange('healthInsurance', e.target.value)}
+                  placeholder="e.g. $430/mo"
+                  className={empInput}
+                  style={empInputSt}
+                />
+                <p className="text-[11px] text-[#94A3B8] mt-0.5">Monthly contribution</p>
+              </div>
+              <div className="flex flex-col">
+                <p className={empLabel}>401(k) Match</p>
+                <input
+                  value={benefits.retirementMatch}
+                  onChange={e => handleBenefitChange('retirementMatch', e.target.value)}
+                  placeholder="e.g. 4%"
+                  className={empInput}
+                  style={empInputSt}
+                />
+                <p className="text-[11px] text-[#94A3B8] mt-0.5">Employer match</p>
+              </div>
+              <div className="flex flex-col">
+                <p className={empLabel}>Annual Bonus</p>
+                <input
+                  value={benefits.annualBonus}
+                  onChange={e => handleBenefitChange('annualBonus', e.target.value)}
+                  placeholder="e.g. 10%"
+                  className={empInput}
+                  style={empInputSt}
+                />
+                <p className="text-[11px] text-[#94A3B8] mt-0.5">Target bonus</p>
               </div>
             </div>
           </div>
