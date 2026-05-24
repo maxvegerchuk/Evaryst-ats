@@ -7,6 +7,7 @@ import {
 import type { Job, JobType, JobStatus, SalaryType } from '../types/job'
 import type { Candidate } from '../types/candidate'
 import { getAvatarColor } from '../types/candidate'
+import { logActivity } from '../lib/activity'
 import { EditPanel } from '../components/ui/EditPanel'
 import { CityAutocomplete } from '../components/ui/CityAutocomplete'
 
@@ -180,6 +181,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
   const [showAddCandModal,     setShowAddCandModal]     = useState(false)
   const [candModalSelected,    setCandModalSelected]    = useState<Set<string>>(new Set())
   const [candSearch,           setCandSearch]           = useState('')
+  const [confirmRemoveId,      setConfirmRemoveId]      = useState<string | null>(null)
 
   const jobCandidates      = candidates.filter(c => c.attachedJobIds?.includes(job?.id ?? '') && !c.isArchived)
   const availableCandidates = candidates.filter(c => !c.attachedJobIds?.includes(job?.id ?? '') && !c.isArchived)
@@ -202,6 +204,14 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
       onUpdateCandidate?.(id, { attachedJobIds: nextIds })
     })
     setShowAddCandModal(false)
+  }
+
+  function removeCandidateFromJob(c: Candidate) {
+    if (!job || !onUpdateCandidate) return
+    const nextIds = (c.attachedJobIds ?? []).filter(id => id !== job.id)
+    onUpdateCandidate(c.id, { attachedJobIds: nextIds })
+    void logActivity('status_changed', `${c.name} removed from ${job.title}`, c.id, 'candidate')
+    setConfirmRemoveId(null)
   }
 
   const candidatesTab = (
@@ -231,7 +241,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                {['Name', 'Status', 'Rating', 'Added'].map(h => (
+                {['Name', 'Status', 'Rating', 'Added', 'Actions'].map(h => (
                   <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
               </tr>
@@ -243,7 +253,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                   <tr
                     key={c.id}
                     onClick={() => setCurrentPage('candidate')}
-                    className="hover:bg-[#F8FAFC] cursor-pointer transition-colors"
+                    className="group hover:bg-[#F8FAFC] cursor-pointer transition-colors"
                     style={{ borderBottom: i < jobCandidates.length - 1 ? '0.5px solid #F1F5F9' : undefined }}
                   >
                     <td style={{ padding: '10px 16px' }}>
@@ -285,6 +295,37 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                       </select>
                     </td>
                     <td className="text-[12px] text-[#64748B]" style={{ padding: '10px 16px' }}>{c.addedDate}</td>
+                    <td style={{ padding: '10px 16px' }} onClick={e => e.stopPropagation()}>
+                      {confirmRemoveId === c.id ? (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] text-[#DC2626] whitespace-nowrap">Remove {c.name.split(' ')[0]}?</span>
+                          <button
+                            type="button"
+                            onClick={() => removeCandidateFromJob(c)}
+                            className="px-2 py-0.5 text-[11px] font-medium text-white bg-[#DC2626] rounded-[5px] hover:bg-red-700 transition-colors"
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setConfirmRemoveId(null)}
+                            className="px-2 py-0.5 text-[11px] font-medium text-[#475569] bg-white rounded-[5px] hover:bg-[#F8FAFC] transition-colors"
+                            style={{ border: '0.5px solid #E2E8F0' }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setConfirmRemoveId(c.id)}
+                          className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#FEF2F2] opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label={`Remove ${c.name} from job`}
+                        >
+                          <X className="w-3.5 h-3.5 text-[#94A3B8] hover:text-[#DC2626]" />
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 )
               })}
