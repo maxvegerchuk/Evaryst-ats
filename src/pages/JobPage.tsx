@@ -246,9 +246,10 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                {['Name', 'Status', 'Rating', 'Added', ''].map(h => (
+                {['Name', 'Status', 'Rating', 'Added'].map(h => (
                   <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
+                <th style={{ width: 48, padding: '8px 16px' }} />
               </tr>
             </thead>
             <tbody>
