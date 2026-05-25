@@ -41,7 +41,17 @@ export function Dashboard({ isScheduleOpen, onToggleSchedule, needsUpdateCount, 
     { icon: Trophy,   iconBg: '#EFF6FF', iconClr: '#2563EB', label: 'Total Placements',  value: candidates.filter(c => c.stage === 'Placed').length },
     { icon: Users,    iconBg: '#F0FDF4', iconClr: '#16A34A', label: 'Active Candidates', value: candidates.filter(c => !c.isArchived).length },
     { icon: Briefcase,iconBg: '#FEF3C7', iconClr: '#F59E0B', label: 'Open Jobs',         value: jobs.filter(j => j.status === 'Open').length },
-    { icon: Calendar, iconBg: '#F5F3FF', iconClr: '#8B5CF6', label: 'Interviews',        value: 0 },
+    { icon: Calendar, iconBg: '#F5F3FF', iconClr: '#8B5CF6', label: 'Interviews',        value: candidates.filter(c => c.stage === 'Interview').length },
+  ]
+
+  const myOwnedCandidates = candidates.filter(
+    c => c.ownerId === currentUser.id || c.ownerEmail === currentUser.email,
+  )
+  const myStatsCards = [
+    { icon: Briefcase, iconBg: '#EFF6FF', iconClr: '#2563EB', label: 'Jobs Posted',          value: jobs.filter(j => j.ownerId === currentUser.id).length },
+    { icon: Users,     iconBg: '#F0FDF4', iconClr: '#16A34A', label: 'Candidates Reviewed',  value: myOwnedCandidates.length },
+    { icon: Calendar,  iconBg: '#F5F3FF', iconClr: '#8B5CF6', label: 'Interviews Scheduled', value: myOwnedCandidates.filter(c => c.stage === 'Interview' || c.stage === 'Phone Screen').length },
+    { icon: Trophy,    iconBg: '#FEF3C7', iconClr: '#F59E0B', label: 'Placements Made',      value: myOwnedCandidates.filter(c => c.stage === 'Placed').length },
   ]
 
 
@@ -99,6 +109,24 @@ export function Dashboard({ isScheduleOpen, onToggleSchedule, needsUpdateCount, 
           {/* KPI cards */}
           <div className="grid grid-cols-4 gap-4">
             {teamKpiCards.map(card => {
+              const Icon = card.icon
+              return (
+                <div key={card.label} className={`${CARD} p-4`} style={CARD_ST}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: card.iconBg }}>
+                    <Icon size={16} style={{ color: card.iconClr }} />
+                  </div>
+                  <p className="text-[11px] text-[#64748B] mt-2">{card.label}</p>
+                  <p className="text-[28px] font-semibold text-[#1E293B] leading-none mt-1">{card.value}</p>
+                </div>
+              )
+            })}
+          </div>
+
+          <p className={SECTION_LABEL}>My Stats</p>
+
+          {/* Personal KPI cards */}
+          <div className="grid grid-cols-4 gap-4">
+            {myStatsCards.map(card => {
               const Icon = card.icon
               return (
                 <div key={card.label} className={`${CARD} p-4`} style={CARD_ST}>
