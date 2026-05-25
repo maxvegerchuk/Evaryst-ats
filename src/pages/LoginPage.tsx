@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, EyeOff, Check, ChevronLeft } from 'lucide-react'
+import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
 import type { User } from '../types/auth'
 import { DEMO_USER, DEMO_MANAGER } from '../types/auth'
 
@@ -34,47 +34,56 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
       {/* ── Left panel ─────────────────────────────────────────── */}
       <div
-        className="w-[45%] min-h-screen hidden lg:flex flex-col relative"
-        style={{ backgroundColor: '#0d1b2e' }}
-      >
-        {/* Dot pattern — matches hero section */}
-        <div style={{
-          position: 'absolute', inset: 0,
+        className="hidden lg:flex"
+        style={{
+          width: '45%',
+          minHeight: '100vh',
+          position: 'relative',
+          flexDirection: 'column',
+          background: '#0F172A',
           backgroundImage: 'radial-gradient(circle, #334155 1px, transparent 1px)',
           backgroundSize: '24px 24px',
-          opacity: 0.4,
-          pointerEvents: 'none',
-        }} />
+        }}
+      >
+        {/* Logo */}
+        <div style={{ padding: '32px 40px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            width: '32px', height: '32px', borderRadius: '8px',
+            backgroundColor: '#2a6fdb',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', fontSize: '15px', fontWeight: '600',
+          }}>E</div>
+          <span style={{ color: '#fff', fontSize: '16px', fontWeight: '500' }}>Evaryst</span>
+        </div>
 
-        <div className="relative flex flex-col h-full" style={{ zIndex: 1 }}>
-          <div className="flex items-center gap-2 p-8">
-            <div className="w-9 h-9 rounded-[9px] bg-white/20 flex items-center justify-center">
-              <span className="text-[18px] font-bold text-white">E</span>
-            </div>
-            <span className="text-[18px] font-semibold text-white">Evaryst</span>
-          </div>
+        {/* Center content */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 48px' }}>
+          <p style={{ fontSize: '40px', fontWeight: '700', color: '#ffffff',              lineHeight: 1.2, margin: '0 0 8px' }}>Hire smarter.</p>
+          <p style={{ fontSize: '40px', fontWeight: '700', color: 'rgba(255,255,255,0.75)', lineHeight: 1.2, margin: '0 0 8px' }}>Track better.</p>
+          <p style={{ fontSize: '40px', fontWeight: '700', color: 'rgba(255,255,255,0.5)',  lineHeight: 1.2, margin: '0 0 40px' }}>Place faster.</p>
 
-          <div className="flex-1 flex flex-col items-center justify-center px-12">
-            <div className="mb-10 w-full">
-              <p className="text-[42px] font-bold text-white leading-tight">Hire smarter.</p>
-              <p className="text-[42px] font-bold text-white/80 leading-tight">Track better.</p>
-              <p className="text-[42px] font-bold text-white/60 leading-tight">Place faster.</p>
-            </div>
-            <div className="space-y-3 w-full">
-              {['Full candidate pipeline management', 'Smart outreach & scheduling tools', 'Real-time recruiting analytics'].map(t => (
-                <div key={t} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                    <Check className="w-3 h-3 text-white" />
-                  </div>
-                  <span className="text-[14px] text-white/90">{t}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {['Full candidate pipeline management', 'Smart outreach & scheduling tools', 'Real-time recruiting analytics'].map(text => (
+              <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                    <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
-              ))}
-            </div>
+                <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)' }}>{text}</span>
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div className="px-12 pb-8">
-            <p className="text-[12px] text-white/40">© 2026 Evaryst. All rights reserved.</p>
-          </div>
+        {/* Copyright */}
+        <div style={{ padding: '24px 48px' }}>
+          <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', margin: 0 }}>© 2026 Evaryst. All rights reserved.</p>
         </div>
       </div>
 
