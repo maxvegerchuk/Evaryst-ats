@@ -31,7 +31,9 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
   const [inviteError,   setInviteError]   = useState('')
   const [successMsg,    setSuccessMsg]    = useState('')
   const [removeConfirmId, setRemoveConfirmId] = useState<string | null>(null)
-  const [companyName,   setCompanyName]   = useState('Evaryst Demo')
+  const [companyName,   setCompanyName]   = useState(
+    () => currentUser.teamId === 'team-beta' ? 'Team Beta' : 'Team Alpha',
+  )
   const [companyIndustry, setCompanyIndustry] = useState('')
   const [companyWebsite,  setCompanyWebsite]  = useState('')
 
