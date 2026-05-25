@@ -23,7 +23,7 @@ interface AddJobModalProps {
 }
 
 const LBL = 'block text-[12px] font-medium text-[#475569] mb-1'
-const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] focus:border-[#2563EB] transition-colors'
+const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] focus:border-[#2563EB] transition-colors'
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' }
 
 function PillGroup<T extends string>({
@@ -159,20 +159,20 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
         <div className="px-6 py-5 flex flex-col gap-3 flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E2E8F0 transparent' }}>
 
           <div>
-            <label className={LBL}>Job title *</label>
-            <input value={title} onChange={e => setTitle(e.target.value)}
+            <label htmlFor="aj-title" className={LBL}>Job title *</label>
+            <input id="aj-title" value={title} onChange={e => setTitle(e.target.value)}
               placeholder="e.g. .Net Developer, UX Designer"
               className={INP} style={INP_ST} />
           </div>
 
           {!defaultCompanyId && (
             <div>
-              <label className={LBL}>Company *</label>
+              <label htmlFor="aj-company" className={LBL}>Company *</label>
               {companies.length === 0 ? (
-                <p className="text-[12px] text-[#94A3B8] py-2">No companies yet. Add a company first.</p>
+                <p className="text-[12px] text-[#64748B] py-2">No companies yet. Add a company first.</p>
               ) : (
-                <select value={companyId} onChange={e => handleCompanySelect(e.target.value)}
-                  className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white cursor-pointer"
+                <select id="aj-company" value={companyId} onChange={e => handleCompanySelect(e.target.value)}
+                  className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white cursor-pointer"
                   style={INP_ST}>
                   <option value="">Select company</option>
                   {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -196,14 +196,14 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
           </div>
 
           <div>
-            <label className={LBL}>Salary range</label>
+            <label htmlFor="aj-salary-min" className={LBL}>Salary range</label>
             <div className="flex items-center gap-2">
               <span className="text-[12px] text-[#64748B]">$</span>
-              <input value={salaryMin} onChange={e => setSalaryMin(e.target.value)} placeholder="50,000"
+              <input id="aj-salary-min" aria-label="Minimum salary" value={salaryMin} onChange={e => setSalaryMin(e.target.value)} placeholder="50,000"
                 className={INP} style={{ ...INP_ST, width: 112 }} />
-              <span className="text-[12px] text-[#94A3B8]">–</span>
+              <span className="text-[12px] text-[#64748B]">–</span>
               <span className="text-[12px] text-[#64748B]">$</span>
-              <input value={salaryMax} onChange={e => setSalaryMax(e.target.value)} placeholder="75,000"
+              <input aria-label="Maximum salary" value={salaryMax} onChange={e => setSalaryMax(e.target.value)} placeholder="75,000"
                 className={INP} style={{ ...INP_ST, width: 112 }} />
               <div className="flex gap-1 ml-1">
                 {(['year', 'hour'] as SalaryType[]).map(t => (
@@ -230,12 +230,12 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
           </div>
 
           <div>
-            <label className={LBL}>Assign recruiter</label>
+            <label htmlFor="aj-recruiter" className={LBL}>Assign recruiter</label>
             {recruiters.length === 0 ? (
-              <p className="text-[12px] text-[#94A3B8] py-2">No recruiters in team yet.</p>
+              <p className="text-[12px] text-[#64748B] py-2">No recruiters in team yet.</p>
             ) : (
-              <select value={recruiterId} onChange={e => setRecruiterId(e.target.value)}
-                className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white cursor-pointer"
+              <select id="aj-recruiter" value={recruiterId} onChange={e => setRecruiterId(e.target.value)}
+                className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white cursor-pointer"
                 style={INP_ST}>
                 <option value="">Unassigned</option>
                 {recruiters.map(r => <option key={r.id} value={r.id}>{r.email}</option>)}
@@ -249,25 +249,25 @@ export function AddJobModal({ isOpen, onClose, onSave, companies, recruiters, de
           </div>
 
           <div>
-            <label className={LBL}>Job description</label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)}
+            <label htmlFor="aj-description" className={LBL}>Job description</label>
+            <textarea id="aj-description" value={description} onChange={e => setDescription(e.target.value)}
               placeholder="Describe the role, requirements..."
               rows={4}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] resize-none"
               style={{ border: '0.5px solid #E2E8F0', padding: '8px 12px', minHeight: 100 }}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={LBL}>Internal Job ID</label>
-              <input value={internalId} readOnly
-                className="w-full text-[12px] text-[#94A3B8] rounded-[7px] focus:outline-none"
+              <label htmlFor="aj-internal-id" className={LBL}>Internal Job ID</label>
+              <input id="aj-internal-id" value={internalId} readOnly
+                className="w-full text-[12px] text-[#64748B] rounded-[7px]"
                 style={{ ...INP_ST, background: '#F8FAFC' }} />
             </div>
             <div>
-              <label className={LBL}>Client Req Number</label>
-              <input value={clientReq} onChange={e => setClientReq(e.target.value)} placeholder="e.g. 0122231"
+              <label htmlFor="aj-client-req" className={LBL}>Client Req Number</label>
+              <input id="aj-client-req" value={clientReq} onChange={e => setClientReq(e.target.value)} placeholder="e.g. 0122231"
                 className={INP} style={INP_ST} />
             </div>
           </div>

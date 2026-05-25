@@ -148,7 +148,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
             {selected ? (
               <div className="flex items-center gap-2 rounded-[7px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }}>
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
                   style={{ backgroundColor: selected.avatarBg, color: selected.avatarClr }}
                 >
                   {selected.initials}
@@ -160,12 +160,12 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
                   className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-slate-100"
                   aria-label="Clear selection"
                 >
-                  <X className="w-3 h-3 text-[#94A3B8]" />
+                  <X className="w-3 h-3 text-[#64748B]" />
                 </button>
               </div>
             ) : (
               <>
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" aria-hidden="true" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#64748B]" aria-hidden="true" />
                 <input
                   type="text"
                   value={search}
@@ -179,7 +179,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
                 {showDrop && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white border-subtle rounded-[7px] shadow-md z-10 overflow-hidden">
                     {candidates.length === 0 ? (
-                      <p className="text-[12px] text-[#94A3B8] px-3 py-3">No candidates in system yet. Add candidates first.</p>
+                      <p className="text-[12px] text-[#64748B] px-3 py-3">No candidates in system yet. Add candidates first.</p>
                     ) : filtered.length > 0 ? (
                       filtered.map(c => (
                         <button
@@ -207,7 +207,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
                         </button>
                       ))
                     ) : search.length > 0 ? (
-                      <p className="text-[12px] text-[#94A3B8] px-3 py-3">No match found.</p>
+                      <p className="text-[12px] text-[#64748B] px-3 py-3">No match found.</p>
                     ) : null}
                   </div>
                 )}
@@ -240,7 +240,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
         {/* Status */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-medium text-[#1E293B]">
-            Status <span className="text-[#94A3B8] font-normal">(optional)</span>
+            Status <span className="text-[#64748B] font-normal">(optional)</span>
           </label>
           <select
             value={status}
@@ -273,7 +273,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
         {effectiveContext === 'call' ? (
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-[#1E293B]">
-              Phone <span className="text-[#94A3B8] font-normal">(optional)</span>
+              Phone <span className="text-[#64748B] font-normal">(optional)</span>
             </label>
             <input type="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))}
               placeholder="(555) 000-0000"
@@ -283,7 +283,7 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
         ) : (
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-[#1E293B]">
-              Meeting link <span className="text-[#94A3B8] font-normal">(optional)</span>
+              Meeting link <span className="text-[#64748B] font-normal">(optional)</span>
             </label>
             <input type="url" value={meetingLink} onChange={e => setMeetingLink(e.target.value)}
               placeholder="Paste Google Meet link..."
@@ -295,11 +295,11 @@ export function AddOutreachModal({ context, onClose, onSave, candidates = [] }: 
         {/* Notes */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-medium text-[#1E293B]">
-            Notes <span className="text-[#94A3B8] font-normal">(optional)</span>
+            Notes <span className="text-[#64748B] font-normal">(optional)</span>
           </label>
           <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3}
             placeholder="Add context or agenda..."
-            className="w-full text-[12px] text-[#1E293B] placeholder:text-[#94A3B8] rounded-[7px] outline-none bg-white resize-none"
+            className="w-full text-[12px] text-[#1E293B] placeholder:text-[#64748B] rounded-[7px] outline-none bg-white resize-none"
             style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
         </div>
 

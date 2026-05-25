@@ -20,7 +20,7 @@ const RATING_COLORS: Record<string, { bg: string; text: string }> = {
   'X':       { bg: '#FEE2E2', text: '#B91C1C' },
 }
 
-const SEL = 'text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-full cursor-pointer'
+const SEL = 'text-[12px] text-[#1E293B] bg-white rounded-[7px] w-full cursor-pointer'
 const SEL_ST = { border: '0.5px solid #E2E8F0', padding: '6px 10px' } as const
 const LBL = 'block text-[11px] text-[#64748B] mb-1'
 
@@ -124,18 +124,18 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
           <div>
             <label className={LBL}>Keywords</label>
             <div className="relative">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
               <input
                 type="text"
                 value={keywords}
                 onChange={e => setKeywords(e.target.value)}
                 placeholder="Search by skills, title, keywords..."
-                className="w-full pl-9 pr-3 py-2 text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none placeholder-[#94A3B8]"
+                className="w-full pl-9 pr-3 py-2 text-[12px] text-[#1E293B] bg-white rounded-[7px] placeholder-[#64748B]"
                 style={{ border: '0.5px solid #E2E8F0' }}
               />
             </div>
             {searchMode === 'boolean' && (
-              <p className="text-[10px] text-[#94A3B8] mt-1">
+              <p className="text-[10px] text-[#64748B] mt-1">
                 Use AND, OR, NOT operators. Example: (React OR Vue) AND TypeScript
               </p>
             )}
@@ -175,7 +175,7 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
               value={location}
               onChange={e => setLocation(e.target.value)}
               placeholder="City or state"
-              className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-full placeholder-[#94A3B8]"
+              className="text-[12px] text-[#1E293B] bg-white rounded-[7px] w-full placeholder-[#64748B]"
               style={SEL_ST}
             />
           </div>
@@ -212,8 +212,8 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
             <SlidersHorizontal size={13} />
             Advanced settings
             {showAdvanced
-              ? <ChevronUp   size={12} className="text-[#94A3B8]" />
-              : <ChevronDown size={12} className="text-[#94A3B8]" />
+              ? <ChevronUp   size={12} className="text-[#64748B]" />
+              : <ChevronDown size={12} className="text-[#64748B]" />
             }
           </button>
           <button
@@ -274,7 +274,7 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value)}
-            className="text-[11px] text-[#64748B] bg-white rounded-[7px] focus:outline-none cursor-pointer"
+            className="text-[11px] text-[#64748B] bg-white rounded-[7px] cursor-pointer"
             style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }}
           >
             <option value="date">Date added</option>
@@ -317,7 +317,7 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
           <div className="flex flex-col items-center justify-center py-12">
             <Search size={40} className="text-[#E2E8F0] mb-3" />
             <p className="text-[14px] font-medium text-[#1E293B] mb-1">No candidates match your search</p>
-            <p className="text-[12px] text-[#94A3B8] mb-3">Try adjusting your filters or keywords</p>
+            <p className="text-[12px] text-[#64748B] mb-3">Try adjusting your filters or keywords</p>
             <button type="button" onClick={clearAll} className="text-[12px] text-[#2563EB] hover:underline">
               Clear all filters
             </button>
@@ -326,11 +326,11 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
           <table className="w-full">
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                <th className="px-3 py-2.5 w-9">
+                <th scope="col" className="px-3 py-2.5 w-9">
                   <input type="checkbox" checked={allSelected} onChange={toggleAll} className="accent-[#2563EB]" />
                 </th>
                 {['Name','Classification','Location','Stage','Rating','Last Contact'].map(h => (
-                  <th key={h} className="text-left px-3 py-2.5 text-[10px] uppercase text-[#64748B] font-medium whitespace-nowrap">{h}</th>
+                  <th scope="col" key={h} className="text-left px-3 py-2.5 text-[10px] uppercase text-[#64748B] font-medium whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -351,11 +351,11 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
                         className="flex items-center gap-2 text-left"
                       >
                         <div className="w-[26px] h-[26px] rounded-full flex items-center justify-center flex-shrink-0" style={{ background: av.bg }}>
-                          <span className="text-[9px] font-bold leading-none" style={{ color: av.clr }}>{getInitials(c.name)}</span>
+                          <span className="text-[10px] font-bold leading-none" style={{ color: av.clr }}>{getInitials(c.name)}</span>
                         </div>
                         <div>
                           <p className="text-[12px] font-medium text-[#2563EB] hover:underline leading-tight">{c.name}</p>
-                          <p className="text-[10px] text-[#94A3B8] leading-tight">{c.specialty}</p>
+                          <p className="text-[10px] text-[#64748B] leading-tight">{c.specialty}</p>
                         </div>
                       </button>
                     </td>
@@ -369,7 +369,7 @@ export function SearchPage({ candidates, initialKeyword = '', setSelectedCandida
                     <td className="px-3 py-2.5" style={{ minWidth: 100 }}>
                       {c.rating
                         ? <span className="text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: rc.bg, color: rc.text }}>{c.rating}</span>
-                        : <span className="text-[12px] text-[#94A3B8]">—</span>
+                        : <span className="text-[12px] text-[#64748B]">—</span>
                       }
                     </td>
                     <td className="px-3 py-2.5 text-[12px] text-[#64748B]" style={{ minWidth: 110 }}>{c.addedDate || '—'}</td>

@@ -16,11 +16,11 @@ import { CityAutocomplete } from '../components/ui/CityAutocomplete'
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const ICON_BTN   = 'w-[30px] h-[30px] flex items-center justify-center border-subtle rounded-[7px] bg-white hover:bg-[#F8FAFC] transition-colors flex-shrink-0'
-const INFO_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-2'
+const INFO_LABEL = 'text-[10px] uppercase text-[#64748B] font-medium tracking-[0.05em] mb-2'
 const PANEL_LBL  = 'block text-[11px] font-medium text-[#475569] mb-1'
-const PANEL_INP  = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]'
+const PANEL_INP  = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]'
 const PANEL_ST   = { border: '0.5px solid #E2E8F0', padding: '7px 10px' }
-const PANEL_SEC  = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3'
+const PANEL_SEC  = 'text-[10px] uppercase text-[#64748B] font-medium tracking-[0.06em] mb-3'
 
 type CompanyTab = 'jobs' | 'clients' | 'documents'
 
@@ -137,7 +137,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         <div className="flex flex-col items-center justify-center py-16">
           <Briefcase className="w-12 h-12 text-[#E2E8F0] mb-3" />
           <p className="text-[15px] font-medium text-[#1E293B] mb-1">No jobs yet</p>
-          <p className="text-[13px] text-[#94A3B8] mb-4">Add the first job opening for this company</p>
+          <p className="text-[13px] text-[#64748B] mb-4">Add the first job opening for this company</p>
           {isManager && (
             <button type="button" onClick={() => setShowAddJob(true)}
               className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[13px] font-medium hover:bg-[#1D4ED8] transition-colors">
@@ -160,7 +160,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
                 {['Job Title', 'Status', 'Hiring Manager', 'Recruiter', 'Client Req No.'].map(h => (
-                  <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                  <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -218,7 +218,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
     setShowAddContact(false)
   }
 
-  const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]'
+  const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]'
   const INP_ST: React.CSSProperties = { border: '0.5px solid #E2E8F0', padding: '7px 10px' }
 
   const clientsTab = (
@@ -227,7 +227,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         <div className="flex flex-col items-center justify-center py-16">
           <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
           <p className="text-[15px] font-medium text-[#1E293B] mb-1">No clients yet</p>
-          <p className="text-[13px] text-[#94A3B8] mb-4">Add the hiring managers and client contacts for this company</p>
+          <p className="text-[13px] text-[#64748B] mb-4">Add the hiring managers and client contacts for this company</p>
           <button type="button" onClick={() => setShowAddContact(true)}
             className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[13px] font-medium hover:bg-[#1D4ED8] transition-colors">
             + Add Client
@@ -248,7 +248,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                   <thead>
                     <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
                       {['Name', 'Title', 'Email', 'Phone', ''].map(h => (
-                        <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                        <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -258,7 +258,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                         <td className="text-[12px] font-medium text-[#1E293B]" style={{ padding: '10px 16px' }}>{c.name}</td>
                         <td className="text-[12px] text-[#475569]" style={{ padding: '10px 16px' }}>{c.title || '—'}</td>
                         <td style={{ padding: '10px 16px' }}>
-                          {c.email ? <a href={`mailto:${c.email}`} className="text-[12px] text-[#2563EB] hover:underline">{c.email}</a> : <span className="text-[12px] text-[#94A3B8]">—</span>}
+                          {c.email ? <a href={`mailto:${c.email}`} className="text-[12px] text-[#2563EB] hover:underline">{c.email}</a> : <span className="text-[12px] text-[#64748B]">—</span>}
                         </td>
                         <td className="text-[12px] text-[#475569]" style={{ padding: '10px 16px' }}>{c.phone || '—'}</td>
                         <td style={{ padding: '10px 16px' }}>
@@ -333,13 +333,13 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-              <th style={{ width: 32, padding: '8px 16px' }} className="text-left">
+              <th scope="col" style={{ width: 32, padding: '8px 16px' }} className="text-left">
                 <input type="checkbox" className="w-3.5 h-3.5 accent-[#2563EB]" />
               </th>
               {['Document name', 'Document type', 'Date'].map(h => (
-                <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
               ))}
-              <th style={{ width: 64, padding: '8px 16px' }} />
+              <th scope="col" style={{ width: 64, padding: '8px 16px' }} />
             </tr>
           </thead>
           <tbody>
@@ -387,7 +387,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
             <ChevronLeft size={13} />
             Companies
           </button>
-          <span className="text-[12px] text-[#94A3B8]">›</span>
+          <span className="text-[12px] text-[#64748B]">›</span>
           <span className="text-[12px] text-[#64748B]">{companyName}</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
@@ -464,12 +464,12 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                 ['Industry', company?.industry  || '—'],
               ] as [string, string][]).map(([label, value]) => (
                 <div key={label} className="flex items-baseline gap-[5px]">
-                  <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">{label}</span>
+                  <span className="text-[10px] text-[#64748B] min-w-[56px] flex-shrink-0">{label}</span>
                   <span className="text-[12px] text-[#1E293B]">{value}</span>
                 </div>
               ))}
               <div className="flex items-baseline gap-[5px]">
-                <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">Address</span>
+                <span className="text-[10px] text-[#64748B] min-w-[56px] flex-shrink-0">Address</span>
                 <span className="text-[12px] text-[#1E293B]">{company?.address || '—'}</span>
               </div>
             </div>
@@ -492,7 +492,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
                 </div>
               )}
               {!company?.phone && !company?.website && (
-                <span className="text-[12px] text-[#94A3B8]">No contact info</span>
+                <span className="text-[12px] text-[#64748B]">No contact info</span>
               )}
             </div>
           </div>
@@ -501,7 +501,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
           <div className="px-6 flex flex-col">
             <p className={INFO_LABEL}>Notes</p>
             <textarea
-              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none focus:outline-none placeholder-[#94A3B8] bg-transparent"
+              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none placeholder-[#64748B] bg-transparent"
               style={{ fontFamily: 'inherit', border: 'none' }}
               placeholder="Quick notes about this company..."
               defaultValue={company?.notes ?? ''}
@@ -608,7 +608,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
         {/* Notes */}
         <p className={PANEL_SEC}>Notes</p>
         <textarea value={editNotes} onChange={e => setEditNotes(e.target.value)} placeholder="Quick notes about this company..." rows={4}
-          className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none"
+          className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] resize-none"
           style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
       </EditPanel>
 

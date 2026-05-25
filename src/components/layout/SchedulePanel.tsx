@@ -131,7 +131,7 @@ function EventCard({ ev, status, onSetStatus }: EventCardProps) {
         </div>
       )}
 
-      <div className="ml-10 flex items-center gap-1 text-[11px] text-[#94A3B8]">
+      <div className="ml-10 flex items-center gap-1 text-[11px] text-[#64748B]">
         {ev.type === 'phone' ? (
           <>
             <Phone className="w-3 h-3 shrink-0" />
@@ -242,7 +242,7 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
         className={`absolute top-3 -left-3 z-20 w-6 h-6 bg-white border-subtle rounded-full flex items-center justify-center shadow-sm hover:bg-slate-50 transition-colors ${!isOpen ? 'hidden' : ''}`}
         aria-label="Collapse schedule"
       >
-        <ChevronRight className={`w-3.5 h-3.5 text-[#94A3B8] transition-transform duration-200 ${!isOpen ? 'rotate-180' : ''}`} />
+        <ChevronRight className={`w-3.5 h-3.5 text-[#64748B] transition-transform duration-200 ${!isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       <aside
@@ -269,11 +269,11 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
             <div className="flex items-center justify-between mb-1">
               <button type="button" onClick={() => setWeekOffset(w => w - 1)}
                 className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 transition-colors" aria-label="Previous week">
-                <ChevronLeft className="w-3.5 h-3.5 text-[#94A3B8]" />
+                <ChevronLeft className="w-3.5 h-3.5 text-[#64748B]" />
               </button>
               <button type="button" onClick={() => setWeekOffset(w => w + 1)}
                 className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 transition-colors" aria-label="Next week">
-                <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+                <ChevronRight className="w-3.5 h-3.5 text-[#64748B]" />
               </button>
             </div>
             <div className="flex gap-0.5">
@@ -290,7 +290,7 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
                     className={`flex-1 flex flex-col items-center gap-0.5 py-1 rounded-lg transition-colors ${
                       isSel ? 'bg-[#2563EB]' : isToday ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-slate-50'
                     }`}>
-                    <span className={`text-[9px] font-medium ${isSel ? 'text-blue-100' : isToday ? 'text-[#2563EB]' : isPast ? 'text-[#CBD5E1]' : 'text-[#94A3B8]'}`}>
+                    <span className={`text-[10px] font-medium ${isSel ? 'text-blue-100' : isToday ? 'text-[#2563EB]' : isPast ? 'text-[#CBD5E1]' : 'text-[#64748B]'}`}>
                       {abbr}
                     </span>
                     <span className={`text-[12px] font-semibold ${isSel ? 'text-white' : isToday ? 'text-[#2563EB]' : isPast ? 'text-[#CBD5E1]' : 'text-[#1E293B]'}`}>
@@ -317,7 +317,7 @@ export function SchedulePanel({ isOpen, onToggle, eventStatuses, onSetStatus, ev
             ) : (
               <div className="flex flex-col items-center justify-center py-8 px-4">
                 <Calendar className="w-9 h-9 text-[#E2E8F0] mb-2" />
-                <p className="text-[12px] text-[#94A3B8]">No events scheduled</p>
+                <p className="text-[12px] text-[#64748B]">No events scheduled</p>
               </div>
             )}
           </div>

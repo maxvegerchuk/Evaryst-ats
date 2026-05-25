@@ -10,7 +10,7 @@ interface CityAutocompleteProps {
 }
 
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' }
-const INP_CLS = 'text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] focus:border-[#2563EB] transition-colors'
+const INP_CLS = 'text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] focus:border-[#2563EB] transition-colors'
 
 export function CityAutocomplete({
   cityValue,

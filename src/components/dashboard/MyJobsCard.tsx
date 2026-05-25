@@ -32,13 +32,13 @@ export function MyJobsCard() {
       <table className="w-full">
         <thead>
           <tr className="border-b border-[#F1F5F9]">
-            <th className="text-left px-4 py-2 text-[9px] font-semibold text-[#94A3B8] uppercase tracking-wide">
+            <th scope="col" className="text-left px-4 py-2 text-[10px] font-semibold text-[#64748B] uppercase tracking-wide">
               Client
             </th>
-            <th className="text-right px-3 py-2 text-[9px] font-semibold text-[#94A3B8] uppercase tracking-wide" title="Days open">D</th>
-            <th className="text-right px-3 py-2 text-[9px] font-semibold text-[#94A3B8] uppercase tracking-wide" title="Submissions">S</th>
-            <th className="text-right px-3 py-2 text-[9px] font-semibold text-[#94A3B8] uppercase tracking-wide" title="Interviews">I</th>
-            <th className="text-right px-4 py-2 text-[9px] font-semibold text-[#94A3B8] uppercase tracking-wide" title="Active candidates">A</th>
+            <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold text-[#64748B] uppercase tracking-wide" title="Days open">D</th>
+            <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold text-[#64748B] uppercase tracking-wide" title="Submissions">S</th>
+            <th scope="col" className="text-right px-3 py-2 text-[10px] font-semibold text-[#64748B] uppercase tracking-wide" title="Interviews">I</th>
+            <th scope="col" className="text-right px-4 py-2 text-[10px] font-semibold text-[#64748B] uppercase tracking-wide" title="Active candidates">A</th>
           </tr>
         </thead>
         <tbody>
@@ -49,7 +49,7 @@ export function MyJobsCard() {
             >
               <td className="px-4 py-2.5">
                 <p className="text-[12px] font-medium text-[#1E293B]">{job.client}</p>
-                <p className="text-[10px] text-[#94A3B8]">{job.position}</p>
+                <p className="text-[10px] text-[#64748B]">{job.position}</p>
               </td>
               <td className="text-right px-3 py-2.5 text-[12px] text-[#64748B] tabular-nums">{job.d}</td>
               <td className="text-right px-3 py-2.5 text-[12px] text-[#64748B] tabular-nums">{job.s}</td>

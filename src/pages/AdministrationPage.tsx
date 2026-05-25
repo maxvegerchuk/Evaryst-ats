@@ -22,7 +22,7 @@ function formatDate(dateStr: string): string {
   return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
 }
 
-const INP = 'text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-full placeholder-[#94A3B8]'
+const INP = 'text-[12px] text-[#1E293B] bg-white rounded-[7px] w-full placeholder-[#64748B]'
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' } as const
 const LBL = 'block text-[11px] text-[#475569] mb-1'
 
@@ -105,8 +105,9 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
           <div className="rounded-[8px] p-4 mb-4" style={{ background: '#F8FAFC', border: '0.5px solid #E2E8F0' }}>
             <div className="flex gap-3 items-end">
               <div className="flex-1">
-                <label className={LBL}>Email address</label>
+                <label htmlFor="invite-email" className={LBL}>Email address</label>
                 <input
+                  id="invite-email"
                   type="email"
                   value={inviteEmail}
                   onChange={e => { setInviteEmail(e.target.value); setInviteError('') }}
@@ -116,11 +117,12 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                 />
               </div>
               <div style={{ width: 180 }}>
-                <label className={LBL}>Role</label>
+                <label htmlFor="invite-role" className={LBL}>Role</label>
                 <select
+                  id="invite-role"
                   value={inviteRole}
                   onChange={e => setInviteRole(e.target.value as TeamMember['role'])}
-                  className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-full cursor-pointer"
+                  className="text-[12px] text-[#1E293B] bg-white rounded-[7px] w-full cursor-pointer"
                   style={INP_ST}
                 >
                   <option value="recruiter">Recruiter</option>
@@ -162,7 +164,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
                 {['Name', 'Email', 'Role', 'Status', 'Joined', 'Actions'].map(h => (
-                  <th key={h} className="text-left px-4 py-2 text-[10px] uppercase text-[#94A3B8] font-medium">{h}</th>
+                  <th scope="col" key={h} className="text-left px-4 py-2 text-[10px] uppercase text-[#64748B] font-medium">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -172,7 +174,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
-                      <span className="text-[9px] font-bold text-[#1D4ED8]">{currentUser.initials}</span>
+                      <span className="text-[10px] font-bold text-[#1D4ED8]">{currentUser.initials}</span>
                     </div>
                     <span className="text-[12px] font-medium text-[#1E293B]">{currentUser.name}</span>
                   </div>
@@ -185,7 +187,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                   </span>
                 </td>
                 <td className="px-4 py-2.5 text-[12px] text-[#475569]">—</td>
-                <td className="px-4 py-2.5 text-[12px] text-[#94A3B8]">—</td>
+                <td className="px-4 py-2.5 text-[12px] text-[#64748B]">—</td>
               </tr>
 
               {/* Built-in teammates from the same team */}
@@ -194,7 +196,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
-                        <span className="text-[9px] font-bold text-[#1D4ED8]">{u.initials}</span>
+                        <span className="text-[10px] font-bold text-[#1D4ED8]">{u.initials}</span>
                       </div>
                       <span className="text-[12px] font-medium text-[#1E293B]">{u.name}</span>
                     </div>
@@ -207,7 +209,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-[12px] text-[#475569]">—</td>
-                  <td className="px-4 py-2.5 text-[12px] text-[#94A3B8]">—</td>
+                  <td className="px-4 py-2.5 text-[12px] text-[#64748B]">—</td>
                 </tr>
               ))}
 
@@ -219,7 +221,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                       <div className="flex items-center gap-2">
                         {m.name && (
                           <div className="w-6 h-6 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
-                            <span className="text-[9px] font-bold text-[#1D4ED8]">
+                            <span className="text-[10px] font-bold text-[#1D4ED8]">
                               {m.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
                             </span>
                           </div>
@@ -245,7 +247,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                             Resend
                           </button>
                         )}
-                        <button type="button" onClick={() => setRemoveConfirmId(m.id)} className="text-[#94A3B8] hover:text-[#DC2626] transition-colors">
+                        <button type="button" onClick={() => setRemoveConfirmId(m.id)} className="text-[#64748B] hover:text-[#DC2626] transition-colors">
                           <X size={13} />
                         </button>
                       </div>
@@ -294,19 +296,19 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
         <p className="text-[14px] font-medium text-[#1E293B] mb-4">Company settings</p>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className={LBL}>Company name</label>
-            <input value={companyName} onChange={e => setCompanyName(e.target.value)} className={INP} style={INP_ST} />
+            <label htmlFor="co-name" className={LBL}>Company name</label>
+            <input id="co-name" value={companyName} onChange={e => setCompanyName(e.target.value)} className={INP} style={INP_ST} />
           </div>
           <div>
-            <label className={LBL}>Industry</label>
-            <select value={companyIndustry} onChange={e => setCompanyIndustry(e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-full cursor-pointer" style={INP_ST}>
+            <label htmlFor="co-industry" className={LBL}>Industry</label>
+            <select id="co-industry" value={companyIndustry} onChange={e => setCompanyIndustry(e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] w-full cursor-pointer" style={INP_ST}>
               <option value="">Select industry</option>
               {['Technology','Healthcare','Finance','Manufacturing','Retail','Education','Logistics','Aerospace','Data Analytics'].map(o => <option key={o}>{o}</option>)}
             </select>
           </div>
           <div>
-            <label className={LBL}>Website</label>
-            <input value={companyWebsite} onChange={e => setCompanyWebsite(e.target.value)} placeholder="company.com" className={INP} style={INP_ST} />
+            <label htmlFor="co-website" className={LBL}>Website</label>
+            <input id="co-website" value={companyWebsite} onChange={e => setCompanyWebsite(e.target.value)} placeholder="company.com" className={INP} style={INP_ST} />
           </div>
         </div>
         <button

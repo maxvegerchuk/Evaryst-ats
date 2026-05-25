@@ -20,7 +20,7 @@ interface StoredTeamMember {
 
 // ── Style constants ────────────────────────────────────────────────────────────
 
-const SECTION_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium mb-3'
+const SECTION_LABEL = 'text-[10px] uppercase text-[#64748B] font-medium mb-3'
 const CARD    = 'bg-white rounded-[10px]'
 const CARD_ST = { border: '0.5px solid #E2E8F0' } as const
 const TH      = 'text-[10px] font-medium text-[#64748B] uppercase px-4 py-2.5'
@@ -196,12 +196,12 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                  <th className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Recruiter</th>
-                  <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Total</th>
-                  <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Active</th>
-                  <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Placements</th>
-                  <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Submissions</th>
-                  <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Conversion %</th>
+                  <th scope="col" className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Recruiter</th>
+                  <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Total</th>
+                  <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Active</th>
+                  <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Placements</th>
+                  <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Submissions</th>
+                  <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }}>Conversion %</th>
                 </tr>
               </thead>
               <tbody>
@@ -221,7 +221,7 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
                           </div>
                           <div className="leading-tight">
                             <p className="text-[13px] font-medium text-[#1E293B]">{row.name}</p>
-                            <p className="text-[11px] text-[#94A3B8]">{row.role}</p>
+                            <p className="text-[11px] text-[#64748B]">{row.role}</p>
                           </div>
                         </div>
                       </td>
@@ -242,7 +242,7 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
                 })}
                 {teamRows.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-6 text-center text-[12px] text-[#94A3B8]">No team members yet</td>
+                    <td colSpan={6} className="px-4 py-6 text-center text-[12px] text-[#64748B]">No team members yet</td>
                   </tr>
                 )}
               </tbody>
@@ -256,7 +256,7 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
       <div className={`${CARD} p-5 mb-6`} style={CARD_ST}>
         <div className="flex items-baseline gap-2 mb-4">
           <span className="text-[13px] font-medium text-[#1E293B]">Conversion funnel</span>
-          <span className="text-[11px] text-[#94A3B8]">Active candidates in pipeline</span>
+          <span className="text-[11px] text-[#64748B]">Active candidates in pipeline</span>
         </div>
         <div className="flex flex-col gap-3">
           {funnel.map(row => (
@@ -277,19 +277,19 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-              <th className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Client</th>
-              <th className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Position</th>
-              <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Days since job was opened">Days Open</th>
-              <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Candidates submitted to client">Submitted</th>
-              <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Interviews scheduled">Interviews</th>
-              <th className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Candidates in pipeline">Active</th>
-              <th className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Status</th>
+              <th scope="col" className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Client</th>
+              <th scope="col" className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Position</th>
+              <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Days since job was opened">Days Open</th>
+              <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Candidates submitted to client">Submitted</th>
+              <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Interviews scheduled">Interviews</th>
+              <th scope="col" className={`${TH} text-center`} style={{ letterSpacing: '0.05em' }} title="Candidates in pipeline">Active</th>
+              <th scope="col" className={`${TH} text-left`}   style={{ letterSpacing: '0.05em' }}>Status</th>
             </tr>
           </thead>
           <tbody>
             {jobs.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-[12px] text-[#94A3B8]">No jobs yet</td>
+                <td colSpan={7} className="px-4 py-6 text-center text-[12px] text-[#64748B]">No jobs yet</td>
               </tr>
             ) : jobs.map((job, idx, arr) => {
               const badge      = STATUS_BADGE[job.status] ?? STATUS_BADGE['Closed']
@@ -327,7 +327,7 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
         <p className="text-[13px] font-medium text-[#1E293B] mb-4">Where candidates come from</p>
         {(() => {
           const total = myCandidates.length
-          if (total === 0) return <p className="text-[12px] text-[#94A3B8]">No source data yet</p>
+          if (total === 0) return <p className="text-[12px] text-[#64748B]">No source data yet</p>
           const SOURCE_FILLS = ['#2563EB', '#8B5CF6', '#10B981', '#F59E0B', '#64748B']
           const sources = ['Referral', 'LinkedIn', 'Job boards', 'Direct', 'Other']
             .map((s, si) => ({
@@ -337,7 +337,7 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
             }))
             .filter(s => s.count > 0)
             .sort((a, b) => b.count - a.count)
-          if (sources.length === 0) return <p className="text-[12px] text-[#94A3B8]">No source data yet</p>
+          if (sources.length === 0) return <p className="text-[12px] text-[#64748B]">No source data yet</p>
           return (
             <div className="flex flex-col gap-3">
               {sources.map(s => (

@@ -160,13 +160,13 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
       {/* Search + filter row */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#64748B]" aria-hidden="true" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search companies..."
-            className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#94A3B8] outline-none bg-white rounded-[7px]"
+            className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#64748B] outline-none bg-white rounded-[7px]"
             style={{ border: '0.5px solid #E2E8F0', paddingTop: 6, paddingBottom: 6 }}
           />
         </div>
@@ -261,7 +261,7 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
               + Add your first company
             </button>
           ) : (
-            <p className="text-[13px] text-[#94A3B8]">Companies will appear here once added by your manager</p>
+            <p className="text-[13px] text-[#64748B]">Companies will appear here once added by your manager</p>
           )}
         </div>
       ) : (
@@ -271,16 +271,16 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th style={{ width: 40 }}  className="px-4 py-2.5 text-left">
+                  <th scope="col" style={{ width: 40 }}  className="px-4 py-2.5 text-left">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} className="w-3.5 h-3.5 accent-[#2563EB]" aria-label="Select all" />
                   </th>
-                  <th style={{ width: 220 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Company Name</th>
-                  <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Industry</th>
-                  <th style={{ width: 150 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
-                  <th style={{ width: 100 }} className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Active Jobs</th>
-                  <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Date Added</th>
-                  <th style={{ width: 48 }}  className="px-4 py-2.5" />
+                  <th scope="col" style={{ width: 220 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Company Name</th>
+                  <th scope="col" style={{ width: 160 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Industry</th>
+                  <th scope="col" style={{ width: 150 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
+                  <th scope="col" style={{ width: 100 }} className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Active Jobs</th>
+                  <th scope="col" style={{ width: 110 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  <th scope="col" style={{ width: 120 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Date Added</th>
+                  <th scope="col" style={{ width: 48 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -312,7 +312,7 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
                     <td className="px-4 py-2.5 text-center">
                       {(() => {
                         const cnt = jobs.filter(j => j.companyId === c.id && j.status === 'Open').length
-                        return <span className={`text-[13px] ${cnt === 0 ? 'text-[#94A3B8]' : 'text-[#1E293B]'}`}>{cnt}</span>
+                        return <span className={`text-[13px] ${cnt === 0 ? 'text-[#64748B]' : 'text-[#1E293B]'}`}>{cnt}</span>
                       })()}
                     </td>
                     <td className="px-4 py-2.5">
@@ -328,7 +328,7 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
                         className="p-1 rounded hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity"
                         aria-label="More actions"
                       >
-                        <MoreHorizontal className="w-4 h-4 text-[#94A3B8]" />
+                        <MoreHorizontal className="w-4 h-4 text-[#64748B]" />
                       </button>
                     </td>
                   </tr>
@@ -355,7 +355,7 @@ export function CompaniesPage({ onNavigateToCompany, isManager, companies, onAdd
               {p}
             </button>
           ))}
-          <span className="text-[12px] text-[#94A3B8] px-1">...</span>
+          <span className="text-[12px] text-[#64748B] px-1">...</span>
           <button type="button" className="w-8 h-8 rounded-[6px] text-[12px] font-medium bg-white border-subtle text-[#475569] hover:bg-[#F8FAFC]">5</button>
           <button type="button" className="flex items-center gap-1 border-subtle rounded-[6px] px-2.5 py-1.5 text-[12px] text-[#475569] bg-white hover:bg-[#F8FAFC]">
             Next

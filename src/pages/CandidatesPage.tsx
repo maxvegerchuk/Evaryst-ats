@@ -183,7 +183,7 @@ export function CandidatesPage({
     }`
   }
 
-  const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]'
+  const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]'
   const INP_ST = { border: '0.5px solid #E2E8F0', padding: '7px 10px' }
 
   return (
@@ -303,13 +303,13 @@ export function CandidatesPage({
           {/* Search + filter row */}
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#64748B]" />
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search candidates by name, title, location..."
-                className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#94A3B8] outline-none bg-white rounded-[7px]"
+                className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#64748B] outline-none bg-white rounded-[7px]"
                 style={{ border: '0.5px solid #E2E8F0', paddingTop: 6, paddingBottom: 6 }}
               />
             </div>
@@ -369,21 +369,21 @@ export function CandidatesPage({
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th style={{ width: 40 }} className="px-4 py-2.5 text-left">
+                  <th scope="col" style={{ width: 40 }} className="px-4 py-2.5 text-left">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} className="w-3.5 h-3.5 accent-[#2563EB]" aria-label="Select all" />
                   </th>
-                  <th style={{ width: 170 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
-                  <th style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
-                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
-                  <th style={{ width: 70 }}  className="px-4 py-2.5 text-center text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Jobs</th>
-                  <th style={{ width: 90 }}  className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Work Type</th>
-                  <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  <th style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
+                  <th scope="col" style={{ width: 170 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
+                  <th scope="col" style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
+                  <th scope="col" style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
+                  <th scope="col" style={{ width: 70 }}  className="px-4 py-2.5 text-center text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Jobs</th>
+                  <th scope="col" style={{ width: 90 }}  className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Work Type</th>
+                  <th scope="col" style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  <th scope="col" style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
                   {isManager && (
-                    <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>
+                    <th scope="col" style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>
                   )}
-                  <th style={{ width: 36 }}  className="px-2 py-2.5" />
-                  <th style={{ width: 40 }}  className="px-4 py-2.5" />
+                  <th scope="col" style={{ width: 36 }}  className="px-2 py-2.5" />
+                  <th scope="col" style={{ width: 40 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -393,7 +393,7 @@ export function CandidatesPage({
                       <div className="flex flex-col items-center py-16">
                         <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
                         <p className="text-[15px] font-medium text-[#1E293B] mb-1">No candidates yet</p>
-                        <p className="text-[13px] text-[#94A3B8] mb-4">Add your first candidate to start building your pipeline</p>
+                        <p className="text-[13px] text-[#64748B] mb-4">Add your first candidate to start building your pipeline</p>
                         <button type="button" onClick={onAddCandidate} className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[12px] font-medium hover:bg-blue-700 transition-colors">
                           + Add Candidate
                         </button>
@@ -422,7 +422,7 @@ export function CandidatesPage({
                       <td className="px-4 py-2.5 text-[13px] text-[#475569]">{c.specialty}</td>
                       <td className="px-4 py-2.5 text-[13px] text-[#475569]">{c.location || '—'}</td>
                       <td className="px-4 py-2.5 text-center">
-                        <span className="text-[13px] text-[#94A3B8]">0</span>
+                        <span className="text-[13px] text-[#64748B]">0</span>
                       </td>
                       <td className="px-4 py-2.5">
                         {c.workType ? (
@@ -438,7 +438,7 @@ export function CandidatesPage({
                             ))}
                           </div>
                         ) : (
-                          <span className="text-[13px] text-[#94A3B8]">—</span>
+                          <span className="text-[13px] text-[#64748B]">—</span>
                         )}
                       </td>
                       <td className="px-4 py-2.5">
@@ -446,7 +446,7 @@ export function CandidatesPage({
                           {c.stage}
                         </span>
                       </td>
-                      <td className="px-4 py-2.5 text-[12px] text-[#64748B]">{c.addedDate}</td>
+                      <td className="px-4 py-2.5 text-[12px] text-[#64748B] tabular-nums">{c.addedDate}</td>
                       {isManager && (
                         <td className="px-4 py-2.5 text-[12px] text-[#64748B]">{c.ownerName ?? '—'}</td>
                       )}
@@ -469,7 +469,7 @@ export function CandidatesPage({
                       <td className="px-4 py-2.5 text-right" onClick={e => e.stopPropagation()}>
                         <button type="button" onClick={e => handleActionClick(e, c.id)}
                           className="p-1 rounded hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="More actions">
-                          <MoreHorizontal className="w-4 h-4 text-[#94A3B8]" />
+                          <MoreHorizontal className="w-4 h-4 text-[#64748B]" />
                         </button>
                       </td>
                     </tr>
@@ -687,7 +687,7 @@ export function CandidatesPage({
                 <div>
                   <label className="block text-[11px] text-[#475569] mb-1">Status</label>
                   <select value={newContact.status} onChange={e => setNewContact(p => ({ ...p, status: e.target.value as ContactStatus }))}
-                    className="w-full text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none cursor-pointer" style={INP_ST}>
+                    className="w-full text-[12px] text-[#1E293B] bg-white rounded-[7px] cursor-pointer" style={INP_ST}>
                     <option value="Lead">Lead</option>
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -711,13 +711,13 @@ export function CandidatesPage({
           {/* Search */}
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#64748B]" />
               <input
                 type="text"
                 value={contactSearch}
                 onChange={e => setContactSearch(e.target.value)}
                 placeholder="Search contacts by name, company, email..."
-                className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#94A3B8] outline-none bg-white rounded-[7px]"
+                className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#64748B] outline-none bg-white rounded-[7px]"
                 style={{ border: '0.5px solid #E2E8F0', paddingTop: 6, paddingBottom: 6 }}
               />
             </div>
@@ -729,19 +729,19 @@ export function CandidatesPage({
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th style={{ width: 40 }} className="px-4 py-2.5 text-left">
+                  <th scope="col" style={{ width: 40 }} className="px-4 py-2.5 text-left">
                     <input type="checkbox" checked={allContactsSelected}
                       onChange={() => setContactSelected(allContactsSelected ? new Set() : new Set(filteredContacts.map(c => c.id)))}
                       className="w-3.5 h-3.5 accent-[#2563EB]" />
                   </th>
-                  <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
-                  <th style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Title</th>
-                  <th style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
-                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Phone</th>
-                  <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Email</th>
-                  <th style={{ width: 90 }}  className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
-                  <th style={{ width: 48 }}  className="px-4 py-2.5" />
+                  <th scope="col" style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
+                  <th scope="col" style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Title</th>
+                  <th scope="col" style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
+                  <th scope="col" style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Phone</th>
+                  <th scope="col" style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Email</th>
+                  <th scope="col" style={{ width: 90 }}  className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  <th scope="col" style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
+                  <th scope="col" style={{ width: 48 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -751,7 +751,7 @@ export function CandidatesPage({
                       <div className="flex flex-col items-center py-16">
                         <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
                         <p className="text-[15px] font-medium text-[#1E293B] mb-1">No clients yet</p>
-                        <p className="text-[13px] text-[#94A3B8] mb-4">Add clients from company pages or directly here</p>
+                        <p className="text-[13px] text-[#64748B] mb-4">Add clients from company pages or directly here</p>
                         <button type="button" onClick={() => setShowAddContact(true)} className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[12px] font-medium hover:bg-blue-700 transition-colors">
                           + Add Client
                         </button>
@@ -782,11 +782,11 @@ export function CandidatesPage({
                           {c.status}
                         </span>
                       </td>
-                      <td className="px-4 py-2.5 text-[12px] text-[#64748B]">{c.lastContact}</td>
+                      <td className="px-4 py-2.5 text-[12px] text-[#64748B] tabular-nums">{c.lastContact}</td>
                       <td className="px-4 py-2.5 text-right">
                         <button type="button"
                           onClick={() => onDeleteContact(c.id)}
-                          className="p-1 rounded hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity text-[#94A3B8] hover:text-[#DC2626]"
+                          className="p-1 rounded hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity text-[#64748B] hover:text-[#DC2626]"
                           aria-label="Remove contact">
                           <Archive className="w-3.5 h-3.5" />
                         </button>

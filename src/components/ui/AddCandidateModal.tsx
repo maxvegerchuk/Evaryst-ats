@@ -14,7 +14,7 @@ interface AddCandidateModalProps {
 
 const STAGES: CandidateStage[] = ['New', 'Phone Screen', 'Interview', 'References', 'Submitted', 'Placed']
 
-const INPUT_CLS = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] focus:border-[#2563EB] transition-colors'
+const INPUT_CLS = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] focus:border-[#2563EB] transition-colors'
 const INPUT_ST  = { border: '0.5px solid #E2E8F0', padding: '8px 12px' }
 
 export function AddCandidateModal({ isOpen, onClose, onSave, currentUser }: AddCandidateModalProps) {
@@ -101,26 +101,26 @@ export function AddCandidateModal({ isOpen, onClose, onSave, currentUser }: AddC
         <div className="px-6 py-5 flex flex-col gap-3 flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E2E8F0 transparent' }}>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Full name *</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)}
+            <label htmlFor="ac-name" className="text-[12px] font-medium text-[#475569]">Full name *</label>
+            <input id="ac-name" type="text" value={name} onChange={e => setName(e.target.value)}
               placeholder="e.g. John Smith" className={INPUT_CLS} style={INPUT_ST} />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Email *</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+            <label htmlFor="ac-email" className="text-[12px] font-medium text-[#475569]">Email *</label>
+            <input id="ac-email" type="email" value={email} onChange={e => setEmail(e.target.value)}
               placeholder="john@email.com" className={INPUT_CLS} style={INPUT_ST} />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Phone *</label>
-            <input type="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))}
+            <label htmlFor="ac-phone" className="text-[12px] font-medium text-[#475569]">Phone *</label>
+            <input id="ac-phone" type="tel" value={phone} onChange={e => setPhone(formatPhone(e.target.value))}
               placeholder="(555) 123-4567" className={INPUT_CLS} style={INPUT_ST} />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Specialty / Job title *</label>
-            <input type="text" value={specialty} onChange={e => setSpecialty(e.target.value)}
+            <label htmlFor="ac-specialty" className="text-[12px] font-medium text-[#475569]">Specialty / Job title *</label>
+            <input id="ac-specialty" type="text" value={specialty} onChange={e => setSpecialty(e.target.value)}
               placeholder="e.g. Software Engineer, UX Designer" className={INPUT_CLS} style={INPUT_ST} />
           </div>
 
@@ -136,18 +136,18 @@ export function AddCandidateModal({ isOpen, onClose, onSave, currentUser }: AddC
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Pipeline stage</label>
-            <select value={stage} onChange={e => setStage(e.target.value as CandidateStage)}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white focus:border-[#2563EB] transition-colors"
+            <label htmlFor="ac-stage" className="text-[12px] font-medium text-[#475569]">Pipeline stage</label>
+            <select id="ac-stage" value={stage} onChange={e => setStage(e.target.value as CandidateStage)}
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white focus:border-[#2563EB] transition-colors"
               style={{ border: '0.5px solid #E2E8F0', padding: '8px 12px' }}>
               {STAGES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Source</label>
-            <select value={source} onChange={e => setSource(e.target.value)}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white focus:border-[#2563EB] transition-colors"
+            <label htmlFor="ac-source" className="text-[12px] font-medium text-[#475569]">Source</label>
+            <select id="ac-source" value={source} onChange={e => setSource(e.target.value)}
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white focus:border-[#2563EB] transition-colors"
               style={{ border: '0.5px solid #E2E8F0', padding: '8px 12px' }}>
               {['Direct', 'Referral', 'LinkedIn', 'Job boards', 'Other'].map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -173,20 +173,20 @@ export function AddCandidateModal({ isOpen, onClose, onSave, currentUser }: AddC
                 onClick={() => fileRef.current?.click()}
                 className="border border-dashed border-[#E2E8F0] rounded-[8px] p-3 flex flex-col items-center justify-center cursor-pointer hover:bg-[#F8FAFC] transition-colors"
               >
-                <Upload className="w-6 h-6 text-[#94A3B8] mb-2" />
+                <Upload className="w-6 h-6 text-[#64748B] mb-2" />
                 <p className="text-[12px] text-[#64748B] mb-1">Drop resume here or click to upload</p>
-                <p className="text-[10px] text-[#94A3B8]">PDF, DOC, DOCX up to 10MB</p>
+                <p className="text-[10px] text-[#64748B]">PDF, DOC, DOCX up to 10MB</p>
               </div>
             )}
             <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleFileChange} />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[12px] font-medium text-[#475569]">Quick notes</label>
-            <textarea value={notes} onChange={e => setNotes(e.target.value)}
+            <label htmlFor="ac-notes" className="text-[12px] font-medium text-[#475569]">Quick notes</label>
+            <textarea id="ac-notes" value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="Any initial notes about this candidate..."
               rows={3}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none focus:border-[#2563EB] transition-colors"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] resize-none focus:border-[#2563EB] transition-colors"
               style={{ border: '0.5px solid #E2E8F0', padding: '8px 12px', minHeight: 50 }}
             />
           </div>

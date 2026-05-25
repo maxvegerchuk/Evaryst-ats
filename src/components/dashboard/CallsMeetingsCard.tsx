@@ -288,7 +288,7 @@ function SubLabel({ text, count }: { text: string; count: number }) {
 
 function CompanyLabel({ label }: { label: string }) {
   return (
-    <div className="px-4 pt-1 pb-0.5 text-[9px] font-semibold text-[#94A3B8] uppercase tracking-[0.1em] shrink-0">
+    <div className="px-4 pt-1 pb-0.5 text-[10px] font-semibold text-[#94A3B8] uppercase tracking-[0.1em] shrink-0">
       {label}
     </div>
   )
@@ -349,7 +349,7 @@ function PersonRow({ entry, selected, onToggle, showType }: PersonRowProps) {
         aria-label={entry.name}
       />
       <div
-        className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[9px] font-bold"
+        className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold"
         style={{ backgroundColor: entry.avatarBg, color: entry.avatarClr }}
       >
         {entry.initials}

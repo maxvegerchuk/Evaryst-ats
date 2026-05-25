@@ -7,7 +7,7 @@ import type { User } from '../../types/auth'
 
 const STORAGE_KEY = 'evaryst-sidebar-collapsed'
 
-const SECTION_LABEL = 'text-[10px] font-semibold text-[#94A3B8] uppercase tracking-[0.08em]'
+const SECTION_LABEL = 'text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.08em]'
 
 interface SidebarProps {
   currentPage:            string
@@ -48,7 +48,7 @@ export function Sidebar({ setCurrentPage, candidates, jobs, currentUser, onNavig
   return (
     <aside
       style={{ width: cx ? 64 : 220 }}
-      className="hidden md:flex shrink-0 bg-white border-r border-[#E2E8F0] h-full flex-col transition-[width] duration-200 ease-in-out overflow-hidden"
+      className="hidden md:flex shrink-0 bg-white border-r border-[#E2E8F0] h-full flex-col overflow-hidden"
       aria-label="Quick access panel"
     >
       {/* Collapse toggle */}
@@ -60,7 +60,7 @@ export function Sidebar({ setCurrentPage, candidates, jobs, currentUser, onNavig
         >
           <ChevronLeft
             size={14}
-            className={`text-[#94A3B8] transition-transform duration-200 ${cx ? 'rotate-180' : ''}`}
+            className={`text-[#64748B] transition-transform duration-200 ${cx ? 'rotate-180' : ''}`}
           />
         </button>
       </div>
@@ -162,7 +162,7 @@ export function Sidebar({ setCurrentPage, candidates, jobs, currentUser, onNavig
           {!cx && (
             <div className="flex items-center justify-between mb-2">
               <p className={SECTION_LABEL}>Candidates</p>
-              <button onClick={() => setCurrentPage('candidates')} className="w-5 h-5 flex items-center justify-center text-[#94A3B8] hover:text-[#475569]">
+              <button onClick={() => setCurrentPage('candidates')} className="w-5 h-5 flex items-center justify-center text-[#64748B] hover:text-[#475569]">
                 <Plus size={13} />
               </button>
             </div>
@@ -203,7 +203,7 @@ export function Sidebar({ setCurrentPage, candidates, jobs, currentUser, onNavig
                       </div>
                       <div className="flex-1 min-w-0 leading-tight">
                         <p className="text-[12px] font-medium text-[#1E293B] truncate">{c.name}</p>
-                        <p className="text-[11px] text-[#94A3B8]">{c.specialty}</p>
+                        <p className="text-[11px] text-[#64748B]">{c.specialty}</p>
                       </div>
                     </button>
                   )
@@ -218,7 +218,7 @@ export function Sidebar({ setCurrentPage, candidates, jobs, currentUser, onNavig
           {!cx && (
             <div className="flex items-center justify-between mb-2">
               <p className={SECTION_LABEL}>Jobs</p>
-              <button onClick={() => setCurrentPage('jobs')} className="w-5 h-5 flex items-center justify-center text-[#94A3B8] hover:text-[#475569]">
+              <button onClick={() => setCurrentPage('jobs')} className="w-5 h-5 flex items-center justify-center text-[#64748B] hover:text-[#475569]">
                 <Plus size={13} />
               </button>
             </div>

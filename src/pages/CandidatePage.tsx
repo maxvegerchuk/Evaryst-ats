@@ -17,7 +17,7 @@ const STAGES = ['New', 'Phone Screen', 'Interview', 'References', 'Submitted', '
 type Stage = (typeof STAGES)[number]
 
 const STAGE_STYLE: Record<Stage, { wrap: string; text: string; dot: string; border?: string }> = {
-  'New':          { wrap: 'bg-[#F1F5F9]',  text: 'text-[#475569]',  dot: 'text-[#94A3B8]'  },
+  'New':          { wrap: 'bg-[#F1F5F9]',  text: 'text-[#475569]',  dot: 'text-[#64748B]'  },
   'Phone Screen': { wrap: 'bg-[#DBEAFE]',  text: 'text-[#1D4ED8]',  dot: 'text-[#3B82F6]'  },
   'Interview':    { wrap: 'bg-[#FEF3C7] hover:bg-[#FDE68A]', text: 'text-[#92400E]', dot: 'text-[#92400E]', border: '1px solid #F59E0B' },
   'References':   { wrap: 'bg-[#F3E8FF]',  text: 'text-[#6D28D9]',  dot: 'text-[#8B5CF6]'  },
@@ -54,13 +54,13 @@ type ResumeKey = 'summary' | 'experience' | 'education' | 'skills'
 
 // Shared style tokens
 const ICON_BTN  = 'w-[30px] h-[30px] flex items-center justify-center border-subtle rounded-[7px] bg-white hover:bg-[#F8FAFC] transition-colors flex-shrink-0'
-const INFO_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-1.5'
+const INFO_LABEL = 'text-[10px] uppercase text-[#64748B] font-medium tracking-[0.05em] mb-1.5'
 const CARD_CLS  = 'bg-white rounded-[10px] overflow-hidden'
 const CARD_ST   = { border: '0.5px solid #E2E8F0' } as const
 const CARD_TTL  = 'text-[13px] font-medium text-[#1E293B]'
 const CARD_HDR  = 'flex items-center px-4 py-3'
 const CARD_HDR_ST = { borderBottom: '0.5px solid #E2E8F0' } as const
-const FLD_INPUT = 'text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white w-full'
+const FLD_INPUT = 'text-[12px] text-[#1E293B] rounded-[7px] bg-white w-full'
 const FLD_ST    = { border: '0.5px solid #E2E8F0', padding: '6px 10px' } as const
 
 function escapeRe(s: string) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') }
@@ -346,7 +346,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 <input type="text" placeholder="100,000"
                   value={getQStr('salaryValue')}
                   onChange={e => handleQualChange('salaryValue', e.target.value)}
-                  className="text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white w-[120px]"
+                  className="text-[12px] text-[#1E293B] rounded-[7px] bg-white w-[120px]"
                   style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
                 {(['yr', 'hr'] as const).map(p => (
                   <button key={p} onClick={() => { setSalaryPeriod(p); handleQualChange('salaryType', p) }}
@@ -371,7 +371,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" checked={getQ('workAuth')} onChange={e => handleQualChange('workAuth', e.target.checked)} />
                 <span className="text-[12px] text-[#1E293B] leading-tight">Work authorization</span>
               </label>
-              <select value={getQStr('workAuthType', 'US Citizen')} onChange={e => handleQualChange('workAuthType', e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
+              <select value={getQStr('workAuthType', 'US Citizen')} onChange={e => handleQualChange('workAuthType', e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
                 <option>US Citizen</option><option>Green Card</option><option>H1B</option><option>OPT</option>
               </select>
             </div>
@@ -391,7 +391,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 <input type="checkbox" className="accent-[#2563EB] flex-shrink-0" checked={getQ('empPref')} onChange={e => handleQualChange('empPref', e.target.checked)} />
                 <span className="text-[12px] text-[#1E293B] leading-tight">Employment preference</span>
               </label>
-              <select value={getQStr('empPrefType', 'Contractor')} onChange={e => handleQualChange('empPrefType', e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] focus:outline-none w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
+              <select value={getQStr('empPrefType', 'Contractor')} onChange={e => handleQualChange('empPrefType', e.target.value)} className="text-[12px] text-[#1E293B] bg-white rounded-[7px] w-[188px]" style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px' }}>
                 <option>Contractor</option><option>Full-Time</option><option>Part-Time</option><option>Contract to Hire</option>
               </select>
             </div>
@@ -417,16 +417,16 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             <div className={CARD_HDR} style={CARD_HDR_ST}>
               <span className={`${CARD_TTL} flex-1`}>Candidate Resume</span>
               <div className="relative">
-                <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+                <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#64748B]" />
                 <input value={highlight} onChange={e => setHighlight(e.target.value)} placeholder="Highlight words"
-                  className="pl-6 pr-2 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white w-[120px]"
+                  className="pl-6 pr-2 text-[12px] text-[#1E293B] rounded-[7px] bg-white w-[120px]"
                   style={{ border: '0.5px solid #E2E8F0', paddingTop: 6, paddingBottom: 6 }} />
               </div>
             </div>
             <div className="p-4">
             {(['summary', 'experience', 'education', 'skills'] as ResumeKey[]).map((key, i) => (
               <div key={key} className={i > 0 ? 'mt-3 pt-3' : ''} style={i > 0 ? { borderTop: '0.5px solid #F1F5F9' } : {}}>
-                <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>
+                <p className="text-[10px] uppercase text-[#64748B] font-medium mb-2" style={{ letterSpacing: '0.05em' }}>
                   {key}
                 </p>
                 {editingSection === key ? (
@@ -435,7 +435,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                     value={resumeSections[key]}
                     onChange={e => handleResumeChange(key, e.target.value)}
                     onBlur={() => setEditingSection(null)}
-                    className="w-full text-[13px] text-[#1E293B] leading-[1.6] resize-none focus:outline-none rounded-[7px] p-2"
+                    className="w-full text-[13px] text-[#1E293B] leading-[1.6] resize-none rounded-[7px] p-2"
                     style={{ border: '0.5px solid #E2E8F0', minHeight: 80, fontFamily: 'inherit' }}
                   />
                 ) : (
@@ -459,7 +459,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             </div>
             <div className="p-4">
               <textarea placeholder="Write a submittal letter for this candidate..."
-                className="w-full min-h-[80px] text-[12px] text-[#475569] leading-[1.5] resize-none focus:outline-none placeholder-[#94A3B8] bg-transparent"
+                className="w-full min-h-[80px] text-[12px] text-[#475569] leading-[1.5] resize-none placeholder-[#64748B] bg-transparent"
                 style={{ fontFamily: 'inherit', border: 'none' }} />
             </div>
           </div>
@@ -474,18 +474,18 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <div className={`${CARD_CLS} mb-3`} style={CARD_ST}>
                 <div className={CARD_HDR} style={CARD_HDR_ST}>
                   <span className={`${CARD_TTL} flex-1`}>Active Jobs</span>
-                  <span className="text-[11px] text-[#94A3B8]">{activeJobs.length}</span>
+                  <span className="text-[11px] text-[#64748B]">{activeJobs.length}</span>
                 </div>
                 <div className="px-4 py-2">
                   {activeJobs.length === 0 ? (
-                    <p className="text-[12px] text-[#94A3B8] py-2 text-center">No jobs attached yet</p>
+                    <p className="text-[12px] text-[#64748B] py-2 text-center">No jobs attached yet</p>
                   ) : (
                     <div className="flex flex-col">
                       {activeJobs.map((j, i) => (
                         <div key={j.id} className="flex items-center gap-2 py-1.5" style={i < activeJobs.length - 1 ? { borderBottom: '0.5px solid #F1F5F9' } : {}}>
                           <div>
                             <p className="text-[12px] font-medium text-[#1E293B]">{j.title}</p>
-                            <p className="text-[11px] text-[#94A3B8]">{j.companyName}</p>
+                            <p className="text-[11px] text-[#64748B]">{j.companyName}</p>
                           </div>
                         </div>
                       ))}
@@ -504,7 +504,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <select
                 value={interviewJob}
                 onChange={e => setInterviewJob(e.target.value)}
-                className="w-full text-[12px] text-[#1E293B] rounded-[7px] mb-2 focus:outline-none bg-white appearance-none"
+                className="w-full text-[12px] text-[#1E293B] rounded-[7px] mb-2 bg-white appearance-none"
                 style={{ border: '0.5px solid #E2E8F0', padding: '6px 28px 6px 10px', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', backgroundSize: '12px' }}
               >
                 {JOB_OPTIONS.map(o => (
@@ -514,7 +514,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <textarea
                 readOnly
                 value={JOB_DESCRIPTIONS[interviewJob] ?? ''}
-                className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none focus:outline-none rounded-[8px] p-3 bg-[#F8FAFC]"
+                className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none rounded-[8px] p-3 bg-[#F8FAFC]"
                 style={{ border: '0.5px solid #E2E8F0', minHeight: 150, fontFamily: 'inherit' }}
               />
               <button
@@ -541,7 +541,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <div className="mb-3">
                 <textarea autoFocus value={newNoteText} onChange={e => setNewNoteText(e.target.value)}
                   placeholder="Add a note..."
-                  className="w-full min-h-[64px] text-[12px] text-[#1E293B] leading-[1.5] resize-none rounded-[8px] p-3 focus:outline-none placeholder-[#94A3B8]"
+                  className="w-full min-h-[64px] text-[12px] text-[#1E293B] leading-[1.5] resize-none rounded-[8px] p-3 placeholder-[#64748B]"
                   style={{ border: '0.5px solid #E2E8F0' }} />
                 <div className="flex items-center gap-2 mt-2">
                   <button onClick={() => {
@@ -562,13 +562,13 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 <div key={note.id} className="bg-[#F8FAFC] rounded-[8px] p-3" style={{ border: '0.5px solid #E2E8F0' }}>
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
-                      <span className="text-[9px] font-bold text-[#1D4ED8] leading-none">TH</span>
+                      <span className="text-[10px] font-bold text-[#1D4ED8] leading-none">TH</span>
                     </div>
                     <span className="text-[11px] font-medium text-[#1E293B]">Thane Hayhurst</span>
-                    <span className="text-[10px] text-[#94A3B8] ml-auto">{note.time}</span>
-                    <button onClick={() => { setEditingNoteId(note.id); setEditingNoteText(note.text) }} className="text-[#94A3B8] hover:text-[#475569] transition-colors"><Edit size={12} /></button>
+                    <span className="text-[10px] text-[#64748B] ml-auto">{note.time}</span>
+                    <button onClick={() => { setEditingNoteId(note.id); setEditingNoteText(note.text) }} className="text-[#64748B] hover:text-[#475569] transition-colors"><Edit size={12} /></button>
                     <button onClick={() => setNotes(ns => ns.filter(n => n.id !== note.id))}
-                      className="text-[#94A3B8] hover:text-[#DC2626] transition-colors"><Trash size={12} /></button>
+                      className="text-[#64748B] hover:text-[#DC2626] transition-colors"><Trash size={12} /></button>
                   </div>
                   {editingNoteId === note.id ? (
                     <textarea
@@ -579,7 +579,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                         setNotes(ns => ns.map(n => n.id === note.id ? { ...n, text: editingNoteText } : n))
                         setEditingNoteId(null)
                       }}
-                      className="w-full text-[12px] text-[#1E293B] leading-[1.5] resize-none focus:outline-none rounded-[6px] p-1.5"
+                      className="w-full text-[12px] text-[#1E293B] leading-[1.5] resize-none rounded-[6px] p-1.5"
                       style={{ border: '0.5px solid #E2E8F0', minHeight: 48 }}
                     />
                   ) : (
@@ -596,8 +596,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
   )
 
   // ── Employment Details tab ───────────────────────────────────────────────────
-  const empLabel = 'text-[10px] text-[#94A3B8] font-medium mb-1' as const
-  const empInput = 'text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white w-full normal-case' as const
+  const empLabel = 'text-[10px] text-[#64748B] font-medium mb-1' as const
+  const empInput = 'text-[12px] text-[#1E293B] rounded-[7px] bg-white w-full normal-case' as const
   const empInputSt = { border: '0.5px solid #E2E8F0', padding: '6px 10px', textTransform: 'none' as const }
   const dropSt = {
     border: '0.5px solid #E2E8F0',
@@ -640,7 +640,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                   className={empInput}
                   style={empInputSt}
                 />
-                <p className="text-[11px] text-[#94A3B8] mt-0.5">Days per year</p>
+                <p className="text-[11px] text-[#64748B] mt-0.5">Days per year</p>
               </div>
               <div className="flex flex-col">
                 <p className={empLabel}>Health Insurance</p>
@@ -651,7 +651,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                   className={empInput}
                   style={empInputSt}
                 />
-                <p className="text-[11px] text-[#94A3B8] mt-0.5">Monthly contribution</p>
+                <p className="text-[11px] text-[#64748B] mt-0.5">Monthly contribution</p>
               </div>
               <div className="flex flex-col">
                 <p className={empLabel}>401(k) Match</p>
@@ -662,7 +662,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                   className={empInput}
                   style={empInputSt}
                 />
-                <p className="text-[11px] text-[#94A3B8] mt-0.5">Employer match</p>
+                <p className="text-[11px] text-[#64748B] mt-0.5">Employer match</p>
               </div>
               <div className="flex flex-col">
                 <p className={empLabel}>Annual Bonus</p>
@@ -673,7 +673,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                   className={empInput}
                   style={empInputSt}
                 />
-                <p className="text-[11px] text-[#94A3B8] mt-0.5">Target bonus</p>
+                <p className="text-[11px] text-[#64748B] mt-0.5">Target bonus</p>
               </div>
             </div>
           </div>
@@ -730,13 +730,13 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <span className={CARD_TTL}>Recruiting Activity</span>
             </div>
             {attachedJobs.length === 0 ? (
-              <div className="px-4 py-6 text-center text-[12px] text-[#94A3B8]">No jobs attached yet</div>
+              <div className="px-4 py-6 text-center text-[12px] text-[#64748B]">No jobs attached yet</div>
             ) : (
               <table className="w-full">
                 <thead>
                   <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
                     {['Organization', 'Job Title', 'Status', 'Rating', 'Job Status'].map(h => (
-                      <th key={h} className="text-left text-[10px] uppercase text-[#94A3B8] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                      <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -752,7 +752,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                         </td>
                         <td className="text-[12px] text-[#475569]" style={{ padding: '8px 16px' }}>{j.title}</td>
                         <td style={{ padding: '8px 16px' }}>
-                          <select className="text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white cursor-pointer appearance-none" style={dropSt}>
+                          <select className="text-[12px] text-[#1E293B] rounded-[7px] bg-white cursor-pointer appearance-none" style={dropSt}>
                             <option>Potential Candidate</option>
                             <option>Submitted</option>
                             <option>Interview</option>
@@ -760,7 +760,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                           </select>
                         </td>
                         <td style={{ padding: '8px 16px' }}>
-                          <select className="text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white cursor-pointer appearance-none" style={dropSt}>
+                          <select className="text-[12px] text-[#1E293B] rounded-[7px] bg-white cursor-pointer appearance-none" style={dropSt}>
                             <option>Paper A</option>
                             <option>Paper B</option>
                             <option>A</option>
@@ -796,7 +796,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           </div>
           <div className="p-4">
             <div>
-              <p className="text-[10px] text-[#94A3B8] mb-1">Location</p>
+              <p className="text-[10px] text-[#64748B] mb-1">Location</p>
               <input defaultValue="54 Road Line Ave, Dallas, TX 75022" className={FLD_INPUT} style={FLD_ST} />
             </div>
           </div>
@@ -814,8 +814,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             ].map(em => (
               <div key={em.label} className="flex items-center gap-2">
                 <input type="checkbox" defaultChecked className="accent-[#2563EB] flex-shrink-0" />
-                <span className="text-[10px] text-[#94A3B8] w-[52px] flex-shrink-0">{em.label}</span>
-                <input defaultValue={em.val} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+                <span className="text-[10px] text-[#64748B] w-[52px] flex-shrink-0">{em.label}</span>
+                <input defaultValue={em.val} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
               </div>
             ))}
           </div>
@@ -828,13 +828,13 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           </div>
           <div className="p-4 flex flex-col gap-2">
             <div>
-              <p className="text-[10px] text-[#94A3B8] mb-1">Source</p>
+              <p className="text-[10px] text-[#64748B] mb-1">Source</p>
               <select className={`${FLD_INPUT} cursor-pointer`} style={{ ...FLD_ST, paddingRight: 28 }}>
                 <option>LinkedIn</option><option>Indeed</option><option>Referral</option><option>Website</option>
               </select>
             </div>
             <div>
-              <p className="text-[10px] text-[#94A3B8] mb-1">Referred by</p>
+              <p className="text-[10px] text-[#64748B] mb-1">Referred by</p>
               <input defaultValue="" placeholder="Name" className={FLD_INPUT} style={FLD_ST} />
             </div>
           </div>
@@ -854,7 +854,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           <thead>
             <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
               {['Date', 'Details', 'Creator'].map(h => (
-                <th key={h} className="text-left px-4 py-2 text-[10px] uppercase text-[#64748B] font-medium">{h}</th>
+                <th scope="col" key={h} className="text-left px-4 py-2 text-[10px] uppercase text-[#64748B] font-medium">{h}</th>
               ))}
             </tr>
           </thead>
@@ -889,11 +889,11 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
         <table className="w-full">
           <thead>
             <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-              <th className="px-4 py-2 w-8"><input type="checkbox" className="accent-[#2563EB]" /></th>
+              <th scope="col" className="px-4 py-2 w-8"><input type="checkbox" className="accent-[#2563EB]" /></th>
               {['Document name', 'Document type', 'Date', 'Time'].map(h => (
-                <th key={h} className="text-left px-4 py-2 text-[10px] uppercase text-[#64748B] font-medium">{h}</th>
+                <th scope="col" key={h} className="text-left px-4 py-2 text-[10px] uppercase text-[#64748B] font-medium">{h}</th>
               ))}
-              <th className="px-4 py-2 w-10" />
+              <th scope="col" className="px-4 py-2 w-10" />
             </tr>
           </thead>
           <tbody>
@@ -905,10 +905,10 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 <td className="px-4 py-2 text-[12px] text-[#475569]">{d.date}</td>
                 <td className="px-4 py-2 text-[12px] text-[#475569]">{d.time}</td>
                 <td className="px-4 py-2 flex items-center gap-1">
-                  <button className="text-[#94A3B8] hover:text-[#2563EB] transition-colors">
+                  <button className="text-[#64748B] hover:text-[#2563EB] transition-colors">
                     <Download size={13} />
                   </button>
-                  <button onClick={() => setDocs(prev => prev.filter(x => x.name !== d.name))} className="text-[#94A3B8] hover:text-[#DC2626] transition-colors">
+                  <button onClick={() => setDocs(prev => prev.filter(x => x.name !== d.name))} className="text-[#64748B] hover:text-[#DC2626] transition-colors">
                     <Trash size={13} />
                   </button>
                 </td>
@@ -930,7 +930,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <ChevronLeft size={13} />
               People
             </button>
-            <span className="text-[12px] text-[#94A3B8]">›</span>
+            <span className="text-[12px] text-[#64748B]">›</span>
             <span className="text-[12px] text-[#64748B]">{candidate?.name ?? 'Candidate'}</span>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -939,14 +939,14 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               style={{ border: '0.5px solid #E2E8F0' }}>
               <ChevronLeft size={11} /> Prev
             </button>
-            <span className="text-[11px] text-[#94A3B8]">{currentCandidateIndex + 1} / {selectedCandidateIds.length}</span>
+            <span className="text-[11px] text-[#64748B]">{currentCandidateIndex + 1} / {selectedCandidateIds.length}</span>
             <button onClick={() => onNavigateCard('next')} disabled={currentCandidateIndex === selectedCandidateIds.length - 1}
               className="flex items-center gap-0.5 px-2 py-1 text-[11px] text-[#64748B] rounded-md hover:bg-[#F8FAFC] disabled:opacity-40"
               style={{ border: '0.5px solid #E2E8F0' }}>
               Next <ChevronRight size={11} />
             </button>
             <button onClick={onCloseCard}
-              className="flex items-center justify-center w-6 h-6 rounded-md hover:bg-[#FEF2F2] text-[#94A3B8] hover:text-[#DC2626] transition-colors"
+              className="flex items-center justify-center w-6 h-6 rounded-md hover:bg-[#FEF2F2] text-[#64748B] hover:text-[#DC2626] transition-colors"
               style={{ border: '0.5px solid #E2E8F0' }}>
               <X size={11} />
             </button>
@@ -981,7 +981,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
             {attachOpen && (
               <div className="absolute top-full left-0 mt-1 bg-white rounded-[8px] shadow-md z-50 py-1 min-w-[240px] max-h-[240px] overflow-y-auto" style={{ border: '0.5px solid #E2E8F0' }}>
                 {openJobs.length === 0 ? (
-                  <p className="px-3 py-2 text-[12px] text-[#94A3B8]">No open jobs available</p>
+                  <p className="px-3 py-2 text-[12px] text-[#64748B]">No open jobs available</p>
                 ) : openJobs.map(j => {
                   const isAttached = candidate?.attachedJobIds?.includes(j.id) ?? false
                   return (
@@ -1077,7 +1077,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 ['Class.',       'classification'],
               ] as [string, keyof typeof personal][]).map(([label, key]) => (
                 <div key={key} className="flex items-baseline gap-[5px] mb-[3px]">
-                  <span className="text-[10px] text-[#94A3B8] min-w-[64px] flex-shrink-0">{label}</span>
+                  <span className="text-[10px] text-[#64748B] min-w-[64px] flex-shrink-0">{label}</span>
                   <span className="text-[12px] text-[#1E293B]">{personal[key]}</span>
                 </div>
               ))}
@@ -1105,7 +1105,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           <div className="px-6 flex flex-col">
             <p className={INFO_LABEL}>Notes</p>
             <textarea
-              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none focus:outline-none placeholder-[#94A3B8] bg-transparent"
+              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none placeholder-[#64748B] bg-transparent"
               style={{ fontFamily: 'inherit', border: 'none' }}
               placeholder="Quick notes..."
               value={notesValue}
@@ -1117,8 +1117,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           <div className="pl-6 flex flex-col">
             <p className={INFO_LABEL}>Follow Up</p>
             <div className="flex gap-[5px] mb-[5px]">
-              <input type="date" value={followUpDate} onChange={e => setFollowUpDate(e.target.value)} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
-              <input type="time" value={followUpTime} onChange={e => setFollowUpTime(e.target.value)} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+              <input type="date" value={followUpDate} onChange={e => setFollowUpDate(e.target.value)} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+              <input type="time" value={followUpTime} onChange={e => setFollowUpTime(e.target.value)} className="flex-1 text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
             </div>
             <div className="flex gap-[3px] mb-1.5">
               {FOLLOW_UP_TYPES.map(t => (
@@ -1188,7 +1188,7 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               <ChevronLeft size={13} />
               People
             </button>
-            <span className="text-[12px] text-[#94A3B8]">›</span>
+            <span className="text-[12px] text-[#64748B]">›</span>
             <span className="text-[12px] text-[#64748B]">{candidate?.name ?? 'Candidate'}</span>
           </div>
         </div>
@@ -1249,63 +1249,63 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
 
       {/* ── CANDIDATE EDIT PANEL ─────────────────────────────────────────────── */}
       <EditPanel isOpen={showCandPanel} onClose={() => setShowCandPanel(false)} title="Edit candidate" onSave={handleSaveCandidate} isSaving={isSavingCand}>
-        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Personal Info</p>
+        <p className="text-[10px] uppercase text-[#64748B] font-medium tracking-[0.06em] mb-3">Personal Info</p>
         <div className="flex flex-col gap-3 mb-5">
           <div>
             <label className="block text-[11px] font-medium text-[#475569] mb-1">Full name</label>
             <input value={editCandName} onChange={e => setEditCandName(e.target.value)}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
           </div>
           <div>
             <label className="block text-[11px] font-medium text-[#475569] mb-1">Specialty / Title</label>
             <input value={editSpecialty} onChange={e => setEditSpecialty(e.target.value)}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
           </div>
           <div>
             <label className="block text-[11px] font-medium text-[#475569] mb-1">Classification</label>
             <input value={editClassif} onChange={e => setEditClassif(e.target.value)}
               placeholder="e.g. Senior, Mid-level"
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
           </div>
         </div>
 
-        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Location</p>
+        <p className="text-[10px] uppercase text-[#64748B] font-medium tracking-[0.06em] mb-3">Location</p>
         <div className="mb-5">
           <CityAutocomplete cityValue={editCandCity} stateValue={editCandState} onCityChange={setEditCandCity} onStateChange={setEditCandState} />
         </div>
 
-        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Contact</p>
+        <p className="text-[10px] uppercase text-[#64748B] font-medium tracking-[0.06em] mb-3">Contact</p>
         <div className="flex flex-col gap-3 mb-5">
           <div>
             <label className="block text-[11px] font-medium text-[#475569] mb-1">Phone (mobile)</label>
             <input value={editPhoneMob} onChange={e => setEditPhoneMob(formatPhone(e.target.value))}
               placeholder="(555) 000-0000"
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
           </div>
           <div>
             <label className="block text-[11px] font-medium text-[#475569] mb-1">Email</label>
             <input type="email" value={editCandEmail} onChange={e => setEditCandEmail(e.target.value)}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
           </div>
           <div>
             <label className="block text-[11px] font-medium text-[#475569] mb-1">LinkedIn URL</label>
             <input value={editLinkedin} onChange={e => setEditLinkedin(e.target.value)}
               placeholder="linkedin.com/in/username"
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }} />
           </div>
         </div>
 
-        <p className="text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.06em] mb-3">Job Spec</p>
+        <p className="text-[10px] uppercase text-[#64748B] font-medium tracking-[0.06em] mb-3">Job Spec</p>
         <div>
           <label className="block text-[11px] font-medium text-[#475569] mb-1">Source</label>
           <select value={editSource} onChange={e => setEditSource(e.target.value)}
-            className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white"
+            className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white"
             style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }}>
             <option value="">Select source...</option>
             <option>LinkedIn</option>
@@ -1323,13 +1323,13 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
           <div className="bg-white rounded-[10px] shadow-lg p-6 w-[460px]" style={{ border: '0.5px solid #E2E8F0' }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[15px] font-semibold text-[#1E293B]">Placement Record</h3>
-              <button onClick={() => setShowPlacementModal(false)} className="text-[#94A3B8] hover:text-[#475569]"><X size={16} /></button>
+              <button onClick={() => setShowPlacementModal(false)} className="text-[#64748B] hover:text-[#475569]"><X size={16} /></button>
             </div>
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[11px] text-[#94A3B8] mb-1">Company</p>
-                  <select value={placementCompany} onChange={e => setPlacementCompany(e.target.value)} className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }}>
+                  <p className="text-[11px] text-[#64748B] mb-1">Company</p>
+                  <select value={placementCompany} onChange={e => setPlacementCompany(e.target.value)} className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }}>
                     <option value="">Select company...</option>
                     <option>ABC Company</option>
                     <option>Glazers</option>
@@ -1337,17 +1337,17 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                   </select>
                 </div>
                 <div>
-                  <p className="text-[11px] text-[#94A3B8] mb-1">Job Title</p>
-                  <input value={placementTitle} onChange={e => setPlacementTitle(e.target.value)} placeholder=".Net Developer" className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+                  <p className="text-[11px] text-[#64748B] mb-1">Job Title</p>
+                  <input value={placementTitle} onChange={e => setPlacementTitle(e.target.value)} placeholder=".Net Developer" className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[11px] text-[#94A3B8] mb-1">Start date</p>
-                  <input type="date" value={placementStartDate} onChange={e => setPlacementStartDate(e.target.value)} className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+                  <p className="text-[11px] text-[#64748B] mb-1">Start date</p>
+                  <input type="date" value={placementStartDate} onChange={e => setPlacementStartDate(e.target.value)} className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
                 </div>
                 <div>
-                  <p className="text-[11px] text-[#94A3B8] mb-2">Type</p>
+                  <p className="text-[11px] text-[#64748B] mb-2">Type</p>
                   <div className="flex gap-2">
                     {(['permanent', 'contract'] as const).map(t => (
                       <button key={t} onClick={() => setPlacementType(t)}
@@ -1361,14 +1361,14 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[11px] text-[#94A3B8] mb-1">{placementType === 'permanent' ? 'Final salary' : 'Bill rate'}</p>
-                  <input value={placementSalary} onChange={e => setPlacementSalary(e.target.value)} placeholder={placementType === 'permanent' ? '$85,000' : '$65/hr'} className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+                  <p className="text-[11px] text-[#64748B] mb-1">{placementType === 'permanent' ? 'Final salary' : 'Bill rate'}</p>
+                  <input value={placementSalary} onChange={e => setPlacementSalary(e.target.value)} placeholder={placementType === 'permanent' ? '$85,000' : '$65/hr'} className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
                 </div>
                 <div>
-                  <p className="text-[11px] text-[#94A3B8] mb-1">Placement fee %</p>
+                  <p className="text-[11px] text-[#64748B] mb-1">Placement fee %</p>
                   <div className="flex items-center gap-2">
-                    <input value={placementFee} onChange={e => setPlacementFee(e.target.value)} className="w-16 text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
-                    <span className="text-[12px] text-[#94A3B8]">%</span>
+                    <input value={placementFee} onChange={e => setPlacementFee(e.target.value)} className="w-16 text-[12px] text-[#1E293B] rounded-[7px] bg-white" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px' }} />
+                    <span className="text-[12px] text-[#64748B]">%</span>
                     {placementSalary && !isNaN(parseFloat(placementSalary.replace(/[$,]/g, ''))) && (
                       <span className="text-[12px] text-[#1E293B]">= ${(parseFloat(placementSalary.replace(/[$,]/g, '')) * parseFloat(placementFee || '0') / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
                     )}
@@ -1376,8 +1376,8 @@ export function CandidatePage({ setCurrentPage, onNavigateToJobDetails, candidat
                 </div>
               </div>
               <div>
-                <p className="text-[11px] text-[#94A3B8] mb-1">Notes</p>
-                <textarea value={placementNotes} onChange={e => setPlacementNotes(e.target.value)} placeholder="Any notes about this placement..." className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white resize-none" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px', minHeight: 60 }} />
+                <p className="text-[11px] text-[#64748B] mb-1">Notes</p>
+                <textarea value={placementNotes} onChange={e => setPlacementNotes(e.target.value)} placeholder="Any notes about this placement..." className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white resize-none" style={{ border: '0.5px solid #E2E8F0', padding: '6px 10px', minHeight: 60 }} />
               </div>
               <div className="flex items-center gap-2 justify-end mt-1">
                 <button onClick={() => setShowPlacementModal(false)} className="px-4 py-1.5 text-[12px] text-[#475569] bg-white rounded-[7px] hover:bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0' }}>Cancel</button>

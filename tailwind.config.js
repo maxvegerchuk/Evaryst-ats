@@ -17,7 +17,7 @@ export default {
         text: {
           primary:   '#1E293B',
           secondary: '#475569',
-          muted:     '#94A3B8',
+          muted:     '#64748B',
         },
         status: {
           success:      '#166534',

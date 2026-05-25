@@ -176,13 +176,13 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
       {/* Search + filter row */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#64748B]" aria-hidden="true" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search jobs by title, company..."
-            className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#94A3B8] outline-none bg-white rounded-[7px]"
+            className="w-full pl-9 pr-3 text-[12px] text-[#1E293B] placeholder:text-[#64748B] outline-none bg-white rounded-[7px]"
             style={{ border: '0.5px solid #E2E8F0', paddingTop: 6, paddingBottom: 6 }}
           />
         </div>
@@ -305,7 +305,7 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
               + Add your first job
             </button>
           ) : (
-            <p className="text-[13px] text-[#94A3B8]">Jobs will appear here once your manager assigns them to you</p>
+            <p className="text-[13px] text-[#64748B]">Jobs will appear here once your manager assigns them to you</p>
           )}
         </div>
       ) : (
@@ -316,19 +316,19 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
-                  <th style={{ width: 40 }}  className="px-4 py-2.5 text-left">
+                  <th scope="col" style={{ width: 40 }}  className="px-4 py-2.5 text-left">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} className="w-3.5 h-3.5 accent-[#2563EB]" aria-label="Select all" />
                   </th>
-                  <th style={{ width: isManager ? 155 : 160 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
-                  <th style={{ width: isManager ? 140 : 155 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
-                  <th style={{ width: isManager ? 110 : 120 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Type</th>
-                  <th style={{ width: isManager ? 105 : 115 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Salary</th>
-                  <th style={{ width: isManager ? 82 : 90 }}  className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  {isManager && <th style={{ width: 115 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>}
-                  <th style={{ width: isManager ? 74 : 80 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Candidates</th>
-                  <th style={{ width: isManager ? 78 : 85 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Days Open</th>
-                  <th style={{ width: isManager ? 95 : 105 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Date Added</th>
-                  <th style={{ width: 48 }}  className="px-4 py-2.5" />
+                  <th scope="col" style={{ width: isManager ? 155 : 160 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
+                  <th scope="col" style={{ width: isManager ? 140 : 155 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
+                  <th scope="col" style={{ width: isManager ? 110 : 120 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Type</th>
+                  <th scope="col" style={{ width: isManager ? 105 : 115 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Salary</th>
+                  <th scope="col" style={{ width: isManager ? 82 : 90 }}  className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  {isManager && <th scope="col" style={{ width: 115 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>}
+                  <th scope="col" style={{ width: isManager ? 74 : 80 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Candidates</th>
+                  <th scope="col" style={{ width: isManager ? 78 : 85 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Days Open</th>
+                  <th scope="col" style={{ width: isManager ? 95 : 105 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Date Added</th>
+                  <th scope="col" style={{ width: 48 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -360,7 +360,7 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
                       </td>
                       <td className="px-4 py-2.5 text-[13px] text-[#475569]">{j.companyName}</td>
                       <td className="px-4 py-2.5 text-[13px] text-[#475569]">{j.jobType}</td>
-                      <td className="px-4 py-2.5 text-[13px] text-[#475569]">{formatSalary(j)}</td>
+                      <td className="px-4 py-2.5 text-[13px] text-[#475569] tabular-nums">{formatSalary(j)}</td>
                       <td className="px-4 py-2.5">
                         <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_STYLE[j.status]}`}>
                           {j.status}
@@ -371,7 +371,7 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
                           {label ? (
                             <div className="flex items-center gap-2">
                               <div className="w-6 h-6 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
-                                <span className="text-[9px] font-bold text-[#1D4ED8]">{recruiterInitials(label)}</span>
+                                <span className="text-[10px] font-bold text-[#1D4ED8]">{recruiterInitials(label)}</span>
                               </div>
                               <span className="text-[12px] text-[#475569] truncate">{label}</span>
                             </div>
@@ -380,18 +380,18 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
                           )}
                         </td>
                       )}
-                      <td className="px-4 py-2.5 text-center">
+                      <td className="px-4 py-2.5 text-center tabular-nums">
                         {(() => {
                           const cnt = candidates.filter(c => c.attachedJobIds?.includes(j.id) && !c.isArchived).length
-                          return <span className={`text-[13px] ${cnt === 0 ? 'text-[#94A3B8]' : 'text-[#1E293B]'}`}>{cnt}</span>
+                          return <span className={`text-[13px] ${cnt === 0 ? 'text-[#64748B]' : 'text-[#1E293B]'}`}>{cnt}</span>
                         })()}
                       </td>
-                      <td className="px-4 py-2.5 text-center">
+                      <td className="px-4 py-2.5 text-center tabular-nums">
                         <span className="text-[13px] font-medium" style={{ color: days > 30 ? '#DC2626' : days > 14 ? '#F59E0B' : '#1E293B' }}>
                           {days}
                         </span>
                       </td>
-                      <td className="px-4 py-2.5 text-[12px] text-[#64748B]">{j.dateAdded}</td>
+                      <td className="px-4 py-2.5 text-[12px] text-[#64748B] tabular-nums">{j.dateAdded}</td>
                       <td className="px-4 py-2.5 text-right" onClick={e => e.stopPropagation()}>
                         <button
                           type="button"
@@ -399,7 +399,7 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
                           className="p-1 rounded hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity"
                           aria-label="More actions"
                         >
-                          <MoreHorizontal className="w-4 h-4 text-[#94A3B8]" />
+                          <MoreHorizontal className="w-4 h-4 text-[#64748B]" />
                         </button>
                       </td>
                     </tr>

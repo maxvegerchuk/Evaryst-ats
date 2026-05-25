@@ -16,7 +16,7 @@ interface Recruiter { id: string; email: string; name?: string; role: string; st
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const ICON_BTN   = 'w-[30px] h-[30px] flex items-center justify-center border-subtle rounded-[7px] bg-white hover:bg-[#F8FAFC] transition-colors flex-shrink-0'
-const INFO_LABEL = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-2'
+const INFO_LABEL = 'text-[10px] uppercase text-[#64748B] font-medium tracking-[0.05em] mb-2'
 
 type JobTab = 'candidates' | 'recruiters' | 'details' | 'documents'
 
@@ -87,9 +87,9 @@ function PillGroup<T extends string>({ options, value, onChange }: { options: re
 }
 
 const LBL = 'block text-[11px] font-medium text-[#475569] mb-1'
-const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]'
+const INP = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]'
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '7px 10px' } as const
-const SEC = 'text-[10px] uppercase text-[#94A3B8] font-medium tracking-[0.05em] mb-3'
+const SEC = 'text-[10px] uppercase text-[#64748B] font-medium tracking-[0.05em] mb-3'
 
 export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters = [], onUpdateJob, candidates = [], onUpdateCandidate }: JobPageProps) {
   const [activeTab,      setActiveTab]      = useState<JobTab>(initialTab ?? 'details')
@@ -220,7 +220,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         <div className="flex flex-col items-center justify-center py-16">
           <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
           <p className="text-[15px] font-medium text-[#1E293B] mb-1">No candidates yet</p>
-          <p className="text-[13px] text-[#94A3B8] mb-4">Add candidates to this job opening</p>
+          <p className="text-[13px] text-[#64748B] mb-4">Add candidates to this job opening</p>
           <button
             type="button"
             onClick={openCandModal}
@@ -247,9 +247,9 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
                 {['Name', 'Status', 'Rating', 'Added'].map(h => (
-                  <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                  <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
-                <th style={{ width: 48, padding: '8px 16px' }} />
+                <th scope="col" style={{ width: 48, padding: '8px 16px' }} />
               </tr>
             </thead>
             <tbody>
@@ -279,7 +279,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                           onUpdateCandidate?.(c.id, { stage: val as Candidate['stage'] })
                         }}
                         onClick={e => e.stopPropagation()}
-                        className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
+                        className="text-[11px] text-[#1E293B] bg-white rounded-[6px] cursor-pointer"
                         style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
                       >
                         {CAND_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -294,7 +294,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                           onUpdateCandidate?.(c.id, { rating: val })
                         }}
                         onClick={e => e.stopPropagation()}
-                        className="text-[11px] text-[#1E293B] bg-white rounded-[6px] focus:outline-none cursor-pointer"
+                        className="text-[11px] text-[#1E293B] bg-white rounded-[6px] cursor-pointer"
                         style={{ border: '0.5px solid #E2E8F0', padding: '3px 6px' }}
                       >
                         {CAND_RATINGS.map(r => <option key={r} value={r}>{r}</option>)}
@@ -308,7 +308,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                         className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#FEF2F2] opacity-0 group-hover:opacity-100 transition-opacity"
                         aria-label={`Remove ${c.name} from job`}
                       >
-                        <X className="w-3.5 h-3.5 text-[#94A3B8]" />
+                        <X className="w-3.5 h-3.5 text-[#64748B]" />
                       </button>
                       {confirmRemoveId === c.id && (
                         <div
@@ -370,7 +370,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                 value={candSearch}
                 onChange={e => setCandSearch(e.target.value)}
                 placeholder="Search by name or specialty..."
-                className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8]"
+                className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B]"
                 style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px' }}
                 autoFocus
               />
@@ -379,7 +379,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             {/* Body */}
             <div className="flex-1 overflow-y-auto px-5 py-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E2E8F0 transparent' }}>
               {filteredAvailable.length === 0 ? (
-                <p className="text-[13px] text-[#94A3B8] py-4 text-center">
+                <p className="text-[13px] text-[#64748B] py-4 text-center">
                   {availableCandidates.length === 0 ? 'All candidates are already added to this job.' : 'No candidates match your search.'}
                 </p>
               ) : filteredAvailable.map(c => {
@@ -403,7 +403,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                     </div>
                     <div>
                       <p className="text-[13px] font-medium text-[#1E293B] leading-none mb-0.5">{c.name}</p>
-                      {c.specialty && <p className="text-[12px] text-[#94A3B8]">{c.specialty}</p>}
+                      {c.specialty && <p className="text-[12px] text-[#64748B]">{c.specialty}</p>}
                     </div>
                     <span className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#475569] flex-shrink-0">{c.stage}</span>
                   </label>
@@ -489,7 +489,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         <div className="flex flex-col items-center justify-center py-16">
           <Users className="w-12 h-12 text-[#E2E8F0] mb-3" />
           <p className="text-[15px] font-medium text-[#1E293B] mb-1">No recruiters assigned</p>
-          <p className="text-[13px] text-[#94A3B8] mb-4">Assign recruiters who will work this job opening</p>
+          <p className="text-[13px] text-[#64748B] mb-4">Assign recruiters who will work this job opening</p>
           {isManager && availableList.length > 0 && (
             <button type="button" onClick={openModal}
               className="bg-[#2563EB] text-white rounded-[7px] px-4 py-2 text-[13px] font-medium hover:bg-[#1D4ED8] transition-colors">
@@ -513,7 +513,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
               <thead>
                 <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
                   {['Recruiter', 'Email', 'Role', ''].map(h => (
-                    <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                    <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -572,7 +572,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             {/* Body */}
             <div className="flex-1 overflow-y-auto px-5 py-3">
               {availableList.length === 0 ? (
-                <p className="text-[13px] text-[#94A3B8] py-4 text-center">All team recruiters are already assigned to this job.</p>
+                <p className="text-[13px] text-[#64748B] py-4 text-center">All team recruiters are already assigned to this job.</p>
               ) : availableList.map(r => {
                 const checked = modalSelected.has(r.id)
                 return (
@@ -593,7 +593,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                     </div>
                     <div>
                       <p className="text-[13px] font-medium text-[#1E293B] leading-none mb-0.5">{r.name || r.email}</p>
-                      {r.name && <p className="text-[12px] text-[#94A3B8]">{r.email}</p>}
+                      {r.name && <p className="text-[12px] text-[#64748B]">{r.email}</p>}
                     </div>
                   </label>
                 )
@@ -637,23 +637,23 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
               <span className="text-[12px] text-[#1E293B]">Post to careers page</span>
               <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D]">Active</span>
             </div>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mt-3 mb-2" style={{ letterSpacing: '0.05em' }}>Job Ad</p>
+            <p className="text-[10px] uppercase text-[#64748B] font-medium mt-3 mb-2" style={{ letterSpacing: '0.05em' }}>Job Ad</p>
             <textarea
               readOnly
               defaultValue={JOB_DESC_POSTING}
-              className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none focus:outline-none rounded-[7px] p-3 bg-[#F8FAFC]"
+              className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none rounded-[7px] p-3 bg-[#F8FAFC]"
               style={{ border: '0.5px solid #E2E8F0', minHeight: 180, fontFamily: 'inherit' }}
             />
           </div>
 
           {/* Card 2: Internal job description */}
           <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-1" style={{ letterSpacing: '0.05em' }}>Job Description</p>
-            <p className="text-[10px] text-[#94A3B8] italic mb-2">Used in candidate Interview Form</p>
+            <p className="text-[10px] uppercase text-[#64748B] font-medium mb-1" style={{ letterSpacing: '0.05em' }}>Job Description</p>
+            <p className="text-[10px] text-[#64748B] italic mb-2">Used in candidate Interview Form</p>
             <textarea
               readOnly
               defaultValue={JOB_DESC_INTERNAL}
-              className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none focus:outline-none rounded-[7px] p-3 bg-[#F8FAFC]"
+              className="w-full text-[12px] text-[#475569] leading-[1.6] resize-none rounded-[7px] p-3 bg-[#F8FAFC]"
               style={{ border: '0.5px solid #E2E8F0', minHeight: 200, fontFamily: 'inherit' }}
             />
           </div>
@@ -662,9 +662,9 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         {/* RIGHT: Details summary */}
         <div>
           <div className="bg-white rounded-[10px] p-4" style={{ border: '0.5px solid #E2E8F0' }}>
-            <p className="text-[10px] uppercase text-[#94A3B8] font-medium mb-3" style={{ letterSpacing: '0.05em' }}>Details</p>
+            <p className="text-[10px] uppercase text-[#64748B] font-medium mb-3" style={{ letterSpacing: '0.05em' }}>Details</p>
             <div className="flex items-baseline gap-2">
-              <span className="text-[10px] text-[#94A3B8] min-w-[72px] flex-shrink-0">Job ID</span>
+              <span className="text-[10px] text-[#64748B] min-w-[72px] flex-shrink-0">Job ID</span>
               <span className="text-[12px] text-[#1E293B]">{job?.internalId?.trim() || '—'}</span>
             </div>
           </div>
@@ -693,20 +693,20 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
       </div>
       {DOCS.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
-          <p className="text-[13px] text-[#94A3B8]">No documents yet.</p>
+          <p className="text-[13px] text-[#64748B]">No documents yet.</p>
         </div>
       ) : (
         <div className="bg-white rounded-[10px] overflow-hidden" style={{ border: '0.5px solid #E2E8F0' }}>
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
-                <th style={{ width: 32, padding: '8px 16px' }} className="text-left">
+                <th scope="col" style={{ width: 32, padding: '8px 16px' }} className="text-left">
                   <input type="checkbox" className="w-3.5 h-3.5 accent-[#2563EB]" />
                 </th>
                 {['Document name', 'Document type', 'Date'].map(h => (
-                  <th key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
+                  <th scope="col" key={h} className="text-left text-[10px] uppercase text-[#64748B] font-medium" style={{ padding: '8px 16px', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
-                <th style={{ width: 64, padding: '8px 16px' }} />
+                <th scope="col" style={{ width: 64, padding: '8px 16px' }} />
               </tr>
             </thead>
             <tbody>
@@ -755,14 +755,14 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             <ChevronLeft size={13} />
             Jobs
           </button>
-          <span className="text-[12px] text-[#94A3B8]">›</span>
+          <span className="text-[12px] text-[#64748B]">›</span>
           <span className="text-[12px] text-[#64748B]">{job?.title ?? '—'}</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <button className="flex items-center gap-0.5 px-2 py-1 text-[11px] text-[#64748B] rounded-md hover:bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0' }}>
             <ChevronLeft size={11} /> Prev
           </button>
-          <span className="text-[11px] text-[#94A3B8]">1 / 12</span>
+          <span className="text-[11px] text-[#64748B]">1 / 12</span>
           <button className="flex items-center gap-0.5 px-2 py-1 text-[11px] text-[#64748B] rounded-md hover:bg-[#F8FAFC]" style={{ border: '0.5px solid #E2E8F0' }}>
             Next <ChevronRight size={11} />
           </button>
@@ -811,7 +811,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             <p className={INFO_LABEL}>Job Details</p>
             <div className="flex flex-col gap-[3px]">
               <div className="flex items-baseline gap-[5px]">
-                <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">Client</span>
+                <span className="text-[10px] text-[#64748B] min-w-[56px] flex-shrink-0">Client</span>
                 <button onClick={() => setCurrentPage('company')} className="text-[12px] text-[#2563EB] hover:underline text-left">
                   {job?.companyName ?? '—'}
                 </button>
@@ -822,7 +822,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                 ['Client Req.', job?.clientReqNumber && job.clientReqNumber.trim() !== '' ? job.clientReqNumber : '—'],
               ] as [string, string][]).map(([label, value]) => (
                 <div key={label} className="flex items-baseline gap-[5px]">
-                  <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">{label}</span>
+                  <span className="text-[10px] text-[#64748B] min-w-[56px] flex-shrink-0">{label}</span>
                   <span className="text-[12px] text-[#1E293B]">{value}</span>
                 </div>
               ))}
@@ -839,7 +839,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
                 ['Posted',   job?.dateAdded ?? '—'],
               ] as [string, string][]).map(([label, value]) => (
                 <div key={label} className="flex items-baseline gap-[5px]">
-                  <span className="text-[10px] text-[#94A3B8] min-w-[56px] flex-shrink-0">{label}</span>
+                  <span className="text-[10px] text-[#64748B] min-w-[56px] flex-shrink-0">{label}</span>
                   <span className="text-[12px] text-[#1E293B]">{value}</span>
                 </div>
               ))}
@@ -858,7 +858,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <div className="px-6 flex flex-col">
             <p className={INFO_LABEL}>Notes</p>
             <textarea
-              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none focus:outline-none placeholder-[#94A3B8] bg-transparent"
+              className="flex-1 w-full min-h-[60px] text-[12px] text-[#1E293B] leading-[1.5] resize-none placeholder-[#64748B] bg-transparent"
               style={{ fontFamily: 'inherit', border: 'none' }}
               placeholder="Quick notes about this job..."
               defaultValue="Client needs someone with 3+ years .NET experience. Prefers local candidates but open to remote."
@@ -924,7 +924,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
             <div className="flex items-center gap-2">
               <span className="text-[12px] text-[#64748B]">$</span>
               <input value={editSalaryMin} onChange={e => setEditSalaryMin(e.target.value)} placeholder="50,000" className={INP} style={{ ...INP_ST, width: 100 }} />
-              <span className="text-[12px] text-[#94A3B8]">–</span>
+              <span className="text-[12px] text-[#64748B]">–</span>
               <span className="text-[12px] text-[#64748B]">$</span>
               <input value={editSalaryMax} onChange={e => setEditSalaryMax(e.target.value)} placeholder="75,000" className={INP} style={{ ...INP_ST, width: 100 }} />
               <div className="flex gap-1 ml-1">
@@ -944,7 +944,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
           <div>
             <label className={LBL}>Job description</label>
             <textarea value={editDescription} onChange={e => setEditDescription(e.target.value)} rows={4}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] resize-none"
               style={{ border: '0.5px solid #E2E8F0', padding: '7px 10px', minHeight: 80 }} />
           </div>
 

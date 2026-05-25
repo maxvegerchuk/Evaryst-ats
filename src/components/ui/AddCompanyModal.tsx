@@ -20,7 +20,7 @@ const INDUSTRIES = [
 ]
 
 const LBL    = 'block text-[12px] font-medium text-[#475569] mb-1'
-const INP    = 'w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] focus:border-[#2563EB] transition-colors'
+const INP    = 'w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] focus:border-[#2563EB] transition-colors'
 const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' }
 
 // ── State combobox ─────────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ export function AddCompanyModal({ isOpen, onClose, onSave, currentUser }: AddCom
           <div>
             <label className={LBL}>Industry *</label>
             <select value={industry} onChange={e => setIndustry(e.target.value)}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white cursor-pointer"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white cursor-pointer"
               style={INP_ST}>
               <option value="">Select industry</option>
               {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
@@ -167,7 +167,7 @@ export function AddCompanyModal({ isOpen, onClose, onSave, currentUser }: AddCom
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="Notes about this company..."
               rows={3}
-              className="w-full text-[12px] text-[#1E293B] rounded-[7px] focus:outline-none bg-white placeholder:text-[#94A3B8] resize-none"
+              className="w-full text-[12px] text-[#1E293B] rounded-[7px] bg-white placeholder:text-[#64748B] resize-none"
               style={{ border: '0.5px solid #E2E8F0', padding: '8px 12px', minHeight: 60 }}
             />
           </div>

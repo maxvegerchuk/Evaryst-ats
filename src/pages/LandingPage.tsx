@@ -42,18 +42,6 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
 
   const restFeatures = FEATURES.slice(1)
 
-  // ── shared style helpers ────────────────────────────────────────────────────
-
-  const hoverCard = (el: HTMLDivElement, enter: boolean) => {
-    el.style.transform   = enter ? 'translateY(-3px)' : 'translateY(0)'
-    el.style.boxShadow   = enter ? '0 8px 24px rgba(0,0,0,0.08)' : 'none'
-  }
-
-  const hoverPriceCard = (el: HTMLDivElement, enter: boolean, isPopular = false) => {
-    el.style.transform = enter ? 'scale(1.01)' : 'scale(1)'
-    if (!isPopular) el.style.boxShadow = enter ? '0 4px 16px rgba(0,0,0,0.06)' : 'none'
-  }
-
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }}>
 
@@ -89,10 +77,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="bg-transparent border-none cursor-pointer transition-colors duration-200"
+              className={`bg-transparent border-none cursor-pointer transition-colors duration-200 ${isScrolled ? 'hover:text-[#1E293B]' : 'hover:text-white'}`}
               style={{ fontSize: 13, color: isScrolled ? '#475569' : '#94A3B8' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = isScrolled ? '#1E293B' : 'white' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = isScrolled ? '#475569' : '#94A3B8' }}
             >
               {label}
             </button>
@@ -194,24 +180,19 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             <div className="flex gap-3 items-center">
               <button
                 onClick={() => scrollTo('pricing')}
-                className="font-medium text-white rounded-[8px] transition-colors"
+                className="font-medium text-white rounded-[8px] hover:bg-[#1D4ED8] transition-colors"
                 style={{ fontSize: 14, padding: '11px 22px', background: '#2563EB' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1D4ED8' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#2563EB' }}
               >
                 Request access
               </button>
               <button
                 onClick={() => scrollTo('features')}
-                className="rounded-[8px] transition-colors"
+                className="rounded-[8px] text-white hover:bg-white/[.12] transition-colors"
                 style={{
                   fontSize: 14, padding: '11px 22px',
-                  color: 'white',
                   background: 'rgba(255,255,255,0.08)',
                   border: '1px solid rgba(255,255,255,0.15)',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.12)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)' }}
               >
                 See it in action
               </button>
@@ -221,27 +202,33 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
               No credit card required · Setup in minutes
             </p>
 
-            {/* Stats row */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              borderTop: '1px solid rgba(255,255,255,0.08)',
-              paddingTop: 24,
-              marginTop: 32,
-            }}>
-              {[
-                { number: '3×',   label: 'Faster placements' },
-                { number: '40%',  label: 'Less admin time' },
-                { number: '100%', label: 'Pipeline visibility' },
-              ].map((stat, i) => (
-                <div key={stat.label} style={{ display: 'flex', alignItems: 'stretch' }}>
-                  {i > 0 && <div style={{ width: 1, background: 'rgba(255,255,255,0.12)', margin: '0 24px' }} />}
-                  <div>
-                    <p style={{ fontSize: 20, fontWeight: 600, color: 'white', margin: 0 }}>{stat.number}</p>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{stat.label}</p>
-                  </div>
-                </div>
-              ))}
+            {/* Capability tags */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24, marginTop: 32 }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 10, letterSpacing: '0.06em', textTransform: 'uppercase' }}>What you get</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  'Candidate pipeline',
+                  'Outreach tracking',
+                  'Team analytics',
+                  'Job management',
+                  'Client database',
+                  'Boolean search',
+                ].map(tag => (
+                  <span
+                    key={tag}
+                    style={{
+                      fontSize: 11,
+                      color: 'rgba(255,255,255,0.65)',
+                      background: 'rgba(255,255,255,0.07)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 5,
+                      padding: '4px 10px',
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -428,10 +415,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             {restFeatures.map(({ icon: Icon, iconBg, iconClr, title, desc }) => (
               <div
                 key={title}
-                className="rounded-[12px] p-5 bg-white cursor-default"
-                style={{ border: '0.5px solid #E2E8F0', transition: 'transform 200ms, box-shadow 200ms' }}
-                onMouseEnter={e => hoverCard(e.currentTarget as HTMLDivElement, true)}
-                onMouseLeave={e => hoverCard(e.currentTarget as HTMLDivElement, false)}
+                className="rounded-[12px] p-5 bg-white cursor-default hover:-translate-y-[3px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-200"
+                style={{ border: '0.5px solid #E2E8F0' }}
               >
                 <div
                   className="flex items-center justify-center rounded-[8px] mb-3"
@@ -536,10 +521,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {/* Starter */}
             <div
-              className="rounded-[12px] p-6 bg-white"
-              style={{ border: '0.5px solid #E2E8F0', transition: 'transform 200ms, box-shadow 200ms' }}
-              onMouseEnter={e => hoverPriceCard(e.currentTarget as HTMLDivElement, true)}
-              onMouseLeave={e => hoverPriceCard(e.currentTarget as HTMLDivElement, false)}
+              className="rounded-[12px] p-6 bg-white hover:scale-[1.01] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-[transform,box-shadow] duration-200"
+              style={{ border: '0.5px solid #E2E8F0' }}
             >
               <p className="font-semibold mb-1" style={{ fontSize: 15, color: '#1E293B' }}>Starter</p>
               <p className="mb-4" style={{ fontSize: 12, color: '#64748B' }}>For solo recruiters getting started</p>
@@ -562,13 +545,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
 
             {/* Team — popular */}
             <div
-              className="rounded-[12px] p-6 bg-white"
-              style={{
-                boxShadow: '0 0 0 2px #2563EB, 0 8px 32px rgba(37,99,235,0.15)',
-                transition: 'transform 200ms',
-              }}
-              onMouseEnter={e => hoverPriceCard(e.currentTarget as HTMLDivElement, true, true)}
-              onMouseLeave={e => hoverPriceCard(e.currentTarget as HTMLDivElement, false, true)}
+              className="rounded-[12px] p-6 bg-white hover:scale-[1.01] transition-transform duration-200"
+              style={{ boxShadow: '0 0 0 2px #2563EB, 0 8px 32px rgba(37,99,235,0.15)' }}
             >
               <span className="inline-block rounded-full px-3 py-1 mb-3" style={{ fontSize: 11, background: '#EFF6FF', color: '#1D4ED8' }}>
                 Most popular
@@ -594,10 +572,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
 
             {/* Enterprise */}
             <div
-              className="rounded-[12px] p-6 bg-white"
-              style={{ border: '0.5px solid #E2E8F0', transition: 'transform 200ms, box-shadow 200ms' }}
-              onMouseEnter={e => hoverPriceCard(e.currentTarget as HTMLDivElement, true)}
-              onMouseLeave={e => hoverPriceCard(e.currentTarget as HTMLDivElement, false)}
+              className="rounded-[12px] p-6 bg-white hover:scale-[1.01] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-[transform,box-shadow] duration-200"
+              style={{ border: '0.5px solid #E2E8F0' }}
             >
               <p className="font-semibold mb-1" style={{ fontSize: 15, color: '#1E293B' }}>Enterprise</p>
               <p className="mb-4" style={{ fontSize: 12, color: '#64748B' }}>For large staffing organisations</p>
@@ -643,18 +619,14 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           <div className="flex justify-center gap-3">
             <button
               onClick={() => scrollTo('pricing')}
-              className="font-medium text-white rounded-[8px] transition-colors"
+              className="font-medium text-white rounded-[8px] hover:bg-[#1D4ED8] transition-colors"
               style={{ fontSize: 14, padding: '12px 26px', background: '#2563EB' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1D4ED8' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#2563EB' }}
             >
               Request access
             </button>
             <button
-              className="rounded-[8px] text-white transition-colors"
-              style={{ fontSize: 14, padding: '12px 26px', border: '1px solid rgba(255,255,255,0.2)', background: 'transparent' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
+              className="rounded-[8px] text-white hover:bg-white/[.06] transition-colors"
+              style={{ fontSize: 14, padding: '12px 26px', border: '1px solid rgba(255,255,255,0.2)' }}
             >
               Talk to us
             </button>

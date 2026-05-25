@@ -122,7 +122,7 @@ function TimelineCard({ ev }: { ev: SchedEvent }) {
           }
         </div>
         <span
-          className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full whitespace-nowrap ${
+          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full whitespace-nowrap ${
             isPhone ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'
           }`}
         >

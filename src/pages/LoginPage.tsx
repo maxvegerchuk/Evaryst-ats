@@ -25,7 +25,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     setLoginError('Invalid email or password')
   }
 
-  const inputCls = 'w-full border-subtle rounded-[8px] px-3 py-2.5 text-[13px] text-[#1E293B] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#EFF6FF]'
+  const inputCls = 'w-full border-subtle rounded-[8px] px-3 py-2.5 text-[13px] text-[#1E293B] focus:border-[#2563EB] focus:ring-2 focus:ring-[#EFF6FF]'
 
   return (
     <div className="flex h-screen overflow-hidden">

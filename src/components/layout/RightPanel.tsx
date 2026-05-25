@@ -198,7 +198,7 @@ function TimelineCard({ evt }: { evt: TLEvent }) {
         )}
 
         {/* Platform */}
-        <div className="flex items-center gap-1 text-[11px] text-[#94A3B8]">
+        <div className="flex items-center gap-1 text-[11px] text-[#64748B]">
           <span>{evt.platform}</span>
           <ExternalLink className="w-3 h-3 shrink-0" aria-hidden="true" />
         </div>
@@ -307,19 +307,19 @@ export function RightPanel() {
         <div className="overflow-y-auto" style={{ maxHeight: 220 }}>
           {tab === 'calls' ? (
             <>
-              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#94A3B8] uppercase tracking-[0.08em]">Clients</div>
+              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.08em]">Clients</div>
               {sharedClients.map(c => <EntryRow key={c.id} entry={c} selected={selected} toggle={toggle} />)}
-              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#94A3B8] uppercase tracking-[0.08em]">Candidates</div>
+              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.08em]">Candidates</div>
               {callsCandidates.map(c => <EntryRow key={c.id} entry={c} selected={selected} toggle={toggle} />)}
             </>
           ) : (
             <>
-              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#94A3B8] uppercase tracking-[0.08em]">Clients</div>
+              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.08em]">Clients</div>
               {sharedClients.map(c => <EntryRow key={c.id} entry={c} selected={selected} toggle={toggle} />)}
-              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#94A3B8] uppercase tracking-[0.08em]">Candidates</div>
+              <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.08em]">Candidates</div>
               {meetingCandRows.map((row, i) => {
                 if (row.kind === 'employer') {
-                  return <div key={i} className="px-3 pt-2.5 pb-0.5 text-[9px] font-semibold text-slate-400 uppercase tracking-[0.1em]">{row.label}</div>
+                  return <div key={i} className="px-3 pt-2.5 pb-0.5 text-[10px] font-semibold text-slate-400 uppercase tracking-[0.1em]">{row.label}</div>
                 }
                 if (row.kind === 'jobTitle') {
                   return <div key={i} className="px-3 py-[5px] text-[12px] font-medium text-[#1E293B]">{row.name}</div>
@@ -354,7 +354,7 @@ export function RightPanel() {
         {/* Header */}
         <div className="flex items-center justify-between px-3 pt-3 pb-2">
           <span className="text-[12px] font-medium text-[#1E293B]">Schedule</span>
-          <span className="text-[11px] text-[#94A3B8]">{todayLabel}</span>
+          <span className="text-[11px] text-[#64748B]">{todayLabel}</span>
         </div>
 
         {/* Week strip */}
@@ -372,7 +372,7 @@ export function RightPanel() {
                   isSel ? 'bg-[#EFF6FF]' : 'hover:bg-slate-50'
                 }`}
               >
-                <span className={`text-[10px] leading-none mb-0.5 ${isTod ? 'text-[#2563EB] font-medium' : 'text-[#94A3B8]'}`}>
+                <span className={`text-[10px] leading-none mb-0.5 ${isTod ? 'text-[#2563EB] font-medium' : 'text-[#64748B]'}`}>
                   {STRIP_ABBR[i]}
                 </span>
                 <span className={`text-[12px] font-medium leading-none ${isSel || isTod ? 'text-[#2563EB]' : 'text-[#1E293B]'}`}>
@@ -394,7 +394,7 @@ export function RightPanel() {
             tlEvents.map(evt => <TimelineCard key={evt.id} evt={evt} />)
           ) : (
             <div className="flex flex-col items-center justify-center py-10 gap-2">
-              <span className="text-[13px] text-[#94A3B8]">No events scheduled</span>
+              <span className="text-[13px] text-[#64748B]">No events scheduled</span>
             </div>
           )}
         </div>
@@ -417,12 +417,12 @@ export function RightPanel() {
           <table className="w-full">
             <thead className="sticky top-0 bg-white">
               <tr className="border-b border-[#E2E8F0]">
-                <th className="text-left pl-3 pr-1 py-1.5 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.06em]"      title="Client">Client</th>
-                <th className="text-left px-1 py-1.5 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.06em]"           title="Position">Pos</th>
-                <th className="text-center px-1 py-1.5 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.06em] w-8"     title="Days open">Days</th>
-                <th className="text-center px-1 py-1.5 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.06em] w-7"     title="Submitted">Sub</th>
-                <th className="text-center px-1 py-1.5 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.06em] w-7"     title="Interviews">Int</th>
-                <th className="text-center pr-3 pl-1 py-1.5 text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.06em] w-9" title="Active candidates">Act</th>
+                <th scope="col" className="text-left pl-3 pr-1 py-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-[0.06em]"      title="Client">Client</th>
+                <th scope="col" className="text-left px-1 py-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-[0.06em]"           title="Position">Pos</th>
+                <th scope="col" className="text-center px-1 py-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-[0.06em] w-8"     title="Days open">Days</th>
+                <th scope="col" className="text-center px-1 py-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-[0.06em] w-7"     title="Submitted">Sub</th>
+                <th scope="col" className="text-center px-1 py-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-[0.06em] w-7"     title="Interviews">Int</th>
+                <th scope="col" className="text-center pr-3 pl-1 py-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-[0.06em] w-9" title="Active candidates">Act</th>
               </tr>
             </thead>
             <tbody>

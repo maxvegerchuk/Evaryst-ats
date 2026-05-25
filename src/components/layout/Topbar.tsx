@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Search, Bell, ChevronDown, Phone, Video, Settings, LogOut, UserPlus } from 'lucide-react'
+import { Search, Bell, ChevronDown, Phone, Video, Settings, LogOut, UserPlus, Menu, X as XIcon } from 'lucide-react'
 import type { EventStatus } from './SchedulePanel'
 import { EVENTS } from './SchedulePanel'
 import type { User } from '../../types/auth'
@@ -36,6 +36,7 @@ interface TopbarProps {
 export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventStatuses, onSetStatus, currentUser, onLogout, onAddCandidate, onSearch, isManager }: TopbarProps) {
   const [showNotifPanel, setShowNotifPanel] = useState(false)
   const [showUserMenu,   setShowUserMenu]   = useState(false)
+  const [showMobileNav,  setShowMobileNav]  = useState(false)
   const [searchQuery,    setSearchQuery]    = useState('')
 
   const bellRef   = useRef<HTMLDivElement>(null)
@@ -46,11 +47,25 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
 
   const needsUpdateEvents = EVENTS.filter(ev => (eventStatuses[ev.id] ?? 'upcoming') === 'needs-update')
 
+  const visibleLinks = NAV_LINKS.filter(l => !l.managerOnly || isManager)
+
   return (
+    <>
     <header
       className="shrink-0 bg-white border-b border-[#E2E8F0] flex items-center px-5 gap-4 h-[60px]"
       aria-label="Top navigation"
     >
+      {/* Mobile hamburger */}
+      <button
+        type="button"
+        className="md:hidden p-1.5 rounded-[7px] hover:bg-[#F8FAFC] transition-colors"
+        aria-label={showMobileNav ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={showMobileNav}
+        onClick={() => setShowMobileNav(v => !v)}
+      >
+        {showMobileNav ? <XIcon className="w-5 h-5 text-[#475569]" /> : <Menu className="w-5 h-5 text-[#475569]" />}
+      </button>
+
       {/* Logo */}
       <div className="flex items-center gap-2.5 shrink-0">
         <div className="w-7 h-7 bg-[#2563EB] rounded-[7px] flex items-center justify-center shadow-sm">
@@ -59,9 +74,9 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
         <span className="text-[14px] font-semibold text-[#1E293B] uppercase tracking-[0.02em]">Evaryst</span>
       </div>
 
-      {/* Nav links */}
-      <nav className="flex items-center gap-1 ml-6" aria-label="Main navigation">
-        {NAV_LINKS.filter(l => !l.managerOnly || isManager).map(({ label, page }) => {
+      {/* Nav links — desktop */}
+      <nav className="hidden md:flex items-center gap-1 ml-6" aria-label="Main navigation">
+        {visibleLinks.map(({ label, page }) => {
           const isActive = currentPage === page || (page === 'people' && currentPage === 'candidates') || (page === 'companies' && currentPage === 'company') || (page === 'jobs' && currentPage === 'job')
           return (
             <button
@@ -84,7 +99,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
 
       {/* Search */}
       <div className="relative hidden sm:block">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" aria-hidden="true" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#64748B]" aria-hidden="true" />
         <input
           type="search"
           value={searchQuery}
@@ -97,7 +112,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
           }}
           placeholder="Search candidates, jobs..."
           aria-label="Search candidates and jobs"
-          className="pl-9 pr-4 text-[12px] bg-white rounded-[7px] text-[#1E293B] placeholder:text-[#94A3B8] outline-none w-60"
+          className="pl-9 pr-4 text-[12px] bg-white rounded-[7px] text-[#1E293B] placeholder:text-[#64748B] outline-none w-60"
           style={{ border: '0.5px solid #E2E8F0', paddingTop: 6, paddingBottom: 6 }}
         />
       </div>
@@ -163,7 +178,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
 
             {/* Event list */}
             {needsUpdateEvents.length === 0 ? (
-              <p className="text-[12px] text-[#94A3B8] text-center py-6">All caught up!</p>
+              <p className="text-[12px] text-[#64748B] text-center py-6">All caught up!</p>
             ) : (
               <div>
                 {needsUpdateEvents.slice(0, 5).map(ev => (
@@ -176,7 +191,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[12px] font-medium text-[#1E293B] truncate">{ev.name}</p>
-                      <p className="text-[10px] text-[#94A3B8]">{ev.time}</p>
+                      <p className="text-[10px] text-[#64748B]">{ev.time}</p>
                     </div>
                     <div className="flex items-center gap-0.5 shrink-0">
                       <button type="button" onClick={() => onSetStatus(ev.id, 'completed')}
@@ -218,7 +233,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
           <div className="w-8 h-8 rounded-full bg-[#DBEAFE] flex items-center justify-center shrink-0">
             <span className="text-[11px] font-bold text-[#1D4ED8] leading-none">{currentUser.initials}</span>
           </div>
-          <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8]" aria-hidden="true" />
+          <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" aria-hidden="true" />
         </button>
 
         {showUserMenu && (
@@ -226,7 +241,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
             <div className="px-4 py-3" style={{ borderBottom: '0.5px solid #F1F5F9' }}>
               <p className="text-[13px] font-medium text-[#1E293B]">{currentUser.name}</p>
               <p className="text-[11px] text-[#64748B]">{ROLE_LABELS[currentUser.role] ?? currentUser.role}</p>
-              <p className="text-[10px] text-[#94A3B8]">{currentUser.company}</p>
+              <p className="text-[10px] text-[#64748B]">{currentUser.company}</p>
             </div>
             <button
               type="button"
@@ -249,5 +264,32 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
         )}
       </div>
     </header>
+
+    {/* Mobile nav drawer */}
+    {showMobileNav && (
+      <nav
+        className="md:hidden bg-white border-b border-[#E2E8F0] px-4 py-2 flex flex-col gap-0.5"
+        aria-label="Mobile navigation"
+      >
+        {visibleLinks.map(({ label, page }) => {
+          const isActive = currentPage === page || (page === 'people' && currentPage === 'candidates') || (page === 'companies' && currentPage === 'company') || (page === 'jobs' && currentPage === 'job')
+          return (
+            <button
+              key={page}
+              onClick={() => { setCurrentPage(page); setShowMobileNav(false) }}
+              aria-current={isActive ? 'page' : undefined}
+              className={`text-[13px] px-3 py-2.5 rounded-[7px] transition-colors text-left ${
+                isActive
+                  ? 'bg-[#EFF6FF] text-[#2563EB] font-medium'
+                  : 'text-[#475569] hover:bg-[#F8FAFC]'
+              }`}
+            >
+              {label}
+            </button>
+          )
+        })}
+      </nav>
+    )}
+    </>
   )
 }
