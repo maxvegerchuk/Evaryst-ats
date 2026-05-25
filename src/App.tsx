@@ -668,7 +668,6 @@ function App() {
                 onAddScheduleEvent={addScheduleEvent}
                 isNewUser={isNewUser}
                 candidates={candidates}
-                jobs={jobs}
                 onNavigateToCandidates={navigateToMultipleCandidates}
                 isManager={isManager}
                 currentUser={currentUser}
