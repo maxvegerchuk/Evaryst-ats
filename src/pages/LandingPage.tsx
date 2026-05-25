@@ -76,8 +76,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             <span className="font-semibold text-white" style={{ fontSize: 13 }}>E</span>
           </div>
           <span
-            className="ml-2 font-medium transition-colors duration-300"
-            style={{ fontSize: 15, color: isScrolled ? '#1E293B' : 'white' }}
+            className="ml-2 transition-colors duration-300"
+            style={{ fontSize: 15, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em', color: isScrolled ? '#1E293B' : 'white' }}
           >
             Evaryst
           </span>
@@ -676,7 +676,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             >
               <span className="font-semibold text-white" style={{ fontSize: 13 }}>E</span>
             </div>
-            <span className="ml-2 font-medium text-white" style={{ fontSize: 15 }}>Evaryst</span>
+            <span className="ml-2 text-white" style={{ fontSize: 15, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Evaryst</span>
           </div>
           <div className="flex gap-5">
             {['Privacy', 'Terms', 'Contact'].map(link => (

@@ -67,14 +67,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#fff', fontSize: '15px', fontWeight: '600',
           }}>E</div>
-          <span style={{ color: '#fff', fontSize: '16px', fontWeight: '500' }}>Evaryst</span>
+          <span style={{ color: '#fff', fontSize: '16px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Evaryst</span>
         </div>
 
         {/* Center content */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 48px' }}>
-          <p style={{ fontSize: '44px', fontWeight: 300, fontFamily: '"Fraunces", serif', color: '#ffffff',              lineHeight: 1.2, margin: '0 0 8px' }}>Hire smarter.</p>
-          <p style={{ fontSize: '44px', fontWeight: 300, fontFamily: '"Fraunces", serif', color: 'rgba(255,255,255,0.7)', lineHeight: 1.2, margin: '0 0 8px' }}>Track better.</p>
-          <p style={{ fontSize: '44px', fontWeight: 300, fontFamily: '"Fraunces", serif', fontStyle: 'italic', color: '#2a6fdb', lineHeight: 1.2, margin: '0 0 40px' }}>Place faster.</p>
+          <p style={{ fontSize: '44px', fontWeight: 600, fontFamily: '"Fraunces", serif', color: '#ffffff',              lineHeight: 1.15, margin: '0 0 8px' }}>Hire smarter.</p>
+          <p style={{ fontSize: '44px', fontWeight: 600, fontFamily: '"Fraunces", serif', color: 'rgba(255,255,255,0.7)', lineHeight: 1.15, margin: '0 0 8px' }}>Track better.</p>
+          <p style={{ fontSize: '44px', fontWeight: 600, fontFamily: '"Fraunces", serif', fontStyle: 'italic', color: '#2a6fdb', lineHeight: 1.15, margin: '0 0 40px' }}>Place faster.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {['Full candidate pipeline management', 'Smart outreach & scheduling tools', 'Real-time recruiting analytics'].map(text => (

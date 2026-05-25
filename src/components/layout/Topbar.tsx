@@ -56,7 +56,7 @@ export function Topbar({ currentPage, setCurrentPage, needsUpdateCount, eventSta
         <div className="w-7 h-7 bg-[#2563EB] rounded-[7px] flex items-center justify-center shadow-sm">
           <span className="text-[13px] font-bold text-white leading-none">E</span>
         </div>
-        <span className="text-[14px] font-medium text-[#1E293B]">Evaryst</span>
+        <span className="text-[14px] font-semibold text-[#1E293B] uppercase tracking-[0.02em]">Evaryst</span>
       </div>
 
       {/* Nav links */}
