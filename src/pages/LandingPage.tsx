@@ -161,13 +161,12 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
         }} />
 
         <div
-          className="relative mx-auto"
+          className="relative mx-auto grid grid-cols-1 lg:grid-cols-2"
           style={{
             maxWidth: 1200,
             padding: '0 40px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '0 48px',
+            columnGap: 48,
+            rowGap: 40,
             alignItems: 'stretch',
           }}
         >
@@ -311,7 +310,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           }}
         >
           {/* KPI cards */}
-          <div className="grid grid-cols-4 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
             {[
               { label: 'Placements',        value: 12, trend: '+3 vs last month',  trendClr: '#4ADE80' },
               { label: 'Active candidates', value: 84, trend: '+12 this week',     trendClr: '#4ADE80' },
@@ -389,7 +388,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
 
           {/* Highlight feature */}
           <div
-            className="grid grid-cols-2 gap-12 items-center rounded-[16px] p-8 mb-6"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center rounded-[16px] p-8 mb-6"
             style={{ background: '#F8FAFC', border: '0.5px solid #E2E8F0' }}
           >
             <div>
@@ -425,7 +424,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
           </div>
 
           {/* Remaining feature cards */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {restFeatures.map(({ icon: Icon, iconBg, iconClr, title, desc }) => (
               <div
                 key={title}
@@ -466,7 +465,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
               borderTop: '1px dashed rgba(37,99,235,0.35)',
               zIndex: 0,
             }} />
-            <div className="grid grid-cols-3 gap-6" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6" style={{ position: 'relative', zIndex: 1 }}>
               {[
                 { n: 1, title: 'Add candidates',    desc: 'Import or manually add candidates to your pipeline. Attach resumes, notes, and qualification data.' },
                 { n: 2, title: 'Work the pipeline', desc: 'Track every call, schedule follow-ups, and move candidates through stages. Your whole team stays in sync.' },
@@ -534,7 +533,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             </button>
           </div>
 
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {/* Starter */}
             <div
               className="rounded-[12px] p-6 bg-white"

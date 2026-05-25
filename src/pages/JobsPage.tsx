@@ -312,21 +312,22 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
         <>
           {/* Table */}
           <div className="bg-white border-subtle rounded-[10px] overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
                   <th style={{ width: 40 }}  className="px-4 py-2.5 text-left">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} className="w-3.5 h-3.5 accent-[#2563EB]" aria-label="Select all" />
                   </th>
-                  <th style={{ width: isManager ? 190 : 200 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
-                  <th style={{ width: isManager ? 160 : 190 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
-                  <th style={{ width: isManager ? 130 : 150 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Type</th>
-                  <th style={{ width: isManager ? 130 : 140 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Salary</th>
-                  <th style={{ width: isManager ? 100 : 110 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  {isManager && <th style={{ width: 150 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>}
-                  <th style={{ width: isManager ? 85 : 90 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Candidates</th>
-                  <th style={{ width: isManager ? 90 : 100 }} className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Days Open</th>
-                  <th style={{ width: isManager ? 110 : 120 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Date Added</th>
+                  <th style={{ width: isManager ? 155 : 160 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
+                  <th style={{ width: isManager ? 140 : 155 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
+                  <th style={{ width: isManager ? 110 : 120 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Job Type</th>
+                  <th style={{ width: isManager ? 105 : 115 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Salary</th>
+                  <th style={{ width: isManager ? 82 : 90 }}  className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  {isManager && <th style={{ width: 115 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>}
+                  <th style={{ width: isManager ? 74 : 80 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Candidates</th>
+                  <th style={{ width: isManager ? 78 : 85 }}  className="px-4 py-2.5 text-center text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Days Open</th>
+                  <th style={{ width: isManager ? 95 : 105 }} className="px-4 py-2.5 text-left text-[10px] font-medium text-[#64748B] uppercase tracking-wide">Date Added</th>
                   <th style={{ width: 48 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
@@ -406,6 +407,7 @@ export function JobsPage({ onNavigateToJob, isManager, jobs, companies, onAddJob
                 })}
               </tbody>
             </table>
+            </div>
           </div>
         </>
       )}

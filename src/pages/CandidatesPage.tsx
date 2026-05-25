@@ -365,24 +365,25 @@ export function CandidatesPage({
 
           {/* Table */}
           <div className="bg-white border-subtle rounded-[10px] overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
                   <th style={{ width: 40 }} className="px-4 py-2.5 text-left">
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} className="w-3.5 h-3.5 accent-[#2563EB]" aria-label="Select all" />
                   </th>
-                  <th style={{ width: 200 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
-                  <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
-                  <th style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
-                  <th style={{ width: 80 }}  className="px-4 py-2.5 text-center text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Jobs</th>
-                  <th style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Work Type</th>
-                  <th style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
+                  <th style={{ width: 170 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
+                  <th style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Job Title</th>
+                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Location</th>
+                  <th style={{ width: 70 }}  className="px-4 py-2.5 text-center text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Jobs</th>
+                  <th style={{ width: 90 }}  className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Work Type</th>
+                  <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  <th style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
                   {isManager && (
-                    <th style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>
+                    <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Recruiter</th>
                   )}
                   <th style={{ width: 36 }}  className="px-2 py-2.5" />
-                  <th style={{ width: 48 }}  className="px-4 py-2.5" />
+                  <th style={{ width: 40 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -476,6 +477,7 @@ export function CandidatesPage({
                 })}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Pagination */}
@@ -723,6 +725,7 @@ export function CandidatesPage({
 
           {/* Table */}
           <div className="bg-white border-subtle rounded-[10px] overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
@@ -731,13 +734,13 @@ export function CandidatesPage({
                       onChange={() => setContactSelected(allContactsSelected ? new Set() : new Set(filteredContacts.map(c => c.id)))}
                       className="w-3.5 h-3.5 accent-[#2563EB]" />
                   </th>
-                  <th style={{ width: 180 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
-                  <th style={{ width: 150 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Title</th>
-                  <th style={{ width: 150 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
-                  <th style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Phone</th>
-                  <th style={{ width: 180 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Email</th>
-                  <th style={{ width: 100 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
-                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
+                  <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Name</th>
+                  <th style={{ width: 130 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Title</th>
+                  <th style={{ width: 140 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Company</th>
+                  <th style={{ width: 120 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Phone</th>
+                  <th style={{ width: 160 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Email</th>
+                  <th style={{ width: 90 }}  className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Status</th>
+                  <th style={{ width: 110 }} className="px-4 py-2.5 text-left text-[11px] font-medium text-[#64748B] uppercase tracking-wide">Last Contact</th>
                   <th style={{ width: 48 }}  className="px-4 py-2.5" />
                 </tr>
               </thead>
@@ -793,6 +796,7 @@ export function CandidatesPage({
                 })}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Contacts pagination hint */}
