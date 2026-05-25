@@ -3,9 +3,11 @@ import { X } from 'lucide-react'
 import type { User } from '../types/auth'
 import type { TeamMember } from '../types/team'
 
-function loadMembers(): TeamMember[] {
+function storageKey(teamId: string) { return `evaryst_team_members_${teamId}` }
+
+function loadMembers(teamId: string): TeamMember[] {
   try {
-    const v = localStorage.getItem('evaryst_team_members')
+    const v = localStorage.getItem(storageKey(teamId))
     return v ? JSON.parse(v) : []
   } catch { return [] }
 }
@@ -24,7 +26,7 @@ const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' } as const
 const LBL = 'block text-[11px] text-[#475569] mb-1'
 
 export function AdministrationPage({ currentUser }: AdministrationPageProps) {
-  const [members,       setMembers]       = useState<TeamMember[]>(loadMembers)
+  const [members,       setMembers]       = useState<TeamMember[]>(() => loadMembers(currentUser.teamId))
   const [showInvite,    setShowInvite]    = useState(false)
   const [inviteEmail,   setInviteEmail]   = useState('')
   const [inviteRole,    setInviteRole]    = useState<'recruiter' | 'talent_acquisition_manager'>('recruiter')
@@ -38,8 +40,8 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
   const [companyWebsite,  setCompanyWebsite]  = useState('')
 
   useEffect(() => {
-    localStorage.setItem('evaryst_team_members', JSON.stringify(members))
-  }, [members])
+    localStorage.setItem(storageKey(currentUser.teamId), JSON.stringify(members))
+  }, [members, currentUser.teamId])
 
   useEffect(() => {
     if (!successMsg) return

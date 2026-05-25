@@ -29,8 +29,8 @@ const FUNNEL_FILLS = ['#DBEAFE', '#C7D2FE', '#A5B4FC', '#818CF8', '#6366F1', '#4
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function loadTeamMembers(): StoredTeamMember[] {
-  try { return JSON.parse(localStorage.getItem('evaryst_team_members') || '[]') } catch { return [] }
+function loadTeamMembers(teamId: string): StoredTeamMember[] {
+  try { return JSON.parse(localStorage.getItem(`evaryst_team_members_${teamId}`) || '[]') } catch { return [] }
 }
 
 function conversionBadge(pct: number) {
@@ -84,7 +84,7 @@ export function ReportsPage({ candidates, jobs, isManager, currentUser }: Report
   ]
 
   // TEAM PERFORMANCE (manager only)
-  const teamMembers = isManager ? loadTeamMembers() : []
+  const teamMembers = isManager ? loadTeamMembers(currentUser.teamId) : []
   const recruiters  = teamMembers.filter(m => m.role === 'recruiter' && m.status === 'active')
 
   const teamKpiCards = [
