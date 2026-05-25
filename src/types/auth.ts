@@ -10,27 +10,15 @@ export interface User {
 
 // ── Team Alpha ────────────────────────────────────────────────────────────────
 
-export const DEMO_USER: User = {
-  id:       'tm-recruiter-demo',
-  email:    'recruiter@evaryst.com',
-  name:     'Alex Johnson',
-  role:     'recruiter',
-  company:  'Evaryst Demo',
-  initials: 'AJ',
-  teamId:   'team-alpha',
-}
-
-export const DEMO_MANAGER: User = {
-  id:       'demo-manager',
-  email:    'manager@evaryst.com',
-  name:     'Thane Hayhurst',
+export const BETA_MANAGER: User = {
+  id:       'beta-manager',
+  email:    'admin@evaryst.com',
+  name:     'Max Vegerchuk',
   role:     'talent_acquisition_manager',
   company:  'Evaryst Demo',
-  initials: 'TH',
+  initials: 'MV',
   teamId:   'team-alpha',
 }
-
-// ── Team Beta ─────────────────────────────────────────────────────────────────
 
 export const BETA_RECRUITER: User = {
   id:       'beta-recruiter',
@@ -39,16 +27,28 @@ export const BETA_RECRUITER: User = {
   role:     'recruiter',
   company:  'Evaryst Demo',
   initials: 'MR',
+  teamId:   'team-alpha',
+}
+
+// ── Team Beta ─────────────────────────────────────────────────────────────────
+
+export const DEMO_MANAGER: User = {
+  id:       'demo-manager',
+  email:    'manager@evaryst.com',
+  name:     'Thane Hayhurst',
+  role:     'talent_acquisition_manager',
+  company:  'Evaryst Demo',
+  initials: 'TH',
   teamId:   'team-beta',
 }
 
-export const BETA_MANAGER: User = {
-  id:       'beta-manager',
-  email:    'admin@evaryst.com',
-  name:     'Max Vegerchuk',
-  role:     'talent_acquisition_manager',
+export const DEMO_USER: User = {
+  id:       'tm-recruiter-demo',
+  email:    'recruiter@evaryst.com',
+  name:     'Alex Johnson',
+  role:     'recruiter',
   company:  'Evaryst Demo',
-  initials: 'MV',
+  initials: 'AJ',
   teamId:   'team-beta',
 }
 
