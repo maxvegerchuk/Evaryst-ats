@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
 import type { User } from '../types/auth'
 import { DEMO_USER, DEMO_MANAGER } from '../types/auth'
+import everestImg from '../assets/everest.webp'
 
 interface LoginPageProps { onLogin: (user: User) => void }
 
@@ -45,6 +46,19 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           backgroundSize: '24px 24px',
         }}
       >
+        {/* Mountain image at low opacity */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${everestImg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          opacity: 0.15,
+          zIndex: 0,
+        }} />
+
+        {/* All content above the image */}
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1 }}>
+
         {/* Logo */}
         <div style={{ padding: '32px 40px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
@@ -58,21 +72,21 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
         {/* Center content */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 48px' }}>
-          <p style={{ fontSize: '40px', fontWeight: '700', color: '#ffffff',              lineHeight: 1.2, margin: '0 0 8px' }}>Hire smarter.</p>
-          <p style={{ fontSize: '40px', fontWeight: '700', color: 'rgba(255,255,255,0.75)', lineHeight: 1.2, margin: '0 0 8px' }}>Track better.</p>
-          <p style={{ fontSize: '40px', fontWeight: '700', color: 'rgba(255,255,255,0.5)',  lineHeight: 1.2, margin: '0 0 40px' }}>Place faster.</p>
+          <p style={{ fontSize: '44px', fontWeight: 300, fontFamily: '"Fraunces", serif', color: '#ffffff',              lineHeight: 1.2, margin: '0 0 8px' }}>Hire smarter.</p>
+          <p style={{ fontSize: '44px', fontWeight: 300, fontFamily: '"Fraunces", serif', color: 'rgba(255,255,255,0.7)', lineHeight: 1.2, margin: '0 0 8px' }}>Track better.</p>
+          <p style={{ fontSize: '44px', fontWeight: 300, fontFamily: '"Fraunces", serif', fontStyle: 'italic', color: '#2a6fdb', lineHeight: 1.2, margin: '0 0 40px' }}>Place faster.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {['Full candidate pipeline management', 'Smart outreach & scheduling tools', 'Real-time recruiting analytics'].map(text => (
               <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
                   width: '20px', height: '20px', borderRadius: '50%',
-                  border: '1px solid rgba(255,255,255,0.25)',
+                  border: '1px solid rgba(42, 111, 219, 0.4)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
                 }}>
                   <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                    <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M1 4L3.5 6.5L9 1" stroke="#2a6fdb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
                 <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)' }}>{text}</span>
@@ -85,6 +99,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         <div style={{ padding: '24px 48px' }}>
           <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', margin: 0 }}>© 2026 Evaryst. All rights reserved.</p>
         </div>
+
+        </div>{/* end content wrapper */}
       </div>
 
       {/* ── Right panel ────────────────────────────────────────── */}
