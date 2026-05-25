@@ -769,8 +769,11 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
         </div>
       </div>
 
+      {/* Everything below breadcrumbs scrolls together */}
+      <div className="flex-1 overflow-y-auto">
+
       {/* ROW 2: Title + Actions */}
-      <div className="bg-white flex items-center px-4 gap-2 flex-shrink-0" style={{ paddingTop: 8, paddingBottom: 8 }}>
+      <div className="bg-white flex items-center px-4 gap-2" style={{ paddingTop: 8, paddingBottom: 8 }}>
         <span className="text-[18px] font-medium text-[#1E293B] flex-1">{job?.title ?? '—'}</span>
         <span
           className="text-[10px] font-medium px-3 py-1.5 rounded-full"
@@ -800,7 +803,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
       </div>
 
       {/* INFO BLOCK */}
-      <div className="bg-white flex-shrink-0 px-4 pb-3" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
+      <div className="bg-white px-4 pb-3" style={{ borderBottom: '0.5px solid #E2E8F0' }}>
         <div className="grid grid-cols-4 gap-0">
 
           {/* Col 1: Job Details */}
@@ -866,7 +869,7 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
 
       {/* TABS BAR */}
       <div
-        className="bg-white h-[40px] flex items-center px-4 flex-shrink-0 sticky z-10"
+        className="bg-white h-[40px] flex items-center px-4 sticky top-0 z-10"
         style={{ borderBottom: '0.5px solid #E2E8F0' }}
       >
         {JOB_TABS.map(tab => (
@@ -885,12 +888,14 @@ export function JobPage({ setCurrentPage, initialTab, isManager, job, recruiters
       </div>
 
       {/* TAB CONTENT */}
-      <div className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+      <div className="bg-[#F8FAFC]">
         {activeTab === 'candidates' && candidatesTab}
         {activeTab === 'recruiters' && recruitersTab}
         {activeTab === 'details'    && detailsTab}
         {activeTab === 'documents'  && documentsTab}
       </div>
+
+      </div>{/* end scrollable body */}
 
       <EditPanel isOpen={showEditPanel} onClose={() => setShowEditPanel(false)} title="Edit job" onSave={handleSaveJob} isSaving={isSaving}>
         <div className="space-y-4">

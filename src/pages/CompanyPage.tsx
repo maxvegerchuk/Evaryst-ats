@@ -512,7 +512,7 @@ export function CompanyPage({ setCurrentPage, onNavigateToJob, isManager, compan
 
       {/* TABS BAR */}
       <div
-        className="bg-white h-[40px] flex items-center px-4 flex-shrink-0 sticky top-0 z-10"
+        className="bg-white h-[40px] flex items-center px-4 sticky top-0 z-10"
         style={{ borderBottom: '0.5px solid #E2E8F0' }}
       >
         {(['jobs', 'clients', 'documents'] as const).map(tab => (
