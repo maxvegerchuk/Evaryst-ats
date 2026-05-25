@@ -81,7 +81,7 @@ export function Dashboard({ isScheduleOpen, onToggleSchedule, needsUpdateCount, 
 
       <div className="grid grid-cols-2 gap-4">
         <TasksCard isNewUser={isNewUser} />
-        <ActivityFeed />
+        <ActivityFeed teamId={currentUser.teamId} />
       </div>
 
     </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
 import type { User } from '../types/auth'
-import { DEMO_USER, DEMO_MANAGER } from '../types/auth'
+import { CREDENTIALS } from '../types/auth'
 import everestImg from '../assets/everest.webp'
 
 interface LoginPageProps { onLogin: (user: User) => void }
@@ -17,12 +17,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       setLoginError('Please enter your email and password')
       return
     }
-    if (loginEmail === DEMO_USER.email && loginPassword === 'recruiter123') {
-      onLogin(DEMO_USER)
-      return
-    }
-    if (loginEmail === DEMO_MANAGER.email && loginPassword === 'manager123') {
-      onLogin(DEMO_MANAGER)
+    const entry = CREDENTIALS[loginEmail.toLowerCase().trim()]
+    if (entry && loginPassword === entry.password) {
+      onLogin(entry.user)
       return
     }
     setLoginError('Invalid email or password')

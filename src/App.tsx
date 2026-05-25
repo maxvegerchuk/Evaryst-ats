@@ -332,9 +332,11 @@ function App() {
 
   // Load all data from Supabase — polling every 30s (Safari blocks WebSockets)
   async function loadAllData() {
+    const teamId = currentUser?.teamId ?? 'team-alpha'
+
     try {
       const { data: jobData, error: jobError } = await supabase
-        .from('jobs').select('*').order('created_at', { ascending: false })
+        .from('jobs').select('*').eq('team_id', teamId).order('created_at', { ascending: false })
       if (jobError) { console.error('Error loading jobs:', jobError) }
       else if (jobData) {
         const mapped = jobData.map(mapJob)
@@ -344,10 +346,10 @@ function App() {
     } catch (err) { console.error('Jobs load failed:', err) }
 
     const [candRes, compRes, contRes, teamRes] = await Promise.all([
-      supabase.from('candidates').select('*'),
-      supabase.from('companies').select('*'),
-      supabase.from('contacts').select('*'),
-      supabase.from('team_members').select('*'),
+      supabase.from('candidates').select('*').eq('team_id', teamId),
+      supabase.from('companies').select('*').eq('team_id', teamId),
+      supabase.from('contacts').select('*').eq('team_id', teamId),
+      supabase.from('team_members').select('*').eq('team_id', teamId),
     ])
     if (candRes.data)  setCandidates(candRes.data.map(mapCandidate))
     if (compRes.data)  setCompanies(compRes.data.map(mapCompany))
@@ -366,9 +368,9 @@ function App() {
 
   async function handleAddCandidate(c: Candidate) {
     setCandidates(prev => [c, ...prev])
-    const { error } = await supabase.from('candidates').insert(toDbCandidate(c))
+    const { error } = await supabase.from('candidates').insert({ ...toDbCandidate(c), team_id: currentUser?.teamId ?? 'team-alpha' })
     if (error) { console.error('handleAddCandidate error:', JSON.stringify(error, null, 2)); setCandidates(prev => prev.filter(x => x.id !== c.id)); return }
-    void logActivity('candidate_added', `New candidate added: ${c.name}`, c.id, 'candidate', currentUser?.id)
+    void logActivity('candidate_added', `New candidate added: ${c.name}`, c.id, 'candidate', currentUser?.id, currentUser?.teamId)
   }
 
   async function handleUpdateCandidate(id: string, updates: Partial<Candidate>) {
@@ -378,18 +380,19 @@ function App() {
     if (error) { console.error('handleUpdateCandidate:', error); return }
     if (existing) {
       const uid = currentUser?.id
+      const tid = currentUser?.teamId
       if (updates.stage) {
-        void logActivity('stage_changed',  `${existing.name} moved to ${updates.stage}`,           id, 'candidate', uid)
-        void logActivity('status_changed', `${existing.name} status changed to ${updates.stage}`,  id, 'candidate', uid)
+        void logActivity('stage_changed',  `${existing.name} moved to ${updates.stage}`,           id, 'candidate', uid, tid)
+        void logActivity('status_changed', `${existing.name} status changed to ${updates.stage}`,  id, 'candidate', uid, tid)
       } else if (updates.attachedJobIds) {
         const oldIds   = existing.attachedJobIds ?? []
         const addedIds = updates.attachedJobIds.filter(jid => !oldIds.includes(jid))
         for (const jobId of addedIds) {
           const jobTitle = jobs.find(j => j.id === jobId)?.title ?? 'a job'
-          void logActivity('candidate_added', `${existing.name} added to ${jobTitle}`, id, 'candidate', uid)
+          void logActivity('candidate_added', `${existing.name} added to ${jobTitle}`, id, 'candidate', uid, tid)
         }
       } else if ('notes' in updates && updates.notes !== undefined) {
-        void logActivity('note_added', `Note added for ${existing.name}`, id, 'candidate', uid)
+        void logActivity('note_added', `Note added for ${existing.name}`, id, 'candidate', uid, tid)
       }
     }
   }
@@ -413,9 +416,9 @@ function App() {
 
   async function handleAddCompany(c: Company) {
     setCompanies(prev => [c, ...prev])
-    const { error } = await supabase.from('companies').insert(toDbCompany(c))
+    const { error } = await supabase.from('companies').insert({ ...toDbCompany(c), team_id: currentUser?.teamId ?? 'team-alpha' })
     if (error) { console.error('handleAddCompany error:', JSON.stringify(error, null, 2)); setCompanies(prev => prev.filter(x => x.id !== c.id)); return }
-    void logActivity('company_added', `New company added: ${c.name}`, c.id, 'company', currentUser?.id)
+    void logActivity('company_added', `New company added: ${c.name}`, c.id, 'company', currentUser?.id, currentUser?.teamId)
   }
 
   async function handleUpdateCompany(id: string, updates: Partial<Company>) {
@@ -441,6 +444,7 @@ function App() {
     setJobs(prev => [j, ...prev])
 
     const jobInsert = {
+      team_id:                  currentUser?.teamId ?? 'team-alpha',
       id:                       j.id,
       title:                    j.title,
       company_id:               j.companyId               || '',
@@ -497,7 +501,7 @@ function App() {
       }
 
       console.log('Job created successfully:', data)
-      void logActivity('job_created', `New job posted: ${j.title}`, j.id, 'job', currentUser?.id)
+      void logActivity('job_created', `New job posted: ${j.title}`, j.id, 'job', currentUser?.id, currentUser?.teamId)
     } catch (err: unknown) {
       const e = err as { message?: string }
       console.error('=== CATCH ERROR ===', err)
@@ -524,7 +528,7 @@ function App() {
 
   async function handleAddContact(c: Contact) {
     setContacts(prev => [...prev, c])
-    const { error } = await supabase.from('contacts').insert(toDbContact(c))
+    const { error } = await supabase.from('contacts').insert({ ...toDbContact(c), team_id: currentUser?.teamId ?? 'team-alpha' })
     if (error) { console.error('handleAddContact:', error); setContacts(prev => prev.filter(x => x.id !== c.id)) }
   }
 
@@ -545,6 +549,7 @@ function App() {
       ev.id,
       'schedule',
       currentUser?.id,
+      currentUser?.teamId,
     )
   }
 

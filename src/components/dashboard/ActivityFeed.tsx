@@ -37,7 +37,11 @@ function timeAgo(iso: string): string {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function ActivityFeed() {
+interface ActivityFeedProps {
+  teamId: string
+}
+
+export function ActivityFeed({ teamId }: ActivityFeedProps) {
   const [activities, setActivities] = useState<ActivityRow[]>([])
   const [loading,    setLoading]    = useState(true)
   const channelName = useState(() => `realtime:activity_feed:${Math.random().toString(36).slice(2)}`)[0]
@@ -47,6 +51,7 @@ export function ActivityFeed() {
       const { data, error } = await supabase
         .from('activity_log')
         .select('*')
+        .eq('team_id', teamId)
         .order('created_at', { ascending: false })
         .limit(15)
       console.log('activity_log initial fetch:', data, error)
@@ -71,7 +76,7 @@ export function ActivityFeed() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [channelName])
+  }, [channelName, teamId])
 
   return (
     <section
