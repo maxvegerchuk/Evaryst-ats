@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Eye, EyeOff, Check, ChevronLeft } from 'lucide-react'
 import type { User } from '../types/auth'
 import { DEMO_USER, DEMO_MANAGER } from '../types/auth'
-import everestImg from '../assets/everest.webp'
 
 interface LoginPageProps { onLogin: (user: User) => void }
 
@@ -36,20 +35,18 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* ── Left panel ─────────────────────────────────────────── */}
       <div
         className="w-[45%] min-h-screen hidden lg:flex flex-col relative"
-        style={{ position: 'relative' }}
+        style={{ backgroundColor: '#0d1b2e' }}
       >
+        {/* Dot pattern — matches hero section */}
         <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${everestImg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'brightness(1.5) saturate(0.8)',
-          zIndex: 0,
+          position: 'absolute', inset: 0,
+          backgroundImage: 'radial-gradient(circle, #334155 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+          opacity: 0.4,
+          pointerEvents: 'none',
         }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(18, 64, 138, 0.55)', zIndex: 1 }} />
 
-        <div className="relative flex flex-col h-full" style={{ zIndex: 2 }}>
+        <div className="relative flex flex-col h-full" style={{ zIndex: 1 }}>
           <div className="flex items-center gap-2 p-8">
             <div className="w-9 h-9 rounded-[9px] bg-white/20 flex items-center justify-center">
               <span className="text-[18px] font-bold text-white">E</span>
