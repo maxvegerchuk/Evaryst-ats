@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import type { User } from '../types/auth'
+import { ALL_USERS } from '../types/auth'
 import type { TeamMember } from '../types/team'
 
 function storageKey(teamId: string) { return `evaryst_team_members_${teamId}` }
@@ -26,6 +27,10 @@ const INP_ST = { border: '0.5px solid #E2E8F0', padding: '8px 12px' } as const
 const LBL = 'block text-[11px] text-[#475569] mb-1'
 
 export function AdministrationPage({ currentUser }: AdministrationPageProps) {
+  const builtInTeammates = ALL_USERS.filter(
+    u => u.teamId === currentUser.teamId && u.id !== currentUser.id,
+  )
+
   const [members,       setMembers]       = useState<TeamMember[]>(() => loadMembers(currentUser.teamId))
   const [showInvite,    setShowInvite]    = useState(false)
   const [inviteEmail,   setInviteEmail]   = useState('')
@@ -162,7 +167,7 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
               </tr>
             </thead>
             <tbody>
-              {/* Current manager row */}
+              {/* Current user row */}
               <tr style={{ borderBottom: '0.5px solid #F1F5F9' }}>
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2">
@@ -173,24 +178,41 @@ export function AdministrationPage({ currentUser }: AdministrationPageProps) {
                   </div>
                 </td>
                 <td className="px-4 py-2.5 text-[12px] text-[#475569]">{currentUser.email}</td>
-                <td className="px-4 py-2.5 text-[12px] text-[#475569]">Manager</td>
+                <td className="px-4 py-2.5 text-[12px] text-[#475569]">{roleLabel(currentUser.role)}</td>
                 <td className="px-4 py-2.5">
                   <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#DCFCE7', color: '#15803D' }}>
                     Active
                   </span>
                 </td>
-                <td className="px-4 py-2.5 text-[12px] text-[#475569]">Today</td>
+                <td className="px-4 py-2.5 text-[12px] text-[#475569]">—</td>
                 <td className="px-4 py-2.5 text-[12px] text-[#94A3B8]">—</td>
               </tr>
 
-              {/* Invited members */}
-              {members.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-[12px] text-[#94A3B8]">
-                    No team members yet. Invite your first recruiter.
+              {/* Built-in teammates from the same team */}
+              {builtInTeammates.map(u => (
+                <tr key={u.id} style={{ borderBottom: '0.5px solid #F1F5F9' }}>
+                  <td className="px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
+                        <span className="text-[9px] font-bold text-[#1D4ED8]">{u.initials}</span>
+                      </div>
+                      <span className="text-[12px] font-medium text-[#1E293B]">{u.name}</span>
+                    </div>
                   </td>
+                  <td className="px-4 py-2.5 text-[12px] text-[#475569]">{u.email}</td>
+                  <td className="px-4 py-2.5 text-[12px] text-[#475569]">{roleLabel(u.role)}</td>
+                  <td className="px-4 py-2.5">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: '#DCFCE7', color: '#15803D' }}>
+                      Active
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-[12px] text-[#475569]">—</td>
+                  <td className="px-4 py-2.5 text-[12px] text-[#94A3B8]">—</td>
                 </tr>
-              ) : (
+              ))}
+
+              {/* Manually invited members */}
+              {members.length === 0 ? null : (
                 members.map(m => (
                   <tr key={m.id} className="hover:bg-[#F8FAFC]" style={{ borderBottom: '0.5px solid #F1F5F9' }}>
                     <td className="px-4 py-2.5">

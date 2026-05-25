@@ -52,6 +52,10 @@ export const DEMO_USER: User = {
   teamId:   'team-beta',
 }
 
+// ── All users (used for team member lists) ────────────────────────────────────
+
+export const ALL_USERS: User[] = [BETA_MANAGER, BETA_RECRUITER, DEMO_MANAGER, DEMO_USER]
+
 // ── Credentials table (email → { user, password }) ───────────────────────────
 
 export const CREDENTIALS: Record<string, { user: User; password: string }> = {
