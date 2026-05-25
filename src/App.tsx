@@ -651,10 +651,11 @@ function App() {
           setCurrentPage={navigate}
           isNewUser={isNewUser}
           candidates={visibleCandidates}
+          jobs={visibleJobs}
+          currentUser={currentUser}
           onNavigateToCandidate={navigateToCandidate}
           isManager={isManager}
           recruiterCount={recruiterMembers.length}
-          openJobsCount={visibleJobs.filter(j => j.status === 'Open').length}
         />
         <main className="flex-1 overflow-hidden bg-[#F8FAFC] flex flex-col">
 

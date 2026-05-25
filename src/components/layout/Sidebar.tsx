@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { ChevronLeft, Users, Briefcase, Calendar, Trophy, Plus, BarChart2 } from 'lucide-react'
 import type { Candidate } from '../../types/candidate'
 import { getInitials, getAvatarColor } from '../../types/candidate'
+import type { Job } from '../../types/job'
+import type { User } from '../../types/auth'
 
 const STORAGE_KEY = 'evaryst-sidebar-collapsed'
 
@@ -12,13 +14,14 @@ interface SidebarProps {
   setCurrentPage:         (page: string) => void
   isNewUser?:             boolean
   candidates:             Candidate[]
+  jobs:                   Job[]
+  currentUser:            User
   onNavigateToCandidate:  (id: string) => void
   isManager?:             boolean
   recruiterCount?:        number
-  openJobsCount?:         number
 }
 
-export function Sidebar({ setCurrentPage, candidates, onNavigateToCandidate, isManager, recruiterCount = 0, openJobsCount = 0 }: SidebarProps) {
+export function Sidebar({ setCurrentPage, candidates, jobs, currentUser, onNavigateToCandidate, isManager, recruiterCount = 0 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     try { return localStorage.getItem(STORAGE_KEY) === 'true' } catch { return false }
   })
@@ -34,6 +37,13 @@ export function Sidebar({ setCurrentPage, candidates, onNavigateToCandidate, isM
   const cx = collapsed
 
   const pinnedCandidates = candidates.filter(c => c.starred)
+
+  const myCandidates = candidates.filter(
+    c => c.ownerId === currentUser.id || c.ownerEmail === currentUser.email,
+  )
+  const myOpenJobs    = jobs.filter(j => j.ownerId === currentUser.id && j.status === 'Open').length
+  const myPlacements  = myCandidates.filter(c => c.stage === 'Placed').length
+  const myInterviews  = myCandidates.filter(c => c.stage === 'Interview' || c.stage === 'Phone Screen').length
 
   return (
     <aside
@@ -83,23 +93,21 @@ export function Sidebar({ setCurrentPage, candidates, onNavigateToCandidate, isM
                   <Users size={14} className="text-[#2563EB] shrink-0" />
                   <span className="text-[12px] text-[#475569]">Candidates</span>
                 </div>
-                <span className="text-[13px] font-medium text-[#1E293B]">{candidates.length}</span>
+                <span className="text-[13px] font-medium text-[#1E293B]">{myCandidates.length}</span>
               </div>
               <div className="flex items-center justify-between py-2 border-b border-[#F1F5F9]">
                 <div className="flex items-center gap-2">
                   <Briefcase size={14} className="text-[#64748B] shrink-0" />
                   <span className="text-[12px] text-[#475569]">Open jobs</span>
                 </div>
-                <span className="text-[13px] font-medium text-[#1E293B]">{openJobsCount}</span>
+                <span className="text-[13px] font-medium text-[#1E293B]">{myOpenJobs}</span>
               </div>
               <div className="flex items-center justify-between py-2 border-b border-[#F1F5F9]">
                 <div className="flex items-center gap-2">
                   <Trophy size={14} className="text-[#16A34A] shrink-0" />
                   <span className="text-[12px] text-[#475569]">Placements</span>
                 </div>
-                <span className="text-[13px] font-medium text-[#1E293B]">
-                  {candidates.filter(c => c.stage === 'Placed').length}
-                </span>
+                <span className="text-[13px] font-medium text-[#1E293B]">{myPlacements}</span>
               </div>
               <div className="py-2">
                 <div className="flex items-center justify-between">
@@ -107,7 +115,7 @@ export function Sidebar({ setCurrentPage, candidates, onNavigateToCandidate, isM
                     <Calendar size={14} className="text-[#F59E0B] shrink-0" />
                     <span className="text-[12px] text-[#475569]">Interviews</span>
                   </div>
-                  <span className="text-[13px] font-medium text-[#1E293B]">{candidates.filter(c => c.stage === 'Interview').length}</span>
+                  <span className="text-[13px] font-medium text-[#1E293B]">{myInterviews}</span>
                 </div>
               </div>
             </div>
