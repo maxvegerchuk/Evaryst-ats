@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Rocket, Users, Phone, BarChart2, Briefcase, Search, Building2, Check } from 'lucide-react'
-import heroSection          from '../assets/hero-section.png'
+import heroSection          from '../assets/hero-section.webp'
 import pipelineIllustration from '../assets/pipeline-illustration.jpg'
 
 interface LandingPageProps {
@@ -238,6 +238,7 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
             <img
               src={heroSection}
               alt="Evaryst ATS dashboard"
+              decoding="async"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -405,6 +406,8 @@ export function LandingPage({ isAuthenticated, onGoToApp }: LandingPageProps) {
               <img
                 src={pipelineIllustration}
                 alt="Candidate pipeline illustration"
+                loading="lazy"
+                decoding="async"
                 style={{ width: '100%', maxWidth: 420, height: 'auto', borderRadius: 12, objectFit: 'contain' }}
               />
             </div>
