@@ -250,8 +250,8 @@ export function TasksCard({ selectedDate: propDate }: TasksCardProps) {
               value={newText}
               onChange={e => setNewText(e.target.value)}
               onKeyDown={onInputKey}
-              placeholder="Task name… Enter to save, Esc to cancel"
-              className="flex-1 text-[12px] bg-transparent outline-none text-[#1E293B] placeholder:text-[#94A3B8]"
+              placeholder="Task name…"
+              className="flex-1 text-[12px] bg-transparent outline-none text-[#1E293B] placeholder:text-[#64748B]"
               aria-label="New task name"
             />
             <div className="flex items-center gap-1.5 shrink-0">
@@ -268,6 +268,14 @@ export function TasksCard({ selectedDate: propDate }: TasksCardProps) {
                   aria-label={`${p} priority`}
                 />
               ))}
+              <button
+                type="button"
+                onClick={() => { setAdding(false); setNewText('') }}
+                className="ml-1 w-5 h-5 flex items-center justify-center rounded hover:bg-[#DBEAFE] text-[#64748B] hover:text-[#1E293B] transition-colors"
+                aria-label="Cancel"
+              >
+                <X size={12} />
+              </button>
             </div>
           </div>
         )}
